@@ -3,7 +3,8 @@ import Chip from "@/components/ui/Chip";
 export default function TopBar() {
   return (
     <header className="panel pointer-events-auto flex items-center gap-2 p-2">
-      <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl bg-bg-0/60 px-3">
+      {/* El input quita su contorno; el foco se marca en toda la caja del buscador */}
+      <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl bg-bg-0/60 px-3 focus-within:ring-2 focus-within:ring-route">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-ink-dim" aria-hidden>
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" strokeLinecap="round" />

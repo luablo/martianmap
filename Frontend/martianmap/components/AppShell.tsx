@@ -10,6 +10,8 @@ import LayerToggles from "@/components/panels/LayerToggles";
 import MetricsBar from "@/components/panels/MetricsBar";
 import ModeSwitch from "@/components/panels/ModeSwitch";
 import TopBar from "@/components/panels/TopBar";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
 import { useZone } from "@/lib/data/useZone";
 import { MODES } from "@/lib/modes";
 import { useNotes } from "@/lib/notes/useNotes";
@@ -32,14 +34,6 @@ function CenterMsg({ children }: { children: React.ReactNode }) {
 
 type Drawer = "layers" | "mode" | null;
 
-function PanelTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="px-3 pb-1 pt-2 font-mono text-[11px] font-semibold tracking-widest text-ink-dim">
-      {children}
-    </h2>
-  );
-}
-
 export default function AppShell() {
   const { zone, error } = useZone();
   const { notes } = useNotes();
@@ -58,20 +52,18 @@ export default function AppShell() {
   const { route } = useRoute(zone, base, destination, mode);
 
   const layerPanel = (
-    <section className="panel pointer-events-auto p-1.5">
-      <PanelTitle>CAPAS</PanelTitle>
+    <Panel title="CAPAS">
       <LayerToggles
         zone={zone}
         active={layers}
         onChange={(id, on) => setLayers((s) => ({ ...s, [id]: on }))}
       />
-    </section>
+    </Panel>
   );
   const modePanel = (
-    <section className="panel pointer-events-auto p-1.5">
-      <PanelTitle>MODO</PanelTitle>
+    <Panel title="MODO">
       <ModeSwitch mode={mode} onChange={setMode} />
-    </section>
+    </Panel>
   );
 
   return (
@@ -112,14 +104,13 @@ export default function AppShell() {
           <div className="max-h-full w-60 overflow-y-auto">{layerPanel}</div>
           <div className="flex max-h-full w-56 flex-col gap-3 overflow-y-auto lg:w-72">
             {modePanel}
-            <section className="panel pointer-events-auto hidden p-1.5 lg:block">
-              <PanelTitle>NOTAS DE CAMPO</PanelTitle>
+            <Panel title="NOTAS DE CAMPO" className="hidden lg:block">
               <p className="px-3 pb-3 text-sm text-ink-dim">
                 {notes.length === 0
                   ? "Aún no hay notas. Aquí aparecerán los hallazgos de la EVA."
                   : `${notes.length} notas`}
               </p>
-            </section>
+            </Panel>
           </div>
         </div>
 
@@ -127,17 +118,16 @@ export default function AppShell() {
         <div className="flex min-h-0 flex-col items-end gap-2 sm:hidden">
           <div className="flex gap-2">
             {(["layers", "mode"] as const).map((d) => (
-              <button
+              <Button
                 key={d}
-                type="button"
+                variant="panel"
+                active={drawer === d}
                 aria-expanded={drawer === d}
                 onClick={() => setDrawer(drawer === d ? null : d)}
-                className={`panel touch pointer-events-auto px-4 font-mono text-xs font-semibold tracking-widest ${
-                  drawer === d ? "text-route" : "text-ink"
-                }`}
+                className="px-4 font-mono text-xs font-semibold tracking-widest"
               >
                 {d === "layers" ? "CAPAS" : MODES[mode].label.toUpperCase()}
-              </button>
+              </Button>
             ))}
           </div>
           {drawer && (
