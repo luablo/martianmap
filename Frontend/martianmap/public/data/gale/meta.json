@@ -1,0 +1,20 @@
+{
+  "width": 750,
+  "height": 750,
+  "metersPerPixel": 4,
+  "bounds": {
+    "west": 137.33,
+    "east": 137.380887,
+    "north": -4.7343,
+    "south": -4.785012
+  },
+  "base": {
+    "lon": 137.342043,
+    "lat": -4.745017
+  },
+  "sources": [
+    "SINTÉTICO: scripts/fake-terrain.mjs"
+  ],
+  "fake": true,
+  "files": {}
+}

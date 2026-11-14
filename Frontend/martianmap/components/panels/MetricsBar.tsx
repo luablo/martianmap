@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { formatDistance, formatMinutes } from "@/lib/metrics";
-import type { Risk, RouteMetrics, TransportMode } from "@/lib/types";
+import type { Risk, RouteResult, TransportMode } from "@/lib/types";
 
 const riskTone: Record<Risk, string> = {
   BAJO: "text-safe",
@@ -33,7 +33,7 @@ export default function MetricsBar({
   metrics,
   mode,
 }: {
-  metrics: RouteMetrics | null;
+  metrics: RouteResult | null;
   mode: TransportMode;
 }) {
   // En teléfono es una hoja inferior: cerrada muestra lo esencial.
@@ -79,9 +79,12 @@ export default function MetricsBar({
           </svg>
         </button>
       </div>
-      <p className="mt-2 font-mono text-[11px] text-warn">
-        LÍNEA RECTA · sin ruteo todavía: no evita pendientes ni zonas prohibidas
-      </p>
+      {m.straightLine && (
+        <p className="mt-2 font-mono text-[11px] text-warn">
+          LÍNEA RECTA · sin ruteo todavía: no evita pendientes ni zonas prohibidas
+        </p>
+      )}
+      {m.warning && <p className="mt-2 font-mono text-[11px] text-warn">{m.warning}</p>}
     </footer>
   );
 }

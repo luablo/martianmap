@@ -1,25 +1,34 @@
 "use client";
+// Dueño: P4. Este archivo SOLO compone: el estado de la pantalla + los hooks de cada dueño.
+//   useZone   → P1 (lib/data)     useRoute → P2 (lib/routing)
+//   MapView   → P3 (components/map)   useNotes → P4 (lib/notes)
+// Nadie más lo edita. Si tu parte necesita algo nuevo de aquí, pídelo en el chat.
 
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import LayerToggles from "@/components/panels/LayerToggles";
 import MetricsBar from "@/components/panels/MetricsBar";
 import ModeSwitch from "@/components/panels/ModeSwitch";
 import TopBar from "@/components/panels/TopBar";
-import { ZONE, distanceM } from "@/lib/geo";
-import { computeMetrics } from "@/lib/metrics";
+import { useZone } from "@/lib/data/useZone";
 import { MODES } from "@/lib/modes";
+import { useNotes } from "@/lib/notes/useNotes";
+import { useRoute } from "@/lib/routing/useRoute";
 import type { LayerId, LonLat, ModeId } from "@/lib/types";
 
 // MapLibre necesita `window`: se carga solo en el navegador.
 const MapView = dynamic(() => import("@/components/map/MapView"), {
   ssr: false,
-  loading: () => (
-    <div className="absolute inset-0 grid place-items-center font-mono text-sm text-ink-dim">
-      CARGANDO MAPA…
-    </div>
-  ),
+  loading: () => <CenterMsg>CARGANDO MAPA…</CenterMsg>,
 });
+
+function CenterMsg({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="absolute inset-0 grid place-items-center px-6 text-center font-mono text-sm text-ink-dim">
+      {children}
+    </div>
+  );
+}
 
 type Drawer = "layers" | "mode" | null;
 
@@ -32,6 +41,8 @@ function PanelTitle({ children }: { children: React.ReactNode }) {
 }
 
 export default function AppShell() {
+  const { zone, error } = useZone();
+  const { notes } = useNotes();
   const [mode, setMode] = useState<ModeId>("walk");
   const [destination, setDestination] = useState<LonLat | null>(null);
   const [drawer, setDrawer] = useState<Drawer>(null);
@@ -43,20 +54,17 @@ export default function AppShell() {
     mineral: false,
   });
 
-  // PROVISIONAL: línea recta base → destino. Aquí entra el A* (lib/routing).
-  const path = useMemo<LonLat[] | null>(
-    () => (destination ? [ZONE.base, destination] : null),
-    [destination],
-  );
-  const metrics = useMemo(
-    () => (destination ? computeMetrics(distanceM(ZONE.base, destination), MODES[mode]) : null),
-    [destination, mode],
-  );
+  const base: LonLat | null = zone ? [zone.meta.base.lon, zone.meta.base.lat] : null;
+  const { route } = useRoute(zone, base, destination, mode);
 
   const layerPanel = (
     <section className="panel pointer-events-auto p-1.5">
       <PanelTitle>CAPAS</PanelTitle>
-      <LayerToggles active={layers} onChange={(id, on) => setLayers((s) => ({ ...s, [id]: on }))} />
+      <LayerToggles
+        zone={zone}
+        active={layers}
+        onChange={(id, on) => setLayers((s) => ({ ...s, [id]: on }))}
+      />
     </section>
   );
   const modePanel = (
@@ -68,7 +76,24 @@ export default function AppShell() {
 
   return (
     <main className="relative h-dvh w-full overflow-hidden bg-bg-0">
-      <MapView destination={destination} path={path} onPickDestination={setDestination} />
+      {zone ? (
+        <MapView
+          zone={zone}
+          destination={destination}
+          route={route}
+          layers={layers}
+          notes={notes}
+          onMapClick={setDestination}
+        />
+      ) : (
+        <CenterMsg>{error ? `SIN DATOS DE ZONA · ${error}` : "CARGANDO ZONA…"}</CenterMsg>
+      )}
+
+      {zone?.meta.fake && (
+        <div className="pointer-events-none absolute left-1/2 top-[5.25rem] z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
+          TERRENO SINTÉTICO · no son datos reales
+        </div>
+      )}
 
       {/* Capa de interfaz: no bloquea el mapa salvo donde hay paneles */}
       <div
@@ -90,7 +115,9 @@ export default function AppShell() {
             <section className="panel pointer-events-auto hidden p-1.5 lg:block">
               <PanelTitle>NOTAS DE CAMPO</PanelTitle>
               <p className="px-3 pb-3 text-sm text-ink-dim">
-                Aún no hay notas. Aquí aparecerán los hallazgos de la EVA.
+                {notes.length === 0
+                  ? "Aún no hay notas. Aquí aparecerán los hallazgos de la EVA."
+                  : `${notes.length} notas`}
               </p>
             </section>
           </div>
@@ -120,7 +147,7 @@ export default function AppShell() {
           )}
         </div>
 
-        <MetricsBar metrics={metrics} mode={MODES[mode]} />
+        <MetricsBar metrics={route} mode={MODES[mode]} />
       </div>
     </main>
   );

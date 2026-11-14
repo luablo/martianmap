@@ -1,5 +1,5 @@
 # MARSWALK — Contexto del proyecto
-
+14/11/2026
 > Documento de referencia para el equipo (y para cualquier asistente de IA que trabaje en el repo).
 > Reto: **Interplanetary Survival Guide: Martian Map** — NASA Space Apps Challenge 2026.
 > Entrega: **domingo 15 nov, mediodía**. El plan de trabajo está en [PLANEACION.md](PLANEACION.md).
@@ -99,21 +99,26 @@ RAD, REMS, fotos   exportar PNG/bin/JSON                                       �
 
 ```
 SpaceAppNasa/
-├─ CONTEXTO.md  PLANEACION.md
-├─ data-pipeline/              # Python. Salida → Frontend/martianmap/public/data/gale/
+├─ CONTEXTO.md  PLANEACION.md  TAREAS.md (quién toca qué)
+├─ data-pipeline/              # P1 · Python. Salida → Frontend/martianmap/public/data/gale/
 │  ├─ recortar.py  pendiente.py  exportar.py
 │  ├─ requirements.txt  FUENTES.md
 ├─ Frontend/martianmap/        # Next.js 16 + Tailwind 4 (¡leer AGENTS.md: tiene cambios de API!)
-│  ├─ app/            page.tsx (mapa)  layout.tsx  globals.css (tokens de color)
+│  ├─ app/            P4 · page.tsx  layout.tsx  globals.css (tokens de color)
 │  ├─ components/
-│  │  ├─ map/         MapView.tsx  LayerOverlays.tsx  RouteLine.tsx  Markers.tsx
-│  │  ├─ panels/      TopBar.tsx  ModeSwitch.tsx  LayerToggles.tsx  MetricsBar.tsx  NoteCard.tsx
-│  │  └─ ui/          Button.tsx  Toggle.tsx  Chip.tsx  Panel.tsx
+│  │  ├─ AppShell.tsx P4 · une todo; nadie más lo edita
+│  │  ├─ map/         P3 · MapView.tsx  map.css  layers/  Legend.tsx
+│  │  ├─ panels/      P4 · TopBar  ModeSwitch  LayerToggles  MetricsBar  NoteCard
+│  │  └─ ui/          P4 · Button  Toggle  Chip  Panel
 │  ├─ lib/
-│  │  ├─ routing/     astar.ts  cost.ts  worker.ts
-│  │  ├─ modes.ts     geo.ts (radio de Marte, px↔lat/lon)  metrics.ts  supabase.ts
-│  │  └─ types.ts     # contrato compartido
-│  └─ public/data/gale/
+│  │  ├─ types.ts     COMPARTIDO · contrato (congelado)
+│  │  ├─ geo.ts       COMPARTIDO · radio de Marte, celda ↔ lon/lat
+│  │  ├─ data/        P1 · zone.ts  useZone.ts      layers.ts  P1 · catálogo de capas
+│  │  ├─ routing/     P2 · useRoute.ts  astar.ts  worker.ts
+│  │  ├─ modes.ts  metrics.ts                       P2
+│  │  └─ notes/       P2 · useNotes.ts  supabase.ts
+│  ├─ scripts/        fake-terrain.mjs (P2) · copy-maplibre-worker.mjs
+│  └─ public/data/gale/  P1 · hoy con terreno sintético
 ├─ Backend/                    # Django: NO se usa
 └─ presentacion/               # guion, slides, video, capturas
 ```

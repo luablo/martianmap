@@ -1,16 +1,25 @@
 "use client";
+// Dueño: P3 (Mapa). Las props son el contrato con AppShell (P4): no cambiarlas sin avisar.
+// Para capas nuevas, crear un archivo en components/map/layers/ y llamarlo desde aquí.
 
 import { Map as MlMap, Marker, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import "./map.css";
 import { useEffect, useRef } from "react";
-import { ZONE, gridLines } from "@/lib/geo";
-import type { LonLat } from "@/lib/types";
+import { gridLines, insideBounds } from "@/lib/geo";
+import type { LayerId, LonLat, Note, RouteResult, ZoneData } from "@/lib/types";
+import { addNoGoLayer } from "./layers/nogo";
+import { addPoiLayer } from "./layers/pois";
 
-interface Props {
+export interface MapViewProps {
+  zone: ZoneData;
   destination: LonLat | null;
-  /** Camino a dibujar. Hoy es una línea recta; luego será la salida del A*. */
-  path: LonLat[] | null;
-  onPickDestination: (p: LonLat) => void;
+  route: RouteResult | null;
+  /** Qué capas pidió encender el usuario (P3 decide cómo pintarlas) */
+  layers: Record<LayerId, boolean>;
+  notes: Note[];
+  /** Toque dentro de la zona */
+  onMapClick: (p: LonLat) => void;
 }
 
 function markerEl(kind: "base" | "dest", label: string) {
@@ -26,20 +35,23 @@ const line = (coords: LonLat[]) => ({
   geometry: { type: "LineString" as const, coordinates: coords },
 });
 
-export default function MapView({ destination, path, onPickDestination }: Props) {
+export default function MapView({ zone, destination, route, onMapClick }: MapViewProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const destMarker = useRef<Marker | null>(null);
-  const onPick = useRef(onPickDestination);
+  const onClick = useRef(onMapClick);
   useEffect(() => {
-    onPick.current = onPickDestination;
-  }, [onPickDestination]);
+    onClick.current = onMapClick;
+  }, [onMapClick]);
 
+  // Se crea una sola vez por zona
   useEffect(() => {
     if (!container.current) return;
     // Copiado a /public por scripts/copy-maplibre-worker.mjs (postinstall)
     setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
-    const { west, south, east, north } = ZONE.bounds;
+
+    const { meta } = zone;
+    const { west, south, east, north } = meta.bounds;
     const pad = 0.02;
 
     // Estilo vacío: MapLibre cree que está en la Tierra, pero aquí solo usamos
@@ -66,7 +78,7 @@ export default function MapView({ destination, path, onPickDestination }: Props)
     map.on("load", () => {
       map.addSource("grid", {
         type: "geojson",
-        data: { type: "FeatureCollection", features: gridLines(500).map(line) },
+        data: { type: "FeatureCollection", features: gridLines(meta, 500).map(line) },
       });
       map.addLayer({
         id: "grid",
@@ -88,6 +100,9 @@ export default function MapView({ destination, path, onPickDestination }: Props)
         paint: { "line-color": "#38bdf8", "line-width": 1.5, "line-opacity": 0.6 },
       });
 
+      if (zone.nogo) addNoGoLayer(map, zone.nogo);
+      addPoiLayer(map, zone.pois);
+
       // Ruta: borde oscuro debajo para leerse sobre cualquier terreno
       map.addSource("route", { type: "geojson", data: line([]) });
       map.addLayer({
@@ -107,13 +122,12 @@ export default function MapView({ destination, path, onPickDestination }: Props)
     });
 
     new Marker({ element: markerEl("base", "BASE"), anchor: "top", offset: [0, -9] })
-      .setLngLat(ZONE.base)
+      .setLngLat([meta.base.lon, meta.base.lat])
       .addTo(map);
 
     map.on("click", (e) => {
-      const { lng, lat } = e.lngLat;
-      if (lng < west || lng > east || lat < south || lat > north) return;
-      onPick.current([lng, lat]);
+      const p: LonLat = [e.lngLat.lng, e.lngLat.lat];
+      if (insideBounds(meta, p)) onClick.current(p);
     });
 
     return () => {
@@ -121,8 +135,9 @@ export default function MapView({ destination, path, onPickDestination }: Props)
       mapRef.current = null;
       destMarker.current = null;
     };
-  }, []);
+  }, [zone]);
 
+  // Destino y ruta
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -143,10 +158,12 @@ export default function MapView({ destination, path, onPickDestination }: Props)
     }
 
     const draw = () =>
-      (map.getSource("route") as GeoJSONSource | undefined)?.setData(line(path ?? []));
+      (map.getSource("route") as GeoJSONSource | undefined)?.setData(line(route?.path ?? []));
     if (map.getSource("route")) draw();
     else map.once("load", draw);
-  }, [destination, path]);
+  }, [destination, route]);
+
+  // TODO P3: efecto con `layers` (encender/apagar ortho, slope, radiación) y con `notes`.
 
   // El CSS de MapLibre pone `position: relative` al contenedor: por eso va envuelto.
   return (
