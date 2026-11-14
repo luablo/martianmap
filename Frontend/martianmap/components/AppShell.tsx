@@ -5,7 +5,7 @@
 // Nadie más lo edita. Si tu parte necesita algo nuevo de aquí, pídelo en el chat.
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import LayerToggles from "@/components/panels/LayerToggles";
 import MetricsBar from "@/components/panels/MetricsBar";
 import ModeSwitch from "@/components/panels/ModeSwitch";
@@ -48,8 +48,12 @@ export default function AppShell() {
     mineral: false,
   });
 
-  const base: LonLat | null = zone ? [zone.meta.base.lon, zone.meta.base.lat] : null;
-  const { route } = useRoute(zone, base, destination, mode);
+  // Memorizado: si fuera un arreglo nuevo en cada render, la ruta se recalcularía siempre.
+  const base = useMemo<LonLat | null>(
+    () => (zone ? [zone.meta.base.lon, zone.meta.base.lat] : null),
+    [zone],
+  );
+  const { route, computing } = useRoute(zone, base, destination, mode);
 
   const layerPanel = (
     <Panel title="CAPAS">
@@ -89,7 +93,7 @@ export default function AppShell() {
 
       {/* Capa de interfaz: no bloquea el mapa salvo donde hay paneles */}
       <div
-        className="pointer-events-none absolute inset-0 grid grid-rows-[auto_1fr_auto] gap-3 p-3"
+        className="pointer-events-none absolute inset-0 z-20 grid grid-rows-[auto_1fr_auto] gap-3 p-3"
         style={{
           paddingTop: "max(0.75rem, env(safe-area-inset-top))",
           paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
@@ -97,7 +101,12 @@ export default function AppShell() {
           paddingRight: "max(0.75rem, env(safe-area-inset-right))",
         }}
       >
-        <TopBar />
+        <TopBar
+          pois={zone?.pois ?? []}
+          base={base}
+          weather={zone?.weather ?? null}
+          onPick={(p) => setDestination([p.lon, p.lat])}
+        />
 
         {/* Tablet y hábitat: paneles fijos a los lados */}
         <div className="hidden min-h-0 items-start justify-between gap-3 sm:flex">
@@ -137,7 +146,13 @@ export default function AppShell() {
           )}
         </div>
 
-        <MetricsBar metrics={route} mode={MODES[mode]} />
+        <MetricsBar
+          metrics={route}
+          mode={MODES[mode]}
+          computing={computing}
+          hasDestination={destination !== null}
+          onClear={() => setDestination(null)}
+        />
       </div>
     </main>
   );
