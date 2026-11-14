@@ -30,6 +30,8 @@
 
 .marker-poi {
   color: var(--color-science);
+  /* Clicables: tocar un POI marca destino (objetivo) o abre el popup (POV). */
+  pointer-events: auto;
 }
 .marker-poi-pov {
   color: var(--color-info);
@@ -62,4 +64,129 @@
 
 .maplibregl-canvas {
   outline: none;
+}
+
+/* Marcador de nota de campo: punto morado con icono, clicable. */
+.marker-note {
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: var(--color-science);
+  border: 3px solid var(--color-bg-0);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-science) 45%, transparent);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  cursor: pointer;
+}
+.marker-note svg {
+  display: block;
+}
+
+/* Popups de MapLibre (notas y POV) al tema oscuro de la app. */
+.maplibregl-popup-content {
+  background: color-mix(in srgb, var(--color-bg-1) 94%, transparent);
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  padding: 12px 14px;
+}
+.maplibregl-popup-tip {
+  display: none;
+}
+.maplibregl-popup-close-button {
+  color: var(--color-ink-dim);
+  font-size: 17px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+}
+.maplibregl-popup-close-button:hover {
+  background-color: transparent;
+  color: var(--color-ink);
+}
+
+/* Tarjeta de nota */
+.note-card {
+  font-family: var(--font-sans);
+  min-width: 180px;
+  max-width: 260px;
+}
+.note-card-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-ink);
+  padding-right: 16px;
+}
+.note-card-body {
+  font-size: 13px;
+  color: var(--color-ink-dim);
+  margin-top: 4px;
+  white-space: pre-wrap;
+}
+.note-card-photo {
+  width: 100%;
+  max-width: 220px;
+  border-radius: 8px;
+  margin-top: 6px;
+  display: block;
+}
+.note-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.note-card-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-science) 25%, transparent);
+  color: var(--color-science);
+}
+.note-card-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-ink-dim);
+  margin-top: 6px;
+}
+
+/* Tarjeta POV */
+.pov-card {
+  font-family: var(--font-sans);
+  min-width: 160px;
+  max-width: 260px;
+}
+.pov-card-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-science);
+  padding-right: 16px;
+}
+.pov-card-photo {
+  width: 100%;
+  max-width: 220px;
+  border-radius: 8px;
+  margin-top: 6px;
+  display: block;
+}
+.pov-card-nophoto {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-ink-dim);
+  margin-top: 6px;
+}
+.pov-card-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-ink-dim);
+  margin-top: 6px;
+}
+.pov-card-desc {
+  font-size: 12px;
+  color: var(--color-ink-dim);
+  margin-top: 4px;
 }
