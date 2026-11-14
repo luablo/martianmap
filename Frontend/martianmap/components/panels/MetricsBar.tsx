@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Button from "@/components/ui/Button";
 import { formatDistance, formatMinutes } from "@/lib/metrics";
 import type { Risk, RouteResult, TransportMode } from "@/lib/types";
 
@@ -67,17 +68,17 @@ export default function MetricsBar({
             />
           </div>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="outline"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-label={open ? "Ver menos métricas" : "Ver más métricas"}
-          className="touch grid shrink-0 place-items-center rounded-xl border border-line text-ink-dim sm:hidden"
+          className="grid shrink-0 place-items-center sm:hidden"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className={open ? "rotate-180" : ""} aria-hidden>
             <path d="m6 15 6-6 6 6" />
           </svg>
-        </button>
+        </Button>
       </div>
       {m.straightLine && (
         <p className="mt-2 font-mono text-[11px] text-warn">
