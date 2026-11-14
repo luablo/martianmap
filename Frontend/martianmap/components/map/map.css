@@ -28,6 +28,38 @@
   color: var(--color-science);
 }
 
+.marker-poi {
+  color: var(--color-science);
+}
+.marker-poi-pov {
+  color: var(--color-info);
+}
+
+.marker-nogo {
+  color: var(--color-danger);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  text-shadow: 0 0 4px var(--color-bg-0), 0 0 4px var(--color-bg-0);
+  pointer-events: none;
+}
+
+.marker-dose {
+  color: var(--color-warn);
+  background: color-mix(in srgb, var(--color-bg-0) 80%, transparent);
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  padding: 2px 6px;
+  pointer-events: none;
+}
+
 .maplibregl-canvas {
   outline: none;
 }
