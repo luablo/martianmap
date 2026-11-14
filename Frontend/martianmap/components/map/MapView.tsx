@@ -10,7 +10,7 @@ import { distanceM, gridLines, insideBounds } from "@/lib/geo";
 import type { LayerId, LonLat, Note, RouteResult, ZoneData } from "@/lib/types";
 import { addNoGoLayer } from "./layers/nogo";
 import { addOrthoLayer } from "./layers/ortho";
-import { addPoiLayer } from "./layers/pois";
+import { addPoiLayer, snapToPoi } from "./layers/pois";
 import { addSlopeLayer } from "./layers/slope";
 import Legend from "./Legend";
 
@@ -181,7 +181,9 @@ export default function MapView({ zone, destination, route, layers, onMapClick }
       .addTo(map);
 
     map.on("click", (e) => {
-      const p: LonLat = [e.lngLat.lng, e.lngLat.lat];
+      // Imán de POI: si se toca a ≤40 px de un POI, se usan sus coordenadas exactas.
+      const snapped = snapToPoi(e.point, zone.pois, map);
+      const p: LonLat = snapped ?? [e.lngLat.lng, e.lngLat.lat];
       if (insideBounds(meta, p)) onClick.current(p);
     });
 

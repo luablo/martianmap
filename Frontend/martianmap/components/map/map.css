@@ -28,6 +28,13 @@
   color: var(--color-science);
 }
 
+.marker-poi {
+  color: var(--color-science);
+}
+.marker-poi-pov {
+  color: var(--color-info);
+}
+
 .marker-nogo {
   color: var(--color-danger);
   font-family: var(--font-mono);
