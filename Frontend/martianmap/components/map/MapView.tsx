@@ -2,17 +2,18 @@
 // Dueño: P3 (Mapa). Las props son el contrato con AppShell (P4): no cambiarlas sin avisar.
 // Para capas nuevas, crear un archivo en components/map/layers/ y llamarlo desde aquí.
 
-import { Map as MlMap, Marker, setWorkerUrl, type ExpressionSpecification, type GeoJSONSource } from "maplibre-gl";
+import { Map as MlMap, Marker, Popup, setWorkerUrl, type ExpressionSpecification, type GeoJSONSource } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./map.css";
 import { useEffect, useRef } from "react";
 import { distanceM, gridLines, insideBounds } from "@/lib/geo";
-import type { LayerId, LonLat, Note, RouteResult, ZoneData } from "@/lib/types";
+import type { LayerId, LonLat, Note, Poi, RouteResult, ZoneData } from "@/lib/types";
 import { addNoGoLayer } from "./layers/nogo";
 import { addOrthoLayer } from "./layers/ortho";
-import { addPoiLayer, snapToPoi } from "./layers/pois";
+import { addPoiLayer, povCardEl, snapToPoi } from "./layers/pois";
 import { addSlopeLayer } from "./layers/slope";
 import Legend from "./Legend";
+import { syncNoteMarkers } from "./layers/notes";
 
 export interface MapViewProps {
   zone: ZoneData;
@@ -63,17 +64,37 @@ function pathMidpoint(path: LonLat[]): LonLat | null {
   return path[path.length - 1];
 }
 
+/** Bounding box de un camino: [minLon, minLat, maxLon, maxLat]. */
+function routeBounds(path: LonLat[]): [number, number, number, number] {
+  let minLon = Infinity;
+  let minLat = Infinity;
+  let maxLon = -Infinity;
+  let maxLat = -Infinity;
+  for (const [lon, lat] of path) {
+    if (lon < minLon) minLon = lon;
+    if (lon > maxLon) maxLon = lon;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+  }
+  return [minLon, minLat, maxLon, maxLat];
+}
+
 // Capas de imagen/ráster que se prenden y apagan con un toggle de visibilidad.
 // "radiation" no va aquí: se pinta sobre la ruta (bloque 2, line-gradient).
 const RASTER_LAYERS = ["ortho", "slope"] as const;
 
-export default function MapView({ zone, destination, route, layers, onMapClick }: MapViewProps) {
+export default function MapView({ zone, destination, route, layers, notes, onMapClick }: MapViewProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const destMarker = useRef<Marker | null>(null);
   // Etiqueta de dosis que sigue a la ruta (capa de radiación).
   const doseMarker = useRef<Marker | null>(null);
   const doseEl = useRef<HTMLDivElement | null>(null);
+  // Últimos bounds a los que se encuadró la ruta (para no re-encuadrar lo mismo).
+  const lastFit = useRef<[number, number, number, number] | null>(null);
+  // Marcadores de notas (id → Marker) y popup compartido para los POI de tipo POV.
+  const noteMarkers = useRef<Map<string, Marker>>(new Map());
+  const povPopup = useRef<Popup | null>(null);
   const onClick = useRef(onMapClick);
   useEffect(() => {
     onClick.current = onMapClick;
@@ -91,6 +112,8 @@ export default function MapView({ zone, destination, route, layers, onMapClick }
     if (!container.current) return;
     // Copiado a /public por scripts/copy-maplibre-worker.mjs (postinstall)
     setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
+
+    const noteMarkersMap = noteMarkers.current;
 
     const { meta } = zone;
     const { west, south, east, north } = meta.bounds;
@@ -116,6 +139,19 @@ export default function MapView({ zone, destination, route, layers, onMapClick }
     });
     map.touchZoomRotate.disableRotation();
     mapRef.current = map;
+
+    // Tocar un POI: objetivo → destino; POV → popup con foto/sol/cámara.
+    const handlePoi = (poi: Poi) => {
+      if (poi.type === "pov") {
+        if (!povPopup.current) povPopup.current = new Popup({ closeButton: true, maxWidth: "280px" });
+        const pop = povPopup.current;
+        pop.setLngLat([poi.lon, poi.lat]).setDOMContent(povCardEl(poi));
+        if (!pop.isOpen()) pop.addTo(map);
+        return;
+      }
+      const p: LonLat = [poi.lon, poi.lat];
+      if (insideBounds(meta, p)) onClick.current(p);
+    };
 
     map.on("load", () => {
       map.addSource("grid", {
@@ -155,7 +191,7 @@ export default function MapView({ zone, destination, route, layers, onMapClick }
       });
 
       if (zone.nogo) addNoGoLayer(map, zone.nogo);
-      addPoiLayer(map, zone.pois);
+      addPoiLayer(map, zone.pois, handlePoi);
 
       // Ruta: borde oscuro debajo para leerse sobre cualquier terreno.
       // lineMetrics: true habilita line-gradient (colorear la ruta por dosis).
@@ -183,7 +219,11 @@ export default function MapView({ zone, destination, route, layers, onMapClick }
     map.on("click", (e) => {
       // Imán de POI: si se toca a ≤40 px de un POI, se usan sus coordenadas exactas.
       const snapped = snapToPoi(e.point, zone.pois, map);
-      const p: LonLat = snapped ?? [e.lngLat.lng, e.lngLat.lat];
+      if (snapped) {
+        handlePoi(snapped);
+        return;
+      }
+      const p: LonLat = [e.lngLat.lng, e.lngLat.lat];
       if (insideBounds(meta, p)) onClick.current(p);
     });
 
@@ -193,6 +233,10 @@ export default function MapView({ zone, destination, route, layers, onMapClick }
       destMarker.current = null;
       doseMarker.current = null;
       doseEl.current = null;
+      lastFit.current = null;
+      povPopup.current?.remove();
+      povPopup.current = null;
+      noteMarkersMap.clear();
     };
   }, [zone]);
 
@@ -216,16 +260,43 @@ export default function MapView({ zone, destination, route, layers, onMapClick }
       destMarker.current = null;
     }
 
-    const draw = () =>
+    const apply = () => {
       (map.getSource("route") as GeoJSONSource | undefined)?.setData(line(route?.path ?? []));
-    if (map.getSource("route")) draw();
-    else map.once("load", draw);
+      // fitBounds suave a la ruta nueva, solo si no cabe ya cómodamente en la vista
+      // (así no tiembla al cambiar de modo con la misma ruta). Respeta reduced-motion.
+      if (route && route.path.length >= 2) {
+        const b = routeBounds(route.path);
+        const [minLon, minLat, maxLon, maxLat] = b;
+        // Encuadra si cambió el destino (bounds nuevos) o si la ruta salió de la
+        // vista. Así hace zoom a la ruta nueva sin temblar al cambiar de modo
+        // (mismos bounds y aún visible → no re-encuadra). Respeta reduced-motion.
+        const view = map.getBounds();
+        const offscreen =
+          view.getWest() > minLon || view.getEast() < maxLon ||
+          view.getSouth() > minLat || view.getNorth() < maxLat;
+        const prev = lastFit.current;
+        const changed =
+          !prev ||
+          Math.abs(prev[0] - b[0]) > 1e-9 || Math.abs(prev[1] - b[1]) > 1e-9 ||
+          Math.abs(prev[2] - b[2]) > 1e-9 || Math.abs(prev[3] - b[3]) > 1e-9;
+        if (changed || offscreen) {
+          lastFit.current = b;
+          const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          map.fitBounds(
+            [[minLon, minLat], [maxLon, maxLat]],
+            { padding: 80, maxZoom: 17, animate: !reduce, duration: reduce ? 0 : 600 },
+          );
+        }
+      }
+    };
+
+    if (map.getSource("route")) apply();
+    else map.once("load", apply);
   }, [destination, route]);
 
   // Capas de imagen/ráster: encender/apagar según `layers`. Si una capa aún no
   // existe (el mapa no cargó o P1 no la entregó), se salta; la visibilidad inicial
   // la fija el "load".
-  // TODO P3 (bloque 3): efecto con `notes` (marcadores de notas en el mapa).
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -235,6 +306,16 @@ export default function MapView({ zone, destination, route, layers, onMapClick }
       }
     }
   }, [layers]);
+
+  // Notas de campo en el mapa: sincroniza los marcadores morados con la prop `notes`
+  // (para el tiempo real cuando P2 cable Supabase). Tocar una nota abre su tarjeta.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const apply = () => syncNoteMarkers(map, noteMarkers.current, notes);
+    if (map.getSource("route")) apply();
+    else map.once("load", apply);
+  }, [notes]);
 
   // Radiación (no es ráster): colorea la ruta por dosis acumulada (turquesa→ámbar con
   // line-gradient) y pone una etiqueta con la dosis total en el punto medio de la
