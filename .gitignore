@@ -1,0 +1,16 @@
+# Secretos
+.env
+.env.*
+!.env.example
+
+# Python / Django
+venv/
+.venv/
+__pycache__/
+*.pyc
+db.sqlite3
+staticfiles/
+
+# Node / Next
+node_modules/
+.next/
