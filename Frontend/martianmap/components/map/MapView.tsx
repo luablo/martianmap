@@ -10,6 +10,7 @@ import { gridLines, insideBounds } from "@/lib/geo";
 import type { LayerId, LonLat, Note, RouteResult, ZoneData } from "@/lib/types";
 import { addNoGoLayer } from "./layers/nogo";
 import { addPoiLayer } from "./layers/pois";
+import { addSlopeLayer } from "./layers/slope";
 
 export interface MapViewProps {
   zone: ZoneData;
@@ -35,7 +36,7 @@ const line = (coords: LonLat[]) => ({
   geometry: { type: "LineString" as const, coordinates: coords },
 });
 
-export default function MapView({ zone, destination, route, onMapClick }: MapViewProps) {
+export default function MapView({ zone, destination, route, layers, onMapClick }: MapViewProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const destMarker = useRef<Marker | null>(null);
@@ -43,6 +44,13 @@ export default function MapView({ zone, destination, route, onMapClick }: MapVie
   useEffect(() => {
     onClick.current = onMapClick;
   }, [onMapClick]);
+
+  // Ref de `layers` para leer el valor más reciente dentro del manejador "load"
+  // (mismo patrón que onClick: el "load" se registra una vez y debe ver el estado actual).
+  const layersRef = useRef(layers);
+  useEffect(() => {
+    layersRef.current = layers;
+  }, [layers]);
 
   // Se crea una sola vez por zona
   useEffect(() => {
@@ -86,6 +94,17 @@ export default function MapView({ zone, destination, route, onMapClick }: MapVie
         source: "grid",
         paint: { "line-color": "#1f2937", "line-width": 1 },
       });
+
+      // Pendiente: image source sobre los 4 bordes de la zona, debajo de la rejilla
+      // (addSlopeLayer la inserta antes de "grid"). La visibilidad inicial sale del ref.
+      addSlopeLayer(map, zone);
+      if (map.getLayer("slope")) {
+        map.setLayoutProperty(
+          "slope",
+          "visibility",
+          layersRef.current.slope ? "visible" : "none",
+        );
+      }
 
       map.addSource("zone", {
         type: "geojson",
@@ -163,7 +182,15 @@ export default function MapView({ zone, destination, route, onMapClick }: MapVie
     else map.once("load", draw);
   }, [destination, route]);
 
-  // TODO P3: efecto con `layers` (encender/apagar ortho, slope, radiación) y con `notes`.
+  // Capas: encender/apagar según `layers`. Si la capa aún no existe (el mapa no
+  // ha cargado), el efecto no hace nada: la visibilidad inicial la fija el "load".
+  // TODO P3 (bloque 2): radiación se pinta sobre la ruta (line-gradient), no es un toggle.
+  // TODO P3 (bloque 3): efecto con `notes` (marcadores de notas en el mapa).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !map.getLayer("slope")) return;
+    map.setLayoutProperty("slope", "visibility", layers.slope ? "visible" : "none");
+  }, [layers]);
 
   // El CSS de MapLibre pone `position: relative` al contenedor: por eso va envuelto.
   return (
