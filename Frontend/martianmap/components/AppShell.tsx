@@ -19,6 +19,7 @@ import { MODES } from "@/lib/modes";
 import { useNotes } from "@/lib/notes/useNotes";
 import { useRoute } from "@/lib/routing/useRoute";
 import type { LayerId, LonLat, ModeId } from "@/lib/types";
+import type { BasemapId } from "@/components/map/layers/basemap";
 
 // MapLibre necesita `window`: se carga solo en el navegador.
 const MapView = dynamic(() => import("@/components/map/MapView"), {
@@ -54,6 +55,7 @@ export default function AppShell() {
   const [mode, setMode] = useState<ModeId>("walk");
   const [destination, setDestination] = useState<LonLat | null>(null);
   const [drawer, setDrawer] = useState<Drawer>(null);
+  const [basemapId, setBasemapId] = useState<BasemapId>("viking");
   const [layers, setLayers] = useState<Record<LayerId, boolean>>({
     ortho: true,
     slope: true,
@@ -120,7 +122,9 @@ export default function AppShell() {
           route={route}
           layers={layers}
           notes={notes}
+          basemapId={basemapId}
           onMapClick={handleMapClick}
+          onBasemapChange={setBasemapId}
         />
       ) : (
         <CenterMsg>{error ? `SIN DATOS DE ZONA · ${error}` : "CARGANDO ZONA…"}</CenterMsg>
