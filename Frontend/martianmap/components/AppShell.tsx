@@ -123,7 +123,22 @@ export default function AppShell() {
           onMapClick={handleMapClick}
         />
       ) : (
-        <CenterMsg>{error ? `SIN DATOS DE ZONA · ${error}` : "CARGANDO ZONA…"}</CenterMsg>
+        <CenterMsg>
+          {error ? (
+            <div className="flex flex-col items-center gap-3">
+              <p className="text-danger">NO SE PUDO CARGAR LA ZONA</p>
+              <p className="max-w-sm font-sans text-ink-dim">
+                Revisa la conexión o que existan los archivos de <code>public/data/gale/</code>.
+                <span className="mt-1 block font-mono text-[11px]">{error}</span>
+              </p>
+              <Button variant="outline" onClick={() => window.location.reload()} className="px-5 text-ink">
+                Reintentar
+              </Button>
+            </div>
+          ) : (
+            "CARGANDO ZONA…"
+          )}
+        </CenterMsg>
       )}
 
       {zone?.meta.fake && (
