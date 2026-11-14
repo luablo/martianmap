@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/ui/Button";
 import { MODES, MODE_ORDER } from "@/lib/modes";
 import type { ModeId } from "@/lib/types";
 
@@ -41,17 +42,13 @@ export default function ModeSwitch({
         const m = MODES[id];
         const active = id === mode;
         return (
-          <button
+          <Button
             key={id}
-            type="button"
             role="radio"
             aria-checked={active}
+            active={active}
             onClick={() => onChange(id)}
-            className={`touch flex items-center gap-3 rounded-xl border px-3 text-left transition-colors duration-150 ${
-              active
-                ? "border-route bg-route/15 text-route"
-                : "border-transparent text-ink active:bg-line/60"
-            }`}
+            className="flex items-center gap-3 px-3 text-left"
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="shrink-0" aria-hidden>
               {icons[id]}
@@ -62,7 +59,7 @@ export default function ModeSwitch({
                 {m.speedKmh} km/h · máx {m.maxSlopeDeg}°
               </span>
             </span>
-          </button>
+          </Button>
         );
       })}
     </div>
