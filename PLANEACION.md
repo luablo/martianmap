@@ -53,11 +53,11 @@ Las 4 personas programan. Cada quien es **dueño** de un área (decide y respond
 | Rol | Dueño de | Carpetas | Respaldo |
 |---|---|---|---|
 | **P1 — Datos** | Bajar, recortar, calcular pendiente, exportar capas, `FUENTES.md`. Después: validación científica y supuestos. | `data-pipeline/`, `public/data/` | P2 |
-| **P2 — Ruta** | A*, costos por modo, métricas, Web Worker. Después: riesgo y recurso. | `lib/routing/`, `lib/modes.ts`, `lib/metrics.ts` | P1 |
-| **P3 — Mapa** | MapLibre, ortofoto, capas, dibujar ruta y marcadores, interacción táctil. | `components/map/`, `lib/geo.ts` | P4 |
-| **P4 — Interfaz e historia** | Sistema de diseño, paneles, responsivo, Supabase. **Dueño de la presentación y el video.** | `components/panels/`, `components/ui/`, `globals.css`, `presentacion/` | P3 |
+| **P2 — Ruta** | A*, costos por modo, métricas, Web Worker. Desde el bloque 3: código de notas con Supabase. | `lib/routing/`, `lib/modes.ts`, `lib/metrics.ts`, `lib/notes/` | P1 |
+| **P3 — Mapa** | MapLibre, ortofoto, capas, dibujar ruta y marcadores, interacción táctil. | `components/map/` | P4 |
+| **P4 — Interfaz e historia** | Sistema de diseño, paneles, responsivo, integración (`AppShell`), proyecto de Supabase. **Dueño de la presentación y el video.** | `components/AppShell.tsx`, `components/panels/`, `components/ui/`, `app/`, `presentacion/` | P3 |
 
-Cada carpeta tiene un solo dueño: casi no habrá conflictos de git.
+Cada carpeta tiene un solo dueño: casi no habrá conflictos de git. **El detalle de código por persona, los archivos compartidos y las reglas de git están en [TAREAS.md](TAREAS.md).**
 
 **Asignen nombres ahora:** P1 = ______ · P2 = ______ · P3 = ______ · P4 = ______
 
