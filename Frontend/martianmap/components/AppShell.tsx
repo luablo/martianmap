@@ -131,14 +131,14 @@ export default function AppShell() {
       )}
 
       {zone?.meta.fake && (
-        <div className="pointer-events-none absolute left-1/2 top-[5.25rem] z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
+        <div className="pointer-events-none absolute left-1/2 top-[5.25rem] z-30 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
           TERRENO SINTÉTICO · no son datos reales
         </div>
       )}
 
-      {/* Capa de interfaz: no bloquea el mapa salvo donde hay paneles */}
+      {/* Capa de interfaz: z-10. BasemapPicker y Leyenda están en z-20 (dentro del mapa). */}
       <div
-        className="pointer-events-none absolute inset-0 z-20 grid grid-rows-[auto_1fr_auto] gap-3"
+        className="pointer-events-none absolute inset-0 z-10 grid grid-rows-[auto_1fr_auto] gap-3"
         style={SAFE_PADDING}
       >
         <TopBar
@@ -150,8 +150,8 @@ export default function AppShell() {
 
         {/* Tablet y hábitat: paneles fijos a los lados */}
         <div className="hidden min-h-0 items-start justify-between gap-3 sm:flex">
-          <div className="max-h-full w-60 overflow-y-auto">{layerPanel}</div>
-          <div className="flex max-h-full w-56 flex-col gap-3 overflow-y-auto lg:w-72">
+          <div className="max-h-full w-52 shrink-0 overflow-y-auto lg:w-60">{layerPanel}</div>
+          <div className="flex max-h-full w-48 shrink-0 flex-col gap-3 overflow-y-auto lg:w-64">
             {noteButton("w-full")}
             {modePanel}
             <Panel title="NOTAS DE CAMPO" className="hidden lg:block">
@@ -162,7 +162,7 @@ export default function AppShell() {
 
         {/* Teléfono: botones flotantes que abren un panel */}
         <div className="flex min-h-0 flex-col items-end gap-2 sm:hidden">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap justify-end gap-2">
             {(["layers", "mode"] as const).map((d) => (
               <Button
                 key={d}
@@ -178,7 +178,7 @@ export default function AppShell() {
             {noteButton()}
           </div>
           {drawer && (
-            <div className="max-h-full w-64 max-w-full overflow-y-auto">
+            <div className="max-h-[60dvh] w-64 max-w-full overflow-y-auto">
               {drawer === "layers" ? layerPanel : modePanel}
             </div>
           )}
