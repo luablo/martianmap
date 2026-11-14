@@ -1,14 +1,16 @@
 "use client";
 // Dueño: P4. Este archivo SOLO compone: el estado de la pantalla + los hooks de cada dueño.
 //   useZone   → P1 (lib/data)     useRoute → P2 (lib/routing)
-//   MapView   → P3 (components/map)   useNotes → P4 (lib/notes)
+//   MapView   → P3 (components/map)   useNotes → P2 (lib/notes, desde el bloque 3)
 // Nadie más lo edita. Si tu parte necesita algo nuevo de aquí, pídelo en el chat.
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import LayerToggles from "@/components/panels/LayerToggles";
 import MetricsBar from "@/components/panels/MetricsBar";
 import ModeSwitch from "@/components/panels/ModeSwitch";
+import NoteCard from "@/components/panels/NoteCard";
+import NotesList from "@/components/panels/NotesList";
 import TopBar from "@/components/panels/TopBar";
 import Button from "@/components/ui/Button";
 import Panel from "@/components/ui/Panel";
@@ -33,10 +35,22 @@ function CenterMsg({ children }: { children: React.ReactNode }) {
 }
 
 type Drawer = "layers" | "mode" | null;
+/** Qué hace un toque en el mapa: marcar destino o ubicar una nota. */
+type Tool = "route" | "note";
+
+// Márgenes que respetan el notch y la barra de gestos del teléfono.
+const SAFE_PADDING: React.CSSProperties = {
+  paddingTop: "max(0.75rem, env(safe-area-inset-top))",
+  paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
+  paddingLeft: "max(0.75rem, env(safe-area-inset-left))",
+  paddingRight: "max(0.75rem, env(safe-area-inset-right))",
+};
 
 export default function AppShell() {
   const { zone, error } = useZone();
-  const { notes } = useNotes();
+  const { notes, addNote } = useNotes();
+  const [tool, setTool] = useState<Tool>("route");
+  const [draftAt, setDraftAt] = useState<LonLat | null>(null);
   const [mode, setMode] = useState<ModeId>("walk");
   const [destination, setDestination] = useState<LonLat | null>(null);
   const [drawer, setDrawer] = useState<Drawer>(null);
@@ -48,8 +62,12 @@ export default function AppShell() {
     mineral: false,
   });
 
-  const base: LonLat | null = zone ? [zone.meta.base.lon, zone.meta.base.lat] : null;
-  const { route } = useRoute(zone, base, destination, mode);
+  // Memorizado: si fuera un arreglo nuevo en cada render, la ruta se recalcularía siempre.
+  const base = useMemo<LonLat | null>(
+    () => (zone ? [zone.meta.base.lon, zone.meta.base.lat] : null),
+    [zone],
+  );
+  const { route, computing } = useRoute(zone, base, destination, mode);
 
   const layerPanel = (
     <Panel title="CAPAS">
@@ -66,6 +84,33 @@ export default function AppShell() {
     </Panel>
   );
 
+  const closeNote = () => {
+    setTool("route");
+    setDraftAt(null);
+  };
+  const handleMapClick = (p: LonLat) => {
+    if (tool === "note") setDraftAt(p);
+    else setDestination(p);
+  };
+  const noteButton = (className = "") => (
+    <Button
+      variant="panel"
+      active={tool === "note"}
+      aria-pressed={tool === "note"}
+      onClick={() => {
+        if (tool === "note") return closeNote();
+        setTool("note");
+        setDrawer(null); // en teléfono, que el cajón no tape el mapa
+      }}
+      className={`px-4 font-mono text-xs font-semibold tracking-widest ${className}`}
+    >
+      + NOTA
+      {notes.length > 0 && (
+        <span className="ml-2 rounded-md bg-science/20 px-1.5 py-0.5 text-science">{notes.length}</span>
+      )}
+    </Button>
+  );
+
   return (
     <main className="relative h-dvh w-full overflow-hidden bg-bg-0">
       {zone ? (
@@ -75,7 +120,7 @@ export default function AppShell() {
           route={route}
           layers={layers}
           notes={notes}
-          onMapClick={setDestination}
+          onMapClick={handleMapClick}
         />
       ) : (
         <CenterMsg>{error ? `SIN DATOS DE ZONA · ${error}` : "CARGANDO ZONA…"}</CenterMsg>
@@ -89,27 +134,24 @@ export default function AppShell() {
 
       {/* Capa de interfaz: no bloquea el mapa salvo donde hay paneles */}
       <div
-        className="pointer-events-none absolute inset-0 grid grid-rows-[auto_1fr_auto] gap-3 p-3"
-        style={{
-          paddingTop: "max(0.75rem, env(safe-area-inset-top))",
-          paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
-          paddingLeft: "max(0.75rem, env(safe-area-inset-left))",
-          paddingRight: "max(0.75rem, env(safe-area-inset-right))",
-        }}
+        className="pointer-events-none absolute inset-0 z-20 grid grid-rows-[auto_1fr_auto] gap-3"
+        style={SAFE_PADDING}
       >
-        <TopBar />
+        <TopBar
+          pois={zone?.pois ?? []}
+          base={base}
+          weather={zone?.weather ?? null}
+          onPick={(p) => setDestination([p.lon, p.lat])}
+        />
 
         {/* Tablet y hábitat: paneles fijos a los lados */}
         <div className="hidden min-h-0 items-start justify-between gap-3 sm:flex">
           <div className="max-h-full w-60 overflow-y-auto">{layerPanel}</div>
           <div className="flex max-h-full w-56 flex-col gap-3 overflow-y-auto lg:w-72">
+            {noteButton("w-full")}
             {modePanel}
             <Panel title="NOTAS DE CAMPO" className="hidden lg:block">
-              <p className="px-3 pb-3 text-sm text-ink-dim">
-                {notes.length === 0
-                  ? "Aún no hay notas. Aquí aparecerán los hallazgos de la EVA."
-                  : `${notes.length} notas`}
-              </p>
+              <NotesList notes={notes} />
             </Panel>
           </div>
         </div>
@@ -129,6 +171,7 @@ export default function AppShell() {
                 {d === "layers" ? "CAPAS" : MODES[mode].label.toUpperCase()}
               </Button>
             ))}
+            {noteButton()}
           </div>
           {drawer && (
             <div className="max-h-full w-64 max-w-full overflow-y-auto">
@@ -137,8 +180,48 @@ export default function AppShell() {
           )}
         </div>
 
-        <MetricsBar metrics={route} mode={MODES[mode]} />
+        {tool === "note" && !draftAt ? (
+          <footer
+            role="status"
+            className="panel pointer-events-auto flex min-h-14 items-center gap-3 border-science/60 py-1.5 pl-4 pr-1.5"
+          >
+            <p className="flex-1 text-science">Toca el mapa donde está el hallazgo.</p>
+            <Button variant="outline" onClick={closeNote} className="px-4 text-sm">
+              Cancelar
+            </Button>
+          </footer>
+        ) : (
+          <MetricsBar
+            metrics={route}
+            mode={MODES[mode]}
+            computing={computing}
+            hasDestination={destination !== null}
+            onClear={() => setDestination(null)}
+          />
+        )}
       </div>
+
+      {/* Tarjeta de nota: hoja inferior en teléfono, panel a la derecha en tablet */}
+      {draftAt && (
+        <div
+          className="pointer-events-none absolute inset-0 z-30 flex flex-col justify-end sm:items-end sm:justify-start sm:pt-[5.5rem]!"
+          style={SAFE_PADDING}
+        >
+          <div className="flex max-h-[85dvh] min-h-0 w-full flex-col sm:max-h-full sm:w-96">
+            <NoteCard
+              key={`${draftAt[0]},${draftAt[1]}`}
+              at={draftAt}
+              sol={zone?.weather?.sol ?? 412}
+              onCancel={closeNote}
+              onSave={async (n) => {
+                // La foto todavía no se guarda: falta que addNote la reciba (acordar con P2).
+                await addNote(n);
+                closeNote();
+              }}
+            />
+          </div>
+        </div>
+      )}
     </main>
   );
 }
