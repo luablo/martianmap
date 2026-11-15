@@ -11,6 +11,9 @@ __pycache__/
 db.sqlite3
 staticfiles/
 
+# Planes personales (no se suben)
+PLAN-P4.md
+
 # Node / Next
 node_modules/
 .next/
