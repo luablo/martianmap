@@ -5,7 +5,9 @@
 // Nadie más lo edita. Si tu parte necesita algo nuevo de aquí, pídelo en el chat.
 
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import AboutSheet from "@/components/panels/AboutSheet";
+import HudOverlay from "@/components/panels/HudOverlay";
 import LayerToggles from "@/components/panels/LayerToggles";
 import MetricsBar from "@/components/panels/MetricsBar";
 import ModeSwitch from "@/components/panels/ModeSwitch";
@@ -56,6 +58,44 @@ export default function AppShell() {
   const [destination, setDestination] = useState<LonLat | null>(null);
   const [drawer, setDrawer] = useState<Drawer>(null);
   const [basemapId, setBasemapId] = useState<BasemapId>("viking");
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [hud, setHud] = useState(false);
+
+  // Modo HUD: <html data-mode="hud"> activa los estilos de globals.css; Esc sale.
+  useEffect(() => {
+    const html = document.documentElement;
+    if (hud) html.dataset.mode = "hud";
+    else delete html.dataset.mode;
+    if (!hud) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setHud(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [hud]);
+
+  // --ui-bottom: distancia del borde inferior de la pantalla al tope de la barra de
+  // métricas. La barra cambia de alto (avisos, hoja abierta en teléfono), así que se
+  // mide en vivo; la Leyenda (P3) se coloca justo encima con esta variable.
+  const mainRef = useRef<HTMLElement>(null);
+  const bottomBarRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const main = mainRef.current;
+    const bar = bottomBarRef.current;
+    if (!main || !bar) return;
+    const update = () => {
+      const px = Math.max(0, window.innerHeight - bar.getBoundingClientRect().top);
+      main.style.setProperty("--ui-bottom", `${Math.round(px)}px`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(bar);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [hud]); // en HUD no hay barra; al salir se monta una nueva y hay que volver a medirla
   const [layers, setLayers] = useState<Record<LayerId, boolean>>({
     ortho: true,
     slope: true,
@@ -77,6 +117,8 @@ export default function AppShell() {
         zone={zone}
         active={layers}
         onChange={(id, on) => setLayers((s) => ({ ...s, [id]: on }))}
+        basemapId={basemapId}
+        onBasemapChange={setBasemapId}
       />
     </Panel>
   );
@@ -114,7 +156,7 @@ export default function AppShell() {
   );
 
   return (
-    <main className="relative h-dvh w-full overflow-hidden bg-bg-0">
+    <main ref={mainRef} className="relative h-dvh w-full overflow-hidden bg-bg-0">
       {zone ? (
         <MapView
           zone={zone}
@@ -124,7 +166,6 @@ export default function AppShell() {
           notes={notes}
           basemapId={basemapId}
           onMapClick={handleMapClick}
-          onBasemapChange={setBasemapId}
         />
       ) : (
         <CenterMsg>
@@ -146,14 +187,20 @@ export default function AppShell() {
       )}
 
       {zone?.meta.fake && (
-        <div className="pointer-events-none absolute left-1/2 top-[5.25rem] z-30 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
+        <div className="pointer-events-none absolute left-1/2 top-[5.25rem] z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
           TERRENO SINTÉTICO · no son datos reales
         </div>
       )}
 
-      {/* Capa de interfaz: z-10. BasemapPicker y Leyenda están en z-20 (dentro del mapa). */}
+      {hud ? (
+        <HudOverlay route={route} mode={MODES[mode]} style={SAFE_PADDING} onExit={() => setHud(false)} />
+      ) : (
+      <>
+      {/* Orden de capas (z): mapa y sus controles (Leyenda, aviso de terreno) = 10
+          < interfaz = 20 (buscador, cajones, barra) < tarjeta de nota y "i" = 30.
+          El selector de mapa base vive en el panel CAPAS (LayerToggles). */}
       <div
-        className="pointer-events-none absolute inset-0 z-10 grid grid-rows-[auto_1fr_auto] gap-3"
+        className="pointer-events-none absolute inset-0 z-20 grid grid-rows-[auto_1fr_auto] gap-3"
         style={SAFE_PADDING}
       >
         <TopBar
@@ -161,6 +208,12 @@ export default function AppShell() {
           base={base}
           weather={zone?.weather ?? null}
           onPick={(p) => setDestination([p.lon, p.lat])}
+          onAbout={() => setAboutOpen(true)}
+          onHud={() => {
+            setHud(true);
+            setDrawer(null);
+            closeNote(); // en HUD un toque al mapa siempre marca destino
+          }}
         />
 
         {/* Tablet y hábitat: paneles fijos a los lados */}
@@ -199,6 +252,7 @@ export default function AppShell() {
           )}
         </div>
 
+        <div ref={bottomBarRef}>
         {tool === "note" && !draftAt ? (
           <footer
             role="status"
@@ -218,7 +272,12 @@ export default function AppShell() {
             onClear={() => setDestination(null)}
           />
         )}
+        </div>
       </div>
+      </>
+      )}
+
+      {aboutOpen && <AboutSheet zone={zone} onClose={() => setAboutOpen(false)} />}
 
       {/* Tarjeta de nota: hoja inferior en teléfono, panel a la derecha en tablet */}
       {draftAt && (

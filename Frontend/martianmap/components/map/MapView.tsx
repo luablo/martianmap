@@ -12,8 +12,9 @@ import { addNoGoLayer } from "./layers/nogo";
 import { addOrthoLayer } from "./layers/ortho";
 import { addPoiLayer, povCardEl, snapToPoi } from "./layers/pois";
 import { addSlopeLayer } from "./layers/slope";
+import { addThermalLayer } from "./layers/thermal";
+import { addMineralLayer } from "./layers/mineral";
 import { applyBasemap, trekTransformRequest, type BasemapId } from "./layers/basemap";
-import BasemapPicker from "./BasemapPicker";
 import Legend from "./Legend";
 import { syncNoteMarkers } from "./layers/notes";
 
@@ -21,13 +22,10 @@ export interface MapViewProps {
   zone: ZoneData;
   destination: LonLat | null;
   route: RouteResult | null;
-  /** Qué capas pidió encender el usuario (P3 decide cómo pintarlas) */
   layers: Record<LayerId, boolean>;
   notes: Note[];
   basemapId: BasemapId;
-  /** Toque dentro de la zona */
   onMapClick: (p: LonLat) => void;
-  onBasemapChange: (id: BasemapId) => void;
 }
 
 function markerEl(kind: "base" | "dest", label: string) {
@@ -83,11 +81,30 @@ function routeBounds(path: LonLat[]): [number, number, number, number] {
   return [minLon, minLat, maxLon, maxLat];
 }
 
-// Capas de imagen/ráster que se prenden y apagan con un toggle de visibilidad.
-// "radiation" no va aquí: se pinta sobre la ruta (bloque 2, line-gradient).
-const RASTER_LAYERS = ["ortho", "slope"] as const;
+/**
+ * Margen para encuadrar la ruta sin que quede debajo de la interfaz de AppShell (P4):
+ * barra superior, barra de métricas (su alto real llega en --ui-bottom) y, desde 640 px,
+ * los paneles laterales (CAPAS a la izquierda; + NOTA/MODO/NOTAS a la derecha).
+ */
+function uiPadding(map: MlMap) {
+  const w = window.innerWidth;
+  const measured = parseFloat(getComputedStyle(map.getContainer()).getPropertyValue("--ui-bottom"));
+  // Al llegar la primera ruta la barra aún muestra "Toca el mapa…" (~68 px) y crece
+  // justo después con las métricas: se usa como mínimo su alto con ruta.
+  const withRoute = w < 640 ? 135 : 120;
+  // + ~150 px: la Leyenda (hasta 3 capas) y el selector de mapa base van justo encima
+  // de la barra, y el nombre del POI destino va debajo de su punto.
+  const bottom = Math.max(Number.isFinite(measured) ? measured : 0, withRoute) + 150;
+  if (w < 640) return { top: 170, bottom, left: 40, right: 40 };
+  if (w < 1024) return { top: 100, bottom, left: 250, right: 230 };
+  return { top: 100, bottom, left: 280, right: 300 };
+}
 
-export default function MapView({ zone, destination, route, layers, notes, basemapId, onMapClick, onBasemapChange }: MapViewProps) {
+// Capas de imagen/ráster que se prenden y apagan con un toggle de visibilidad.
+// "radiation" no va aquí: se pinta sobre la ruta (line-gradient).
+const RASTER_LAYERS = ["ortho", "slope", "thermal", "mineral"] as const;
+
+export default function MapView({ zone, destination, route, layers, notes, basemapId, onMapClick }: MapViewProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const destMarker = useRef<Marker | null>(null);
@@ -186,6 +203,8 @@ export default function MapView({ zone, destination, route, layers, notes, basem
       // entregó files.ortho. La visibilidad inicial de ambas sale del ref.
       addSlopeLayer(map, zone);
       addOrthoLayer(map, zone);
+      addThermalLayer(map, zone);
+      addMineralLayer(map, zone);
       for (const id of RASTER_LAYERS) {
         if (map.getLayer(id)) {
           map.setLayoutProperty(id, "visibility", layersRef.current[id] ? "visible" : "none");
@@ -264,8 +283,9 @@ export default function MapView({ zone, destination, route, layers, notes, basem
       if (!destMarker.current) {
         destMarker.current = new Marker({
           element: markerEl("dest", "DESTINO"),
-          anchor: "top",
-          offset: [0, -9],
+          // Etiqueta arriba (map.css): el punto queda abajo y se centra con +9 px.
+          anchor: "bottom",
+          offset: [0, 9],
         })
           .setLngLat(destination)
           .addTo(map);
@@ -299,7 +319,7 @@ export default function MapView({ zone, destination, route, layers, notes, basem
           const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
           map.fitBounds(
             [[minLon, minLat], [maxLon, maxLat]],
-            { padding: 80, maxZoom: 17, animate: !reduce, duration: reduce ? 0 : 600 },
+            { padding: uiPadding(map), maxZoom: 17, animate: !reduce, duration: reduce ? 0 : 600 },
           );
         }
       }
@@ -314,7 +334,9 @@ export default function MapView({ zone, destination, route, layers, notes, basem
     const map = mapRef.current;
     if (!map) return;
     const apply = () => applyBasemap(map, basemapId);
-    if (map.isStyleLoaded()) apply();
+    // No usar isStyleLoaded(): es false mientras bajan mosaicos de Trek y, como "load"
+    // ya pasó, el cambio nunca se aplicaría. "grid" existe ⇔ el "load" ya corrió.
+    if (map.getSource("grid")) apply();
     else map.once("load", apply);
   }, [basemapId]);
 
@@ -364,11 +386,15 @@ export default function MapView({ zone, destination, route, layers, notes, basem
           const el = document.createElement("div");
           el.className = "marker-dose";
           doseEl.current = el;
+          // setLngLat ANTES de addTo: MapLibre dibuja el marcador al agregarlo y, sin
+          // coordenadas, lanza "Cannot read properties of undefined (reading 'lng')".
           doseMarker.current = new Marker({
             element: el,
             anchor: "bottom",
             offset: [0, -6],
-          }).addTo(map);
+          })
+            .setLngLat(mid)
+            .addTo(map);
         }
         doseEl.current!.textContent = `DOSIS ${route!.doseMSv.toFixed(3)} mSv`;
         doseMarker.current.setLngLat(mid);
@@ -379,7 +405,8 @@ export default function MapView({ zone, destination, route, layers, notes, basem
       }
     };
 
-    if (map.isStyleLoaded()) apply();
+    // Igual que arriba: la capa "route" existe ⇔ el "load" ya corrió.
+    if (map.getLayer("route")) apply();
     else map.once("load", apply);
   }, [layers.radiation, route]);
 
@@ -387,7 +414,6 @@ export default function MapView({ zone, destination, route, layers, notes, basem
   return (
     <div className="absolute inset-0">
       <div ref={container} className="h-full w-full" aria-label="Mapa de la zona" />
-      <BasemapPicker active={basemapId} onChange={onBasemapChange} />
       <Legend zone={zone} layers={layers} />
     </div>
   );
