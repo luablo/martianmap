@@ -1,14 +1,14 @@
 {
-  "width": 2062,
+  "width": 1298,
   "height": 4096,
   "metersPerPixel": 4.0,
-  "slopeWidth": 1703,
+  "slopeWidth": 867,
   "slopeHeight": 3383,
   "bounds": {
-    "west": 137.238954,
-    "south": -4.948845,
-    "east": 137.353929,
-    "north": -4.72055
+    "west": 137.264045,
+    "south": -4.937409,
+    "east": 137.329162,
+    "north": -4.731935
   },
   "base": {
     "lat": -4.5895,

@@ -10,7 +10,7 @@ from rasterio.enums import Resampling
 from rasterio.warp import transform_bounds
 from PIL import Image
 
-ORTHO_IN = Path("ortho_recorte.tif")
+ORTHO_IN = Path("ortho_clean.tif")
 OUT_DIR  = Path("../Frontend/martianmap/public/data/gale")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
