@@ -42,9 +42,9 @@ type Drawer = "layers" | "mode" | null;
 type Tool = "route" | "note";
 
 // ── Botón de colapso de panel ─────────────────────────────────────────────────
-// Pestaña pegada al borde del panel con una flecha SVG.
-// direction indica hacia dónde apunta la flecha cuando el panel está ABIERTO
-// (es decir, en qué dirección hay que "empujar" para cerrarlo).
+// Pestaña pegada al borde del panel con una flecha SVG, centrada en el eje del panel.
+// direction: hacia qué lado está el PANEL (izquierda = panel a la izquierda del botón,
+// derecha = panel a la derecha, abajo = panel encima del botón).
 function CollapseBtn({
   open,
   direction,
@@ -56,13 +56,20 @@ function CollapseBtn({
   onClick: () => void;
   label: string;
 }) {
-  // La flecha apunta hacia "afuera" cuando abierto; hacia "adentro" cuando cerrado.
-  const rotate: Record<string, string> = {
-    left:  open ? "rotate-0"   : "rotate-180",
-    right: open ? "rotate-180" : "rotate-0",
-    down:  open ? "rotate-0"   : "rotate-180",
+  // Cuando está abierto la flecha apunta HACIA el panel (para "cerrarlo").
+  // Cuando está cerrado la flecha apunta ALEJÁNDOSE del panel (para "abrirlo").
+  //
+  //   left  (panel a la izq): abierto → apunta izq (‹), cerrado → apunta der (›)
+  //   right (panel a la der): abierto → apunta der (›), cerrado → apunta izq (‹)
+  //   down  (panel encima):   abierto → apunta abajo (∨), cerrado → apunta arriba (∧)
+  const chevronRotate: Record<string, string> = {
+    left:  open ? "rotate-0"   : "rotate-180",   // ‹ → ›
+    right: open ? "rotate-0" : "rotate-180",     // › → ‹  (invertido respecto a left)
+    down:  open ? "rotate-0"   : "rotate-180",   // ∨ → ∧
   };
+
   const isVertical = direction === "down";
+
   return (
     <button
       type="button"
@@ -70,30 +77,31 @@ function CollapseBtn({
       aria-expanded={open}
       onClick={onClick}
       className={[
-        "pointer-events-auto flex items-center justify-center",
+        "pointer-events-auto flex shrink-0 items-center justify-center self-center",
         "bg-surface/80 border border-line backdrop-blur-sm",
         "text-ink-dim hover:text-ink hover:bg-line/60 transition-colors duration-150",
-        // Dimensiones: más alto que ancho en lateral, más ancho que alto en inferior.
         isVertical
-          ? "h-6 w-10 rounded-b-xl border-t-0"
-          : "h-10 w-6 rounded-r-xl border-l-0",
+          ? "h-5 w-10 rounded-b-xl border-t-0"
+          : direction === "right"
+            ? "h-10 w-5 rounded-l-xl border-r-0"
+            : "h-10 w-5 rounded-r-xl border-l-0",
       ].join(" ")}
     >
       <svg
-        width="12"
-        height="12"
-        viewBox="0 0 12 12"
+        width="10"
+        height="10"
+        viewBox="0 0 10 10"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className={`transition-transform duration-200 ${rotate[direction]}`}
+        className={`transition-transform duration-200 ${chevronRotate[direction]}`}
         aria-hidden
       >
         {isVertical
-          ? <path d="M2 4 L6 8 L10 4" />       /* chevron hacia abajo */
-          : <path d="M8 2 L4 6 L8 10" />        /* chevron hacia la izquierda */
+          ? <path d="M1 3 L5 7 L9 3" />    /* chevron ∨ */
+          : <path d="M7 1 L3 5 L7 9" />    /* chevron ‹ */
         }
       </svg>
     </button>
@@ -116,7 +124,7 @@ export default function AppShell() {
   const [mode, setMode] = useState<ModeId>("walk");
   const [destination, setDestination] = useState<LonLat | null>(null);
   const [drawer, setDrawer] = useState<Drawer>(null);
-  const [basemapId, setBasemapId] = useState<BasemapId>("viking");
+  const [basemapId, setBasemapId] = useState<BasemapId>("ctx");
   const [aboutOpen, setAboutOpen] = useState(false);
   const [hud, setHud] = useState(false);
   // Colapso de paneles en tablet/hábitat.
@@ -282,10 +290,10 @@ export default function AppShell() {
         />
 
         {/* Tablet y hábitat: paneles colapsables a los lados */}
-        <div className="hidden min-h-0 items-start justify-between gap-0 sm:flex">
+        <div className="hidden min-h-0 items-stretch justify-between gap-0 sm:flex">
 
           {/* Panel izquierdo — CAPAS */}
-          <div className="flex min-h-0 items-start">
+          <div className="flex min-h-0 items-stretch">
             <div
               className={[
                 "max-h-full overflow-y-auto transition-all duration-200",
@@ -294,6 +302,7 @@ export default function AppShell() {
             >
               {layerPanel}
             </div>
+            {/* Pestaña pegada al borde derecho del panel izquierdo, centrada verticalmente */}
             <CollapseBtn
               open={leftOpen}
               direction="left"
@@ -303,7 +312,8 @@ export default function AppShell() {
           </div>
 
           {/* Panel derecho — MODO + NOTAS */}
-          <div className="flex min-h-0 items-start">
+          <div className="flex min-h-0 items-stretch">
+            {/* Pestaña pegada al borde izquierdo del panel derecho, centrada verticalmente */}
             <CollapseBtn
               open={rightOpen}
               direction="right"
@@ -353,13 +363,7 @@ export default function AppShell() {
         </div>
 
         <div ref={bottomBarRef} className="flex flex-col items-center gap-0">
-          {/* Botón colapso inferior — solo en tablet+ */}
-          <CollapseBtn
-            open={bottomOpen}
-            direction="down"
-            onClick={() => setBottomOpen((v) => !v)}
-            label={bottomOpen ? "Ocultar barra de métricas" : "Mostrar barra de métricas"}
-          />
+          {/* Contenido de la barra: se colapsa hacia abajo */}
           <div
             className={[
               "w-full transition-all duration-200 overflow-hidden",
@@ -386,6 +390,13 @@ export default function AppShell() {
             />
           )}
           </div>
+          {/* Pestaña centrada horizontalmente, cuelga debajo del panel */}
+          <CollapseBtn
+            open={bottomOpen}
+            direction="down"
+            onClick={() => setBottomOpen((v) => !v)}
+            label={bottomOpen ? "Ocultar barra de métricas" : "Mostrar barra de métricas"}
+          />
         </div>
       </div>
       </>

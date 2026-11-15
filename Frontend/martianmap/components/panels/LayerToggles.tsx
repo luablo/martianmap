@@ -41,15 +41,16 @@ function BasemapIcon({ id }: { id: BasemapId }) {
         <path d="M4.5 10 Q6 7 8 5.5 Q10 4 11.5 6.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeOpacity="0.35"/>
       </svg>
     );
-  // mola_hrsc
+  // ctx — satélite MRO con paneles solares
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <path d="M1.5 12 Q4.5 7 8 7 Q11.5 7 14.5 12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-      <path d="M3 14 Q5.5 9.5 8 9.5 Q10.5 9.5 13 14" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" strokeOpacity="0.5"/>
-      <circle cx="8" cy="3.5" r="1.4" fill="currentColor" fillOpacity="0.85"/>
-      <line x1="8" y1="2" x2="8" y2="2.1" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round"/>
-      <line x1="5.5" y1="3.5" x2="3.5" y2="3.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/>
-      <line x1="10.5" y1="3.5" x2="12.5" y2="3.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/>
+      <rect x="4" y="5.5" width="8" height="7" rx="1.2" stroke="currentColor" strokeWidth="1.3"/>
+      <line x1="4" y1="2" x2="4" y2="5.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="12" y1="2" x2="12" y2="5.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="1.5" y1="2" x2="6.5" y2="2" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="9.5" y1="2" x2="14.5" y2="2" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="6" y1="9" x2="10" y2="9" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" strokeOpacity="0.6"/>
+      <line x1="6" y1="10.8" x2="9" y2="10.8" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" strokeOpacity="0.4"/>
     </svg>
   );
 }
