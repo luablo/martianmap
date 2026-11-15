@@ -76,7 +76,7 @@ export default function AppShell() {
 
   // --ui-bottom: distancia del borde inferior de la pantalla al tope de la barra de
   // métricas. La barra cambia de alto (avisos, hoja abierta en teléfono), así que se
-  // mide en vivo; Legend y BasemapPicker (P3) se colocan justo encima con esta variable.
+  // mide en vivo; la Leyenda (P3) se coloca justo encima con esta variable.
   const mainRef = useRef<HTMLElement>(null);
   const bottomBarRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -117,6 +117,8 @@ export default function AppShell() {
         zone={zone}
         active={layers}
         onChange={(id, on) => setLayers((s) => ({ ...s, [id]: on }))}
+        basemapId={basemapId}
+        onBasemapChange={setBasemapId}
       />
     </Panel>
   );
@@ -164,7 +166,6 @@ export default function AppShell() {
           notes={notes}
           basemapId={basemapId}
           onMapClick={handleMapClick}
-          onBasemapChange={setBasemapId}
         />
       ) : (
         <CenterMsg>
@@ -195,9 +196,9 @@ export default function AppShell() {
         <HudOverlay route={route} mode={MODES[mode]} style={SAFE_PADDING} onExit={() => setHud(false)} />
       ) : (
       <>
-      {/* Orden de capas (z): mapa y sus controles (Leyenda, BasemapPicker, aviso de terreno) = 10
-          < interfaz = 20 (buscador, cajones, barra) < tarjeta de nota = 30.
-          La interfaz es pointer-events-none: los controles del mapa siguen tocables donde no hay panel. */}
+      {/* Orden de capas (z): mapa y sus controles (Leyenda, aviso de terreno) = 10
+          < interfaz = 20 (buscador, cajones, barra) < tarjeta de nota y "i" = 30.
+          El selector de mapa base vive en el panel CAPAS (LayerToggles). */}
       <div
         className="pointer-events-none absolute inset-0 z-20 grid grid-rows-[auto_1fr_auto] gap-3"
         style={SAFE_PADDING}
