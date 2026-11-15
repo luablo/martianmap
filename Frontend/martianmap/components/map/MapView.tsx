@@ -14,7 +14,7 @@ import { addPoiLayer, povCardEl, snapToPoi } from "./layers/pois";
 import { addSlopeLayer } from "./layers/slope";
 import { addThermalLayer } from "./layers/thermal";
 import { addMineralLayer } from "./layers/mineral";
-import { applyBasemap, trekTransformRequest, type BasemapId } from "./layers/basemap";
+import { applyBasemap, updateBasemapPaint, type BasemapId } from "./layers/basemap";
 import Legend from "./Legend";
 import { syncNoteMarkers } from "./layers/notes";
 
@@ -182,8 +182,6 @@ export default function MapView({ zone, destination, route, layers, notes, basem
       attributionControl: false,
       dragRotate: false,
       pitchWithRotate: false,
-      // Convierte URLs trek-eq:// → URLs reales de Trek con coordenadas EQ correctas
-      transformRequest: trekTransformRequest,
     });
     map.touchZoomRotate.disableRotation();
     mapRef.current = map;
@@ -203,7 +201,7 @@ export default function MapView({ zone, destination, route, layers, notes, basem
 
     map.on("load", () => {
       // Mapa base de Marte (Trek WMTS): se inserta primero, debajo de todo
-      applyBasemap(map, basemapRef.current);
+      applyBasemap(map, basemapRef.current, false); // la ortofoto se añade justo después
 
       map.addSource("grid", {
         type: "geojson",
@@ -349,15 +347,25 @@ export default function MapView({ zone, destination, route, layers, notes, basem
   }, [destination, route]);
 
   // Mapa base: se reemplaza reactivamente al cambiar basemapId.
+  // Pasa orthoActive para ajustar opacidad/contraste según si la ortofoto está encima.
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    const apply = () => applyBasemap(map, basemapId);
+    const orthoActive = layers.ortho && !!map.getLayer("ortho");
+    const apply = () => applyBasemap(map, basemapId, orthoActive);
     // No usar isStyleLoaded(): es false mientras bajan mosaicos de Trek y, como "load"
     // ya pasó, el cambio nunca se aplicaría. "grid" existe ⇔ el "load" ya corrió.
     if (map.getSource("grid")) apply();
     else map.once("load", apply);
-  }, [basemapId]);
+  }, [basemapId, layers.ortho]);
+
+  // Cuando la ortofoto se enciende/apaga, actualiza el paint del basemap sin recrearlo.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !map.getSource("grid")) return;
+    const orthoActive = layers.ortho && !!map.getLayer("ortho");
+    updateBasemapPaint(map, basemapId, orthoActive);
+  }, [layers.ortho, basemapId]);
 
   // Capas de imagen/ráster: encender/apagar según `layers`. Si una capa aún no
   // existe (el mapa no cargó o P1 no la entregó), se salta; la visibilidad inicial
