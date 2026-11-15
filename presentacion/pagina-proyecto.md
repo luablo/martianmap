@@ -57,7 +57,7 @@ Next.js 16 y MapLibre en el navegador; la ruta es un A* sobre la malla de pendie
 - Repositorio: https://github.com/luablo/martianmap
 
 ## Declaración de uso de inteligencia artificial
-El equipo usó asistentes de IA (Claude) como apoyo para escribir y revisar código, resolver conflictos de git y redactar documentación y el guion del video. Las decisiones de diseño, los supuestos del modelo y la elección de datos son del equipo, y todo el código generado se revisó y probó antes de integrarlo. Las capturas de la presentación salen de la app real; no se generaron imágenes con IA. [Ajustar si alguien del equipo usó otra herramienta.]
+El equipo usó asistentes de IA (Claude) como apoyo para escribir y revisar código, resolver conflictos de git y redactar documentación y el guion del video. Las decisiones de diseño, los supuestos del modelo y la elección de datos son del equipo, y todo el código generado se revisó y probó antes de integrarlo. Las capturas salen de la app real; no se generaron imágenes con IA. El video se armó con ayuda de IA (el código de la animación se escribió con Claude) y lleva la etiqueta visible «Generated with AI assistance»; la voz es la del equipo.
 
 ## Equipo
 | Rol | Persona |

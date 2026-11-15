@@ -80,12 +80,12 @@ Scientific honesty (assumptions are labeled and the dose is an estimate, not a m
 TEAM BITSTRONAUTS
 Julieta Rodriguez Cid (data), Fernanda De Jesus Gonzalez (route and notes), Julio Cesar Trinidad Garcia (map), Luis Angel Carcamo Huerta (interface and story).
 
-Use of AI: we used Claude (Anthropic), an AI assistant, to help write and review code, plan the deployment and write documentation. Design decisions, data choices and testing were the team's. No images, video or voices were generated with AI; the video uses real screenshots of the app and the team's own voice.
+Use of AI: we used Claude (Anthropic), an AI assistant, to help write and review code, plan the deployment and write documentation. Design decisions, data choices and testing were the team's. No images or voices were generated with AI. The demo video was assembled with AI assistance (its animation code was written with Claude), so it carries a visible "Generated with AI assistance" label in the top-left corner; it uses real screenshots of the app and the team's own voice.
 ```
 
 ### Use of Super Intelligence (SI)
 
-Select the options that match **code and text help from an AI assistant** (the dropdown usually lists them as something like "large language model / chatbot" and "code generation"). Do **not** select image, video or audio generation: the video uses real screenshots, an astronaut drawn in code (SVG) and the team's own voice.
+Select the options that match **code and text help from an AI assistant** (the dropdown usually lists them as something like "large language model / chatbot" and "code generation") and, if the list has one, the **video** option: the demo video was assembled with AI assistance and carries a visible "Generated with AI assistance" watermark. Do **not** select image or audio generation: the screenshots are real, the astronaut is drawn in code (SVG) and the voice is the team's own.
 
 Where it is disclosed (the form requires this): the "Use of artificial intelligence" section of the README (https://github.com/luablo/martianmap#use-of-artificial-intelligence), RESOURCES.md and the last paragraph of Project Details above.
 
@@ -144,7 +144,7 @@ Check both boxes (Terms and Conditions, and All Work is Original). Every externa
 | Project link public | ✅ GitHub repository is public; live app on Vercel |
 | No names, voices or likenesses of anyone under 18 | ⚠️ confirm all four team members are 18 or older (names and voices appear in the video) |
 | No NASA logos, flags or mission patches | ✅ only plain text such as "NASA HiRISE data" |
-| SI use disclosed; SI images or video watermarked | ✅ code and text disclosed; no SI images, video or audio |
+| SI use disclosed; SI images or video watermarked | ✅ code and text disclosed; the video shows "Generated with AI assistance" in the top-left corner for its whole length; no SI images or audio |
 | At least one NASA resource | ✅ eight NASA resources listed |
 | All other code, text, images and music listed | ✅ listed above (add the music link) |
 | Copyrighted material only with permission | ✅ music is royalty-free; screenshots are ours; NASA data is public |

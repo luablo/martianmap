@@ -70,7 +70,7 @@ There is no custom server. The route search runs in the browser, the terrain dat
 | SRT subtitles (`presentacion/video-subtitulos.srt`) | Subtitles for the 30-second video |
 
 ### Artificial intelligence
-We used AI assistants (Claude, by Anthropic) to help write and review code, resolve git conflicts, plan the deployment and write documentation and the video script. Design decisions, model assumptions and data choices are the team's own, and all generated code was reviewed and tested before merging. Screenshots come from the real app; no images were generated with AI.
+We used AI assistants (Claude, by Anthropic) to help write and review code, resolve git conflicts, plan the deployment and write documentation and the video script. Design decisions, model assumptions and data choices are the team's own, and all generated code was reviewed and tested before merging. Screenshots come from the real app; no images were generated with AI. The demo video was put together with AI assistance (its animation code was written with Claude) and carries a visible "Generated with AI assistance" label in the top-left corner; its screenshots come from the real app and the voice is the team's own.
 
 ---
 

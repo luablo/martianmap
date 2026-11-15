@@ -191,7 +191,7 @@ This project was developed with the help of **Claude** (Anthropic), an AI assist
 - write documentation, such as this README;
 - plan the work, deploy the app and fix errors during the hackathon.
 
-Design decisions, data choices and testing were the team's, and the team is responsible for the final result. Screenshots come from the real app; no images were generated with AI.
+Design decisions, data choices and testing were the team's, and the team is responsible for the final result. Screenshots come from the real app; no images were generated with AI. The demo video was put together with AI assistance (its animation code was written with Claude) and carries a visible "Generated with AI assistance" label in the top-left corner; its screenshots come from the real app and the voice is the team's own.
 
 ## Team
 

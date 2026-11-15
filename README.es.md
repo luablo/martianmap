@@ -193,7 +193,7 @@ Este proyecto se desarrolló con apoyo de **Claude** (Anthropic), un asistente d
 - redactar documentación, como este README;
 - planear el trabajo, desplegar la app y resolver errores durante el hackathon.
 
-Las decisiones de diseño, la elección de datos y las pruebas fueron del equipo, que es responsable del resultado final. Las capturas salen de la app real; no se generaron imágenes con IA.
+Las decisiones de diseño, la elección de datos y las pruebas fueron del equipo, que es responsable del resultado final. Las capturas salen de la app real; no se generaron imágenes con IA. El video de la demo se armó con ayuda de IA (el código de la animación se escribió con Claude) y lleva la etiqueta visible «Generated with AI assistance» en la esquina superior izquierda; sus capturas salen de la app real y la voz es la del equipo.
 
 ## Equipo
 

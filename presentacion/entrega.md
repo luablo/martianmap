@@ -58,6 +58,6 @@ Desde aquí solo correcciones de errores. Nada de funciones nuevas.
 - [x] Repositorio público en GitHub, sin llaves (`git grep` sin URL ni llave de Supabase; `.env.local` fuera del repo).
 - [x] Página del proyecto con la declaración de uso de IA.
 - [x] Video revisado por el equipo.
-- [ ] Volver a subir el video corregido (`out/marswalk-demo-voz-equipo-v2.mp4`: decía «Bistronauts») en Drive con *Administrar versiones → Subir nueva versión*, para que el enlace no cambie.
+- [ ] Volver a subir el video final (`presentacion/video/out/marswalk-demo-voz-equipo-v3.mp4`: corrige «Bistronauts» en el inicio y el final y agrega la marca «Generated with AI assistance») en Drive con *Administrar versiones → Subir nueva versión*, para que el enlace no cambie.
 - [ ] Llenar el formulario con [`space-apps-submission.md`](space-apps-submission.md) (todos los campos en inglés, listos para pegar).
 - [ ] **Enviar con «Submit for Judging»** en el sitio de Space Apps antes del domingo 15 nov, 11:59 p. m. (hora local).

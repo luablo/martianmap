@@ -221,7 +221,7 @@ const S1Lost: React.FC = () => {
       {/* Equipo y reto (0:00–0:02 de la guía) */}
       <div style={{ position: "absolute", left: 90, top: 80 }}>
         <FadeIn delay={4}>
-          <div style={{ font: `800 64px ${FONT}`, color: C.text, letterSpacing: 2, textShadow: "0 4px 18px #000" }}>TEAM BISTRONAUTS</div>
+          <div style={{ font: `800 64px ${FONT}`, color: C.text, letterSpacing: 2, textShadow: "0 4px 18px #000" }}>TEAM BITSTRONAUTS</div>
         </FadeIn>
         <FadeIn delay={12}>
           <div style={{ font: `500 28px ${FONT}`, color: C.dim, marginTop: 8, textShadow: "0 2px 10px #000" }}>
@@ -624,6 +624,25 @@ const Movie: React.FC<{ v: Version }> = ({ v }) => {
         )}
 
         <Subtitles subs={v.subs} narrow={v.narrator && f >= 172 && f < 828} />
+
+        {/* Marca de agua de IA (regla de Space Apps 2026): visible en todo el video. */}
+        <div
+          style={{
+            position: "absolute",
+            left: 24,
+            top: 20,
+            padding: "6px 14px",
+            borderRadius: 8,
+            background: "rgba(0,0,0,0.55)",
+            border: "1px solid rgba(255,255,255,0.25)",
+            font: `600 20px ${FONT}`,
+            letterSpacing: 0.5,
+            color: "rgba(255,255,255,0.9)",
+          }}
+        >
+          Generated with AI assistance
+        </div>
+
         {!v.silent && !v.ownVoice && (<div
           style={{
             position: "absolute",
