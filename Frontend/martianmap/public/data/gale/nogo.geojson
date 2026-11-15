@@ -1,1 +1,62 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"reason":"Roca suelta (sintético)"},"geometry":{"type":"Polygon","coordinates":[[[137.370744,-4.764085],[137.376172,-4.764085],[137.376172,-4.768142],[137.370744,-4.768142],[137.370744,-4.764085]]]}}]}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "nogo-1",
+        "reason": "Escarpe — pendiente > 30 grados",
+        "label": "NO PISAR",
+        "risk": "HIGH"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [137.2900, -4.8600],
+          [137.3100, -4.8600],
+          [137.3100, -4.8800],
+          [137.2900, -4.8800],
+          [137.2900, -4.8600]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "nogo-2",
+        "reason": "Roca suelta — ladera inestable",
+        "label": "NO PISAR",
+        "risk": "HIGH"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [137.3250, -4.8300],
+          [137.3400, -4.8300],
+          [137.3400, -4.8450],
+          [137.3250, -4.8450],
+          [137.3250, -4.8300]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "nogo-3",
+        "reason": "Duna de arena — rover puede quedar atascado",
+        "label": "NO PISAR",
+        "risk": "MEDIUM"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [137.2700, -4.7700],
+          [137.2820, -4.7700],
+          [137.2820, -4.7820],
+          [137.2700, -4.7820],
+          [137.2700, -4.7700]
+        ]]
+      }
+    }
+  ]
+}
