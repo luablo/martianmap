@@ -17,3 +17,14 @@ PLAN-P4.md
 # Node / Next
 node_modules/
 .next/
+
+# Data pipeline — archivos crudos y temporales (pesan cientos de MB)
+data-pipeline/*.img
+data-pipeline/*.tif
+data-pipeline/*.jp2
+data-pipeline/*.txt
+data-pipeline/out*.txt
+data-pipeline/err*.txt
+data-pipeline/info*.txt
+*.log
+Frontend/martianmap/public/data/gale/elevation.bin

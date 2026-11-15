@@ -1,3 +1,6 @@
 numpy
 rasterio
-pillow
+Pillow
+scipy
+pyproj
+shapely

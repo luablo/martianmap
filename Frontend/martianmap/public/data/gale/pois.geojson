@@ -1,1 +1,56 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"id":"base","name":"Base","type":"base"},"geometry":{"type":"Point","coordinates":[137.342043,-4.745017]}},{"type":"Feature","properties":{"id":"b4","name":"Boxwork B-4","type":"target","description":"Cresta de boxwork"},"geometry":{"type":"Point","coordinates":[137.368165,-4.770035]}},{"type":"Feature","properties":{"id":"b2","name":"Boxwork B-2","type":"target"},"geometry":{"type":"Point","coordinates":[137.359209,-4.777608]}},{"type":"Feature","properties":{"id":"pov1","name":"Vista Mastcam","type":"pov","sol":412,"camera":"MASTCAM"},"geometry":{"type":"Point","coordinates":[137.350389,-4.754618]}}]}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "base",
+        "name": "Base EVA",
+        "type": "base",
+        "description": "Punto de partida supuesto por el equipo dentro del DTM. Bradbury Landing (4.59°S 137.44°E) queda unos 14 km al noreste, fuera de este recorte."
+      },
+      "geometry": { "type": "Point", "coordinates": [137.2984, -4.7859] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "b4",
+        "name": "Boxwork B-4",
+        "type": "target",
+        "description": "Objetivo de muestreo elegido por el equipo sobre la ortofoto",
+        "objective": true
+      },
+      "geometry": { "type": "Point", "coordinates": [137.31967, -4.80082] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "b2",
+        "name": "Boxwork B-2",
+        "type": "target",
+        "description": "Afloramiento en la ladera sur, elegido por el equipo sobre la ortofoto"
+      },
+      "geometry": { "type": "Point", "coordinates": [137.3089, -4.8156] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "pov1",
+        "name": "Mirador norte",
+        "type": "pov",
+        "description": "Punto de observación propuesto por el equipo"
+      },
+      "geometry": { "type": "Point", "coordinates": [137.3052, -4.7921] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "pov2",
+        "name": "Mirador ladera",
+        "type": "pov",
+        "description": "Punto de observación propuesto por el equipo"
+      },
+      "geometry": { "type": "Point", "coordinates": [137.3134, -4.7988] }
+    }
+  ]
+}

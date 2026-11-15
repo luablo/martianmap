@@ -1,1 +1,8 @@
-{"sol":412,"tempMinC":-78,"tempMaxC":-5,"pressurePa":750,"uv":"Moderado","source":"SINTÉTICO"}
+{
+  "sol": 412,
+  "tempMinC": -70,
+  "tempMaxC": -1,
+  "pressurePa": 875,
+  "uv": "Moderado",
+  "source": "MSL REMS (PDS Atmospheres Node)"
+}

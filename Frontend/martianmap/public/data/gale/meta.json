@@ -1,20 +1,27 @@
 {
-  "width": 750,
-  "height": 750,
-  "metersPerPixel": 4,
+  "width": 1703,
+  "height": 3383,
+  "metersPerPixel": 4.0,
   "bounds": {
-    "west": 137.33,
-    "east": 137.380887,
-    "north": -4.7343,
-    "south": -4.785012
+    "west": 137.238954,
+    "south": -4.948845,
+    "east": 137.353929,
+    "north": -4.72055
   },
   "base": {
-    "lon": 137.342043,
-    "lat": -4.745017
+    "lat": -4.7859,
+    "lon": 137.2984
   },
   "sources": [
-    "SINTÉTICO: scripts/fake-terrain.mjs"
+    "Ortofoto: HiRISE PSP_001488_1750 RED (NASA/JPL/UArizona) · https://hirise-pds.lpl.arizona.edu/PDS/DTM/PSP/ORB_001400_001499/PSP_001488_1750_PSP_001752_1750/",
+    "Pendiente: derivada del DTM HiRISE DTEEC_001488_1750 (1 m/px), remuestreada a 4 m/celda",
+    "Radiación: 0.67 mSv/día en superficie, MSL RAD (Hassler et al. 2014, Science) · https://doi.org/10.1126/science.1244797",
+    "Clima: MSL REMS, PDS Atmospheres Node · https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html",
+    "Zonas NO PISAR y puntos de interés: marcados por el equipo sobre la ortofoto (no son datos de NASA)"
   ],
-  "fake": true,
-  "files": {}
+  "files": {
+    "ortho": "ortho.webp",
+    "slope": "slope.png"
+  },
+  "fake": false
 }
