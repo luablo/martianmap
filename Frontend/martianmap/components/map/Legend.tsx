@@ -36,6 +36,7 @@ export default function Legend({
 
   return (
     <div
+      data-hud="hide" // en modo HUD (P4) se oculta: ver globals.css
       className={[
         // z-10: capa del mapa, debajo de la interfaz de AppShell (z-20).
         "panel pointer-events-none absolute z-10 p-2.5",
