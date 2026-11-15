@@ -28,7 +28,7 @@ Los mapas de Marte que existen se hicieron para mirar el planeta desde órbita, 
 | Clima | MSL REMS, sol 412 | Temperatura en la barra superior |
 | Mapas base | NASA Mars Trek (Viking, MOLA, MOLA + HRSC) | Contexto alrededor de la zona |
 
-La zona es un recorte del cráter Gale (137.24–137.35 °E, 4.72–4.95 °S). La base de la EVA, los objetivos y las zonas NO PISAR son supuestos del equipo marcados sobre la imagen. Fuentes, herramientas y cómo se hizo todo (en inglés): [RESOURCES.md](RESOURCES.md).
+La zona es un recorte limpio del cráter Gale (137.26–137.33 °E, 4.73–4.94 °S), sin bordes vacíos. La base de la EVA, los objetivos y las zonas NO PISAR son supuestos del equipo marcados sobre la imagen. Fuentes, herramientas y cómo se hizo todo (en inglés): [RESOURCES.md](RESOURCES.md).
 
 ## Correrlo
 

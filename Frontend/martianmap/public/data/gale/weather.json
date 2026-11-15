@@ -1,8 +1,10 @@
 {
   "sol": 412,
+  "earthDate": "2013-10-29",
   "tempMinC": -70,
-  "tempMaxC": -1,
+  "tempMaxC": 0,
   "pressurePa": 875,
   "uv": "Moderado",
-  "source": "MSL REMS (PDS Atmospheres Node)"
+  "source": "MSL REMS (PDS Atmospheres Node)",
+  "reference": "Gómez-Elvira et al. (2012), Space Sci Rev, doi:10.1007/s11214-012-9921-1"
 }

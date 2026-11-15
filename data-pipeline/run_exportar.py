@@ -10,7 +10,7 @@ from rasterio.enums import Resampling
 from rasterio.warp import transform_bounds
 from PIL import Image
 
-ORTHO_IN = Path("ortho_recorte.tif")
+ORTHO_IN = Path("ortho_clean.tif")
 OUT_DIR  = Path("../Frontend/martianmap/public/data/gale")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -24,7 +24,7 @@ BASE_LON = 137.2984
 MAX_PX   = 4096
 
 if not ORTHO_IN.exists():
-    print("ERROR: No se encuentra ortho_recorte.jp2")
+    print("ERROR: No se encuentra ortho_clean.tif. Ejecuta crop.py primero.")
     sys.exit(1)
 
 print(f"Abriendo {ORTHO_IN}...")
@@ -92,9 +92,10 @@ meta = {
     # Texto plano: la app los muestra tal cual en "Supuestos y fuentes".
     "sources": [
         f"Ortofoto: HiRISE PSP_001488_1750 RED (NASA/JPL/UArizona) · {HIRISE}",
-        "Pendiente: derivada del DTM HiRISE DTEEC_001488_1750 (1 m/px), remuestreada a 4 m/celda",
+        "Pendiente: derivada del DTM HiRISE DTEEC_001488_1750 (1 m/px), remuestreada a 4 m/celda; recorte sin bordes vacíos",
         "Radiación: 0.67 mSv/día en superficie, MSL RAD (Hassler et al. 2014, Science) · https://doi.org/10.1126/science.1244797",
-        "Clima: MSL REMS, PDS Atmospheres Node · https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html",
+        "Clima: MSL REMS, sol 412 (29 oct 2013), PDS Atmospheres Node · https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html",
+        "Mapas base: NASA Mars Trek (Viking, MOLA, MOLA + HRSC) · https://trek.nasa.gov/mars/",
         "Zonas NO PISAR y puntos de interés: marcados por el equipo sobre la ortofoto (no son datos de NASA)",
     ],
     "files": {"ortho": "ortho.webp", "slope": "slope.png"},

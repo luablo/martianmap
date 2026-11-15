@@ -23,8 +23,11 @@ data-pipeline/*.img
 data-pipeline/*.tif
 data-pipeline/*.jp2
 data-pipeline/*.txt
-data-pipeline/out*.txt
-data-pipeline/err*.txt
-data-pipeline/info*.txt
+data-pipeline/*.log
 *.log
 Frontend/martianmap/public/data/gale/elevation.bin
+
+# Excepciones: estos sí van al repo
+!data-pipeline/*.py
+!data-pipeline/*.md
+!data-pipeline/requirements.txt

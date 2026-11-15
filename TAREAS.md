@@ -8,19 +8,18 @@
 
 | Persona | Avance | Tareas | Lo más urgente |
 |---|---|---|---|
-| P1 · Datos | `████████░░` 80 % | 12 / 15 | Confirmar los valores de REMS del sol 412 y la fecha de descarga del DTM |
+| P1 · Datos | `█████████░` 87 % | 13 / 15 | — (solo quedan los opcionales: fotos POV y térmico) |
 | P2 · Ruta | `█████████░` 89 % | 8 / 9 | — (solo queda el ajuste fino de costos, opcional) |
 | P3 · Mapa | `██████████` 100 % | 13 / 13 | — |
 | P4 · Interfaz | `█████████░` 93 % | 13 / 14 | Grabar el video, llenar los `[corchetes]` y entregar (sin slides: solo video) |
-| **Equipo** | `█████████░` **90 %** | **46 / 51** | Sin contar los 3 opcionales (fotos POV, térmico, ajuste de costos): **46 / 48 · 96 %** |
+| **Equipo** | `█████████░` **92 %** | **47 / 51** | Sin contar los 3 opcionales (fotos POV, térmico, ajuste de costos): **47 / 48 · 98 %** |
 
-**Ya hecho (dom 15 nov):** ✅ Vercel publica `main` en https://martianmap-rosy.vercel.app · ✅ Supabase creado, con `schema.sql` corrido y llaves en Vercel · ✅ `rama-luis`, `ramajulio` y `Julieta-3.0` fusionadas en `main` (PR #26, #27, #28) · ✅ Notas en tiempo real probadas entre dos dispositivos · ✅ Probado en teléfono real · ✅ README con la URL y `RESOURCES.md` en inglés (fuentes, herramientas y cómo se hizo) · **Decisión:** no habrá slides, la presentación es solo el video.
+**Ya hecho (dom 15 nov):** ✅ Vercel publica `main` en https://martianmap-rosy.vercel.app · ✅ Supabase creado, con `schema.sql` corrido y llaves en Vercel · ✅ `rama-luis`, `ramajulio` y `Julieta-3.0` fusionadas en `main` (PR #26, #27, #28) · ✅ Notas en tiempo real probadas entre dos dispositivos · ✅ Probado en teléfono real · ✅ README con la URL y `RESOURCES.md` en inglés (fuentes, herramientas y cómo se hizo) · **Decisión:** no habrá slides, la presentación es solo el video. · ✅ Datos nuevos de Julieta (PR #30) integrados: recorte limpio sin bordes negros (964 × 3045), REMS del sol 412 confirmado y fecha de descarga del DTM (14 nov 2026). · ✅ `npm run check-data` revisa los datos antes de cada build.
 
 **Lo que falta para entregar (domingo), en orden:**
-1. **P1 · REMS:** confirmar los valores de `weather.json` del sol 412 y la fecha de descarga del DTM (anotarlos en `RESOURCES.md`).
-2. **P4 · Video** de 30 s con `presentacion/guion.md` §2 y los subtítulos de `video-subtitulos.srt`, grabado sobre https://martianmap-rosy.vercel.app. Borrar antes las notas de prueba en Supabase (*Table Editor → annotations*) si no se quieren en el video.
-3. **Todos:** llenar los `[corchetes]` que quedan en `presentacion/pagina-proyecto.md` (nombres del equipo y enlace del video).
-4. **P4 · Entrega** (`presentacion/entrega.md`): video, URL de Vercel, repo público y página del proyecto.
+1. **P4 · Video** de 30 s con `presentacion/guion.md` §2 y los subtítulos de `video-subtitulos.srt`, grabado sobre https://martianmap-rosy.vercel.app. Borrar antes las notas de prueba en Supabase (*Table Editor → annotations*) si no se quieren en el video.
+2. **Todos:** llenar los `[corchetes]` que quedan en `presentacion/pagina-proyecto.md` (nombres del equipo y enlace del video).
+3. **P4 · Entrega** (`presentacion/entrega.md`): video, URL de Vercel, repo público y página del proyecto.
 
 El detalle está al final de la sección de cada persona. **Para actualizarlo:** marca `[x]` en tu casilla y corrige tu fila y tu barra (cada `█` = 10 %).
 
@@ -120,7 +119,7 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 ### Bloque 2 (18:00–22:00) — lo que da sentido a la ruta
 - [x] `nogo.geojson`: polígonos NO PISAR. La forma rápida es tomar celdas con pendiente > 30°, dilatarlas y convertirlas con `rasterio.features.shapes`, más 1–2 polígonos dibujados a mano sobre la ortofoto (roca suelta). `properties.reason` con el motivo.
 - [x] `pois.geojson`: `Base`, `Boxwork B-4` (objetivo principal, a ~2.4 km) y 1–2 objetivos más. Formato: `Feature<Point>` con `properties: { id, name, type: "base" | "target" | "pov", description }`.
-- [ ] `weather.json` de REMS (un sol real) y confirmar la tasa de RAD; si cambia, se la pasas a P2 para `RAD_MSV_PER_DAY`.
+- [x] `weather.json` de REMS (un sol real) y confirmar la tasa de RAD; si cambia, se la pasas a P2 para `RAD_MSV_PER_DAY`.
 - [x] `data-pipeline/FUENTES.md` lleno. (Ahora vive en inglés en `RESOURCES.md`, en la raíz.)
 - [x] Revisar con P2 que la ruta "tenga sentido" sobre la imagen.
 
@@ -131,13 +130,13 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 
 ### 📊 Progreso P1 · revisado dom 15 nov, 01:15
 
-`████████████████░░░░` **12 / 15 tareas · 80 %**
+`█████████████████░░░` **13 / 15 tareas · 87 %**
 
 | Bloque | Hecho | Falta |
 |---|---|---|
 | 0 · Hora 0 | 2 / 2 | — |
 | 1 · Datos reales | 5 / 5 | — (se usó el plan B: un solo DTM HiRISE, DTEEC_001488_1750) |
-| 2 · Sentido de la ruta | 4 / 5 | confirmar que `weather.json` tiene los valores reales de REMS del sol 412 |
+| 2 · Sentido de la ruta | 5 / 5 | — (REMS del sol 412 confirmado por Julieta, PR #30) |
 | 3 · Extras | 1 / 3 | fotos POV y térmico (opcionales; no hacen falta para entregar) |
 
 - **Ya en `main` (PR #25 de Julieta, con arreglos):** ortofoto, pendiente a 4 m/celda (1703 × 3383), `meta.json` según el contrato, `weather.json`, `pois.geojson`, `nogo.geojson` y `FUENTES.md`. El aviso "TERRENO SINTÉTICO" ya no sale.
@@ -321,7 +320,7 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 | ~~P4 (NoteCard)~~ | ~~`useNotes` con foto~~ | ~~P2~~ | ✅ en `rama-luis` |
 | Todos | URL de Vercel para el video y la entrega | P4 | `localhost` |
 | P2 | Llaves de Supabase | P4 | `localStorage` (ya funciona) |
-| P1 | Valores reales de REMS del sol 412 | P1 | Los de `weather.json` (sin confirmar) |
+| P1 | Valores reales de REMS del sol 412 | P1 | ✅ Confirmados (−70 / 0 °C, 875 Pa, sol 412 = 29 oct 2013) |
 
 ## 9. Si un contrato tiene que cambiar
 

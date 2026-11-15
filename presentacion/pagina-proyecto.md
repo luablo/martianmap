@@ -38,7 +38,7 @@ Los mapas de Marte que existen se hicieron para mirar el planeta desde órbita, 
 - El recurso debe alcanzar para volver con al menos 20 % de reserva.
 
 ## Datos de NASA usados
-La zona es el recorte del modelo de elevación HiRISE DTEEC_001488_1750 en el cráter Gale (137.24–137.35 °E, 4.72–4.95 °S, unos 6.8 × 13.5 km). El detalle está en `RESOURCES.md`.
+La zona es el recorte del modelo de elevación HiRISE DTEEC_001488_1750 en el cráter Gale (137.26–137.33 °E, 4.73–4.94 °S, unos 3.9 × 12.2 km, sin bordes vacíos). El detalle está en `RESOURCES.md`.
 
 - **MRO HiRISE**: ortofoto PSP_001488_1750 (imagen de fondo, MEDIDO) y modelo de elevación DTEEC_001488_1750 a 1 m/px, del que sale la pendiente a 4 m por celda (DERIVADO). https://hirise-pds.lpl.arizona.edu/PDS/DTM/PSP/ORB_001400_001499/PSP_001488_1750_PSP_001752_1750/
 - **MSL RAD (Curiosity)**: tasa de radiación en superficie, 0.67 mSv/día (Hassler et al. 2014, *Science*). https://doi.org/10.1126/science.1244797

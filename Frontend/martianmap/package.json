@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-data.mjs",
     "build": "next build",
+    "check-data": "node scripts/check-data.mjs",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "node scripts/copy-maplibre-worker.mjs",
