@@ -144,7 +144,19 @@ export default function MapView({ zone, destination, route, layers, notes, basem
 
     const { meta } = zone;
     const { west, south, east, north } = meta.bounds;
-    const pad = 0.02;
+    // maxBounds también limita el zoom de salida: con un margen fijo, una zona alta y
+    // angosta (la franja HiRISE es 6.8 × 13.5 km) nunca cabía entera en pantalla
+    // horizontal. El margen se ajusta a la forma de la zona.
+    const padLon = Math.max(0.02, (north - south) * 0.6);
+    const padLat = Math.max(0.02, (east - west) * 0.6);
+    // Vista inicial: la base y los puntos de interés (ahí empieza la EVA), no la zona entera.
+    const pts = zone.pois.length ? zone.pois : [{ lon: meta.base.lon, lat: meta.base.lat }];
+    const view: [number, number, number, number] = [
+      Math.min(...pts.map((p) => p.lon)),
+      Math.min(...pts.map((p) => p.lat)),
+      Math.max(...pts.map((p) => p.lon)),
+      Math.max(...pts.map((p) => p.lat)),
+    ];
 
     // Estilo vacío: MapLibre cree que está en la Tierra, pero aquí solo usamos
     // lon/lat de Marte como coordenadas. No hay mapa base terrestre.
@@ -157,9 +169,16 @@ export default function MapView({ zone, destination, route, layers, notes, basem
           { id: "bg", type: "background", paint: { "background-color": "#070a10" } },
         ],
       },
-      bounds: [west, south, east, north],
-      fitBoundsOptions: { padding: 40 },
-      maxBounds: [west - pad, south - pad, east + pad, north + pad],
+      bounds: view,
+      // Margen para que los paneles no tapen los puntos (en teléfono los paneles flotan).
+      fitBoundsOptions: {
+        padding:
+          container.current.clientWidth >= 640
+            ? { top: 140, bottom: 140, left: 300, right: 300 }
+            : { top: 170, bottom: 110, left: 40, right: 40 },
+        maxZoom: 15,
+      },
+      maxBounds: [west - padLon, south - padLat, east + padLon, north + padLat],
       attributionControl: false,
       dragRotate: false,
       pitchWithRotate: false,

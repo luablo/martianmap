@@ -293,9 +293,8 @@ export default function AppShell() {
               at={draftAt}
               sol={zone?.weather?.sol ?? 412}
               onCancel={closeNote}
-              onSave={async (n) => {
-                // La foto todavía no se guarda: falta que addNote la reciba (acordar con P2).
-                await addNote(n);
+              onSave={async (n, photo) => {
+                await addNote(n, photo);
                 closeNote();
               }}
             />
