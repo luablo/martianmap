@@ -6,6 +6,8 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
+import AboutSheet from "@/components/panels/AboutSheet";
+import HudOverlay from "@/components/panels/HudOverlay";
 import LayerToggles from "@/components/panels/LayerToggles";
 import MetricsBar from "@/components/panels/MetricsBar";
 import ModeSwitch from "@/components/panels/ModeSwitch";
@@ -56,6 +58,21 @@ export default function AppShell() {
   const [destination, setDestination] = useState<LonLat | null>(null);
   const [drawer, setDrawer] = useState<Drawer>(null);
   const [basemapId, setBasemapId] = useState<BasemapId>("viking");
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [hud, setHud] = useState(false);
+
+  // Modo HUD: <html data-mode="hud"> activa los estilos de globals.css; Esc sale.
+  useEffect(() => {
+    const html = document.documentElement;
+    if (hud) html.dataset.mode = "hud";
+    else delete html.dataset.mode;
+    if (!hud) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setHud(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [hud]);
 
   // --ui-bottom: distancia del borde inferior de la pantalla al tope de la barra de
   // métricas. La barra cambia de alto (avisos, hoja abierta en teléfono), así que se
@@ -78,7 +95,7 @@ export default function AppShell() {
       ro.disconnect();
       window.removeEventListener("resize", update);
     };
-  }, []);
+  }, [hud]); // en HUD no hay barra; al salir se monta una nueva y hay que volver a medirla
   const [layers, setLayers] = useState<Record<LayerId, boolean>>({
     ortho: true,
     slope: true,
@@ -174,6 +191,10 @@ export default function AppShell() {
         </div>
       )}
 
+      {hud ? (
+        <HudOverlay route={route} mode={MODES[mode]} style={SAFE_PADDING} onExit={() => setHud(false)} />
+      ) : (
+      <>
       {/* Orden de capas (z): mapa y sus controles (Leyenda, BasemapPicker, aviso de terreno) = 10
           < interfaz = 20 (buscador, cajones, barra) < tarjeta de nota = 30.
           La interfaz es pointer-events-none: los controles del mapa siguen tocables donde no hay panel. */}
@@ -186,6 +207,12 @@ export default function AppShell() {
           base={base}
           weather={zone?.weather ?? null}
           onPick={(p) => setDestination([p.lon, p.lat])}
+          onAbout={() => setAboutOpen(true)}
+          onHud={() => {
+            setHud(true);
+            setDrawer(null);
+            closeNote(); // en HUD un toque al mapa siempre marca destino
+          }}
         />
 
         {/* Tablet y hábitat: paneles fijos a los lados */}
@@ -246,6 +273,10 @@ export default function AppShell() {
         )}
         </div>
       </div>
+      </>
+      )}
+
+      {aboutOpen && <AboutSheet zone={zone} onClose={() => setAboutOpen(false)} />}
 
       {/* Tarjeta de nota: hoja inferior en teléfono, panel a la derecha en tablet */}
       {draftAt && (

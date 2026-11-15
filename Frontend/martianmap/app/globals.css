@@ -75,6 +75,32 @@ body {
 
 /* Estilos del mapa: components/map/map.css (dueño P3) */
 
+/*
+ * Modo HUD (visor del casco): <html data-mode="hud">. Lo activa AppShell.
+ * Sin paneles: el mapa a pantalla completa y lecturas grandes en las esquinas,
+ * legibles sobre cualquier terreno gracias a la sombra, sin cajas que tapen el suelo.
+ */
+.hud-readout {
+  padding: 0.5rem 0.75rem;
+  text-shadow:
+    0 0 6px var(--color-bg-0),
+    0 0 12px var(--color-bg-0),
+    0 1px 2px var(--color-bg-0);
+}
+
+@layer components {
+  [data-mode="hud"] .panel {
+    background: color-mix(in srgb, var(--color-bg-0) 35%, transparent);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Controles del mapa que sobran en HUD (Leyenda, selector de mapa base): data-hud="hide" */
+[data-mode="hud"] [data-hud="hide"] {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition-duration: 0ms !important;
