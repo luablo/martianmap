@@ -192,3 +192,33 @@
   color: var(--color-ink-dim);
   margin-top: 4px;
 }
+
+/* Simulación de EVA: el astronauta que avanza por la ruta, con un halo que late. */
+.marker-sim {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+}
+.marker-sim-dot {
+  position: absolute;
+  inset: 3px;
+  border-radius: 9999px;
+  background: var(--color-ink);
+  border: 3px solid var(--color-route);
+  box-shadow: 0 0 10px var(--color-route);
+}
+.marker-sim-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-route) 45%, transparent);
+  animation: marker-sim-pulse 1.2s ease-out infinite;
+}
+@keyframes marker-sim-pulse {
+  from { transform: scale(1); opacity: 0.9; }
+  to   { transform: scale(2.6); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marker-sim-pulse { animation: none; }
+}

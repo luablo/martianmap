@@ -19,13 +19,13 @@ Everything the app loads lives in `Frontend/martianmap/public/data/gale/`. The s
 | 2 | Orthoimage, RED band (PSP_001488_1750) | `ortho.webp` | MRO HiRISE, same product | (same link) | MEASURED | NASA/JPL/University of Arizona |
 | 3 | Surface radiation dose rate: 0.67 mSv/day | constant in `lib/metrics.ts` | MSL RAD, Hassler et al. (2014), *Science* 343 | [doi:10.1126/science.1244797](https://doi.org/10.1126/science.1244797) | ESTIMATED (dose per route is a model result) | NASA/JPL, MSL RAD |
 | 4 | Weather for a reference sol (sol 412, 29 Oct 2013): −70 °C / 0 °C, 875 Pa, moderate UV | `weather.json` | MSL REMS, PDS Atmospheres Node | [PDS Atmospheres · REMS](https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html) | MEASURED | NASA/JPL/CAB |
-| 5 | Base maps around the area: MRO CTX (~6 m/px, shown at ~20 m/px), Viking color mosaic (MDIM 2.1) and MGS MOLA color relief | loaded at runtime (`components/map/layers/basemap.ts`) | CTX: Esri Living Atlas OnMars · Viking and MOLA: USGS Astrogeology WMS | [OnMars CTX](https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer) · [USGS planetary maps](https://planetarymaps.usgs.gov/) | context only | NASA/JPL/MSSS, NASA/USGS |
+| 5 | Base maps around the area: MRO CTX (~6 m/px, shown at ~20 m/px), Mars Odyssey THEMIS IR Day mosaic (100 m/px, terrain relief) and Viking MDIM 2.1 colorized mosaic (natural color) | loaded at runtime (`components/map/layers/basemap.ts`) | CTX: Esri Living Atlas OnMars · THEMIS and Viking: USGS Astrogeology WMS | [OnMars CTX](https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer) · [USGS planetary maps](https://planetarymaps.usgs.gov/) | context only | NASA/JPL/MSSS, NASA/JPL/ASU, NASA/USGS |
 | 6 | EVA base, points of interest and NO-GO zones | `pois.geojson`, `nogo.geojson` | Drawn by the team on top of the orthoimage | — | team assumption | MARSWALK team |
 
 **Notes on honesty**
 - Bradbury Landing (4.59 °S, 137.44 °E) is outside this footprint, so the "EVA Base" is an assumed point inside the study area.
 - The HiRISE strip is tilted, so about 25 % of its bounding box has no data. `find_valid_bounds.py` finds the largest rectangle with valid data and `crop.py` cuts both the DTM and the orthoimage to it, so the map has no empty black borders and routes never cross terrain without data.
-- Thermal (THEMIS) and mineralogy (CRISM) layers have a place in the app, but no processed data exists yet for this area, and the app says so.
+- Thermal (THEMIS) and mineralogy (CRISM) mission layers are supported by the code but hidden, because no processed data exists yet for this area. They appear on their own as soon as `meta.json` lists their files.
 - Sol 412 weather values are typical for sols 300–500 and were cross-checked against NASA image release PIA16913 and the REMS archive (instrument reference: Gómez-Elvira et al. 2012, *Space Sci Rev*, doi:10.1007/s11214-012-9921-1). The exact REMS file and row is not recorded.
 
 ---
@@ -121,7 +121,7 @@ NASA HiRISE DTM + orthoimage ─┐
 
 ### Step 3 · Map and interface
 - MapLibre draws the HiRISE orthoimage, the slope and radiation layers, the base maps, the route, the points of interest and the notes.
-- The CTX service uses a geographic (degree) tile grid, not Web Mercator, so the app downloads the 12 tiles that cover the area, stitches them in a canvas and places the result with its real coordinates. Viking and MOLA come as one image per area from the USGS WMS.
+- The CTX service uses a geographic (degree) tile grid, not Web Mercator, so the app downloads the 12 tiles that cover the area, stitches them in a canvas and places the result with its real coordinates. THEMIS and Viking come as one 1024 × 768 image of the same area from the USGS WMS. (The first version used MOLA color relief and gray Viking, which looked pixelated and oddly colored next to the HiRISE image.)
 - Every layer is labeled **MEASURED**, **DERIVED** or **ESTIMATED**, and the "i" button lists every assumption and source.
 - Designed for gloves: touch targets of at least 56 px, plus a HUD mode that keeps only distance, risk and resource in the corners. Tested on desktop, tablet and a real phone.
 

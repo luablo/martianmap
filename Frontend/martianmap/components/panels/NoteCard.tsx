@@ -4,6 +4,7 @@
 
 import { useEffect, useId, useMemo, useState } from "react";
 import Button from "@/components/ui/Button";
+import { useI18n } from "@/lib/i18n";
 import { NOTE_TAGS } from "@/components/panels/noteTags";
 import type { LonLat, NewNote, NoteTag } from "@/lib/types";
 
@@ -20,6 +21,7 @@ export default function NoteCard({
   onCancel: () => void;
 }) {
   const ids = useId();
+  const { t } = useI18n();
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [tags, setTags] = useState<NoteTag[]>([]);
@@ -65,7 +67,7 @@ export default function NoteCard({
         photo,
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo guardar la nota.");
+      setError(err instanceof Error ? err.message : t("No se pudo guardar la nota."));
       setSaving(false);
     }
   };
@@ -79,13 +81,13 @@ export default function NoteCard({
       <header className="flex items-center gap-2 border-b border-line py-1.5 pl-4 pr-1.5">
         <div className="min-w-0 flex-1">
           <h2 id={`${ids}-h`} className="font-mono text-[11px] font-semibold tracking-widest text-science">
-            NUEVA NOTA DE CAMPO
+            {t("NUEVA NOTA DE CAMPO")}
           </h2>
           <p className="truncate font-mono text-[11px] tabular-nums text-ink-dim">
             {at[1].toFixed(5)}°, {at[0].toFixed(5)}° · SOL {sol}
           </p>
         </div>
-        <Button variant="outline" onClick={onCancel} disabled={saving} aria-label="Cancelar nota" className="grid place-items-center">
+        <Button variant="outline" onClick={onCancel} disabled={saving} aria-label={t("Cancelar nota")} className="grid place-items-center">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
             <path d="M6 6l12 12M18 6 6 18" />
           </svg>
@@ -94,32 +96,32 @@ export default function NoteCard({
 
       <div className="flex min-h-0 flex-col gap-4 overflow-y-auto p-4">
         <label className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] tracking-wider text-ink-dim">TÍTULO *</span>
+          <span className="font-mono text-[11px] tracking-wider text-ink-dim">{t("TÍTULO *")}</span>
           <input
             required
             autoFocus
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={80}
-            placeholder="Ej. Veta clara en la cresta"
+            placeholder={t("Ej. Veta clara en la cresta")}
             className="touch rounded-xl border border-line bg-bg-0/60 px-3 text-base text-ink placeholder:text-ink-dim focus:border-route focus:outline-none"
           />
         </label>
 
         <label className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] tracking-wider text-ink-dim">NOTA</span>
+          <span className="font-mono text-[11px] tracking-wider text-ink-dim">{t("NOTA")}</span>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={3}
             maxLength={500}
-            placeholder="Qué viste, dónde exactamente, qué hay que revisar"
+            placeholder={t("Qué viste, dónde exactamente, qué hay que revisar")}
             className="resize-none rounded-xl border border-line bg-bg-0/60 px-3 py-3 text-base text-ink placeholder:text-ink-dim focus:border-route focus:outline-none"
           />
         </label>
 
         <fieldset className="flex flex-col gap-1.5">
-          <legend className="mb-1.5 font-mono text-[11px] tracking-wider text-ink-dim">ETIQUETAS</legend>
+          <legend className="mb-1.5 font-mono text-[11px] tracking-wider text-ink-dim">{t("ETIQUETAS")}</legend>
           <div className="grid grid-cols-2 gap-1.5">
             {NOTE_TAGS.map(({ id, label, danger }) => {
               const on = tags.includes(id);
@@ -134,7 +136,7 @@ export default function NoteCard({
                     on && danger ? "border-danger! text-danger!" : ""
                   }`}
                 >
-                  {label}
+                  {t(label)}
                 </Button>
               );
             })}
@@ -142,13 +144,13 @@ export default function NoteCard({
         </fieldset>
 
         <div className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] tracking-wider text-ink-dim">FOTO</span>
+          <span className="font-mono text-[11px] tracking-wider text-ink-dim">{t("FOTO")}</span>
           {preview ? (
             <div className="flex items-center gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element -- blob local, no pasa por next/image */}
-              <img src={preview} alt="Vista previa de la foto" className="h-20 w-28 rounded-lg border border-line object-cover" />
+              <img src={preview} alt={t("Vista previa de la foto")} className="h-20 w-28 rounded-lg border border-line object-cover" />
               <Button variant="outline" onClick={() => setPhoto(null)} className="px-4 text-sm">
-                Quitar
+                {t("Quitar")}
               </Button>
             </div>
           ) : (
@@ -158,7 +160,7 @@ export default function NoteCard({
                 <path d="M8 7l1.5-3h5L16 7" />
                 <circle cx="12" cy="13.5" r="3.5" />
               </svg>
-              Tomar o elegir foto
+              {t("Tomar o elegir foto")}
               <input
                 type="file"
                 accept="image/*"
@@ -179,10 +181,10 @@ export default function NoteCard({
 
       <footer className="flex gap-2 border-t border-line p-3">
         <Button variant="outline" onClick={onCancel} disabled={saving} className="flex-1 px-4">
-          Cancelar
+          {t("Cancelar")}
         </Button>
         <Button type="submit" variant="solid" disabled={!title.trim() || saving} className="flex-[2] px-4">
-          {saving ? "Guardando…" : "Guardar nota"}
+          {saving ? t("Guardando…") : t("Guardar nota")}
         </Button>
       </footer>
     </form>

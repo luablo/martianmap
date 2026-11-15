@@ -56,11 +56,13 @@ Existing Mars maps were made to look at the planet from orbit, not to walk it. M
 
 - **Safe route:** 8-neighbor A* on a 4 m-per-cell grid that minimizes **time** and never enters terrain too steep for the mode or a NO-GO zone.
 - **Three travel modes:** on foot, open rover and pressurized rover. Changing the mode recomputes the route.
-- **Layers you can toggle:** orbital image (HiRISE), slope and radiation, each labeled **MEASURED / DERIVED / ESTIMATED**, plus base maps (MRO CTX, Viking color, MOLA relief) for context around the area.
+- **Layers you can toggle:** orbital image (HiRISE), slope and radiation, each labeled **MEASURED / DERIVED / ESTIMATED**, plus base maps (MRO CTX, THEMIS relief, Viking color) for context around the area.
 - **Route metrics:** distance, time, maximum slope, radiation dose (round trip), remaining resource (oxygen or battery) and overall risk.
 - **Edge cases explained:** an unreachable destination, one out of range for the mode or not enough resource shows a clear warning instead of a fake route.
 - **Built for gloves:** buttons of 56 px or more, no fine gestures or hover, and color is never the only signal (NO-GO zones have hatching and text).
 - **Field notes:** the astronaut writes on the map, with a photo, tags and coordinates, and the partner sees it in real time (Supabase). Without network, notes are kept on the device.
+- **EVA simulation:** "Start EVA" plays the trip: a dot leaves the base, follows the route, stops to sample and comes back, while mission time, dose and the remaining resource fill in live (accelerated).
+- **Spanish / English:** the ES/EN button switches the whole interface; the choice is remembered on the device.
 - **Responsive:** phone, tablet (main target) and habitat screen with the same code, plus a HUD mode.
 
 ## How it answers the challenge
@@ -84,7 +86,7 @@ Each layer says on screen whether it is measured, derived or estimated. Exact UR
 | Slope | **HiRISE DTM** DTEEC_001488_1750, 1 m/px, slope computed by us at 4 m per cell | DERIVED |
 | Radiation | **MSL RAD**: about 0.67 mSv/day at the surface (Hassler et al., 2014) | MEASURED (rate) · ESTIMATED (dose per route) |
 | Weather of the sol | **MSL REMS**, sol 412: −70 / 0 °C, 875 Pa, UV | MEASURED |
-| Base maps | **MRO CTX** (Esri OnMars), **Viking** MDIM 2.1 and **MGS MOLA** (USGS Astrogeology) | context |
+| Base maps | **MRO CTX** (Esri OnMars), **Mars Odyssey THEMIS** IR Day and **Viking** MDIM 2.1 colorized (USGS Astrogeology) | context |
 
 ## Assumptions and limitations
 

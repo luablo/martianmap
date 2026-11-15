@@ -2,6 +2,7 @@
 // Se ubica justo encima de la barra de métricas usando --ui-bottom (medido en vivo por AppShell).
 // pointer-events-none: no bloquea el mapa.
 
+import { useI18n } from "@/lib/i18n";
 import { LAYERS, layerAvailable } from "@/lib/layers";
 import type { LayerId, Provenance, ZoneData } from "@/lib/types";
 
@@ -26,6 +27,7 @@ export default function Legend({
   zone: ZoneData;
   layers: Record<LayerId, boolean>;
 }) {
+  const { t } = useI18n();
   const active = LAYERS.filter((l) => layers[l.id] && layerAvailable(zone, l.id));
   if (active.length === 0) return null;
 
@@ -40,7 +42,7 @@ export default function Legend({
       ].join(" ")}
     >
       <h3 className="mb-1.5 font-mono text-[10px] font-semibold tracking-widest text-ink-dim">
-        LEYENDA
+        {t("LEYENDA")}
       </h3>
       <ul className="flex flex-col gap-1.5">
         {active.map((l) => (
@@ -51,10 +53,10 @@ export default function Legend({
               aria-hidden
             />
             <div className="min-w-0 flex-1">
-              <div className="truncate text-xs font-semibold text-ink">{l.label}</div>
+              <div className="truncate text-xs font-semibold text-ink">{t(l.label)}</div>
               <div className="flex items-center gap-1">
                 <span className={`font-mono text-[10px] font-semibold ${PROVENANCE_CLASS[l.provenance]}`}>
-                  {l.provenance}
+                  {t(l.provenance)}
                 </span>
                 <span className="truncate font-mono text-[10px] text-ink-dim">{l.source}</span>
               </div>

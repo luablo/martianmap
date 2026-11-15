@@ -15,6 +15,7 @@ import { addSlopeLayer } from "./layers/slope";
 import { addThermalLayer } from "./layers/thermal";
 import { addMineralLayer } from "./layers/mineral";
 import { applyBasemap, updateBasemapPaint, type BasemapId } from "./layers/basemap";
+import { useI18n } from "@/lib/i18n";
 import Legend from "./Legend";
 import { syncNoteMarkers } from "./layers/notes";
 
@@ -26,6 +27,8 @@ export interface MapViewProps {
   notes: Note[];
   basemapId: BasemapId;
   onMapClick: (p: LonLat) => void;
+  /** Posición del astronauta durante la simulación de la EVA (null = sin simulación). */
+  simPos?: LonLat | null;
 }
 
 function markerEl(kind: "base" | "dest", label: string) {
@@ -104,7 +107,14 @@ function uiPadding(map: MlMap) {
 // "radiation" no va aquí: se pinta sobre la ruta (line-gradient).
 const RASTER_LAYERS = ["ortho", "slope", "thermal", "mineral"] as const;
 
-export default function MapView({ zone, destination, route, layers, notes, basemapId, onMapClick }: MapViewProps) {
+export default function MapView({ zone, destination, route, layers, notes, basemapId, onMapClick, simPos = null }: MapViewProps) {
+  const { t } = useI18n();
+  // Traductor más reciente para textos que se escriben fuera de React (marcadores).
+  const tRef = useRef(t);
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
+  const simMarker = useRef<Marker | null>(null);
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const destMarker = useRef<Marker | null>(null);
@@ -263,7 +273,7 @@ export default function MapView({ zone, destination, route, layers, notes, basem
       });
     });
 
-    new Marker({ element: markerEl("base", "BASE"), anchor: "top", offset: [0, -9] })
+    new Marker({ element: markerEl("base", tRef.current("BASE")), anchor: "top", offset: [0, -9] })
       .setLngLat([meta.base.lon, meta.base.lat])
       .addTo(map);
 
@@ -285,6 +295,7 @@ export default function MapView({ zone, destination, route, layers, notes, basem
       doseMarker.current = null;
       doseEl.current = null;
       lastFit.current = null;
+      simMarker.current = null;
       povPopup.current?.remove();
       povPopup.current = null;
       noteMarkersMap.clear();
@@ -299,7 +310,7 @@ export default function MapView({ zone, destination, route, layers, notes, basem
     if (destination) {
       if (!destMarker.current) {
         destMarker.current = new Marker({
-          element: markerEl("dest", "DESTINO"),
+          element: markerEl("dest", tRef.current("DESTINO")),
           // Etiqueta arriba (map.css): el punto queda abajo y se centra con +9 px.
           anchor: "bottom",
           offset: [0, 9],
@@ -423,7 +434,7 @@ export default function MapView({ zone, destination, route, layers, notes, basem
             .setLngLat(mid)
             .addTo(map);
         }
-        doseEl.current!.textContent = `DOSIS ${route!.doseMSv.toFixed(3)} mSv`;
+        doseEl.current!.textContent = `${tRef.current("DOSIS")} ${route!.doseMSv.toFixed(3)} mSv`;
         doseMarker.current.setLngLat(mid);
       } else {
         doseMarker.current?.remove();
@@ -437,10 +448,48 @@ export default function MapView({ zone, destination, route, layers, notes, basem
     else map.once("load", apply);
   }, [layers.radiation, route]);
 
+  // Idioma: los marcadores son HTML fuera de React, así que se reescriben a mano.
+  useEffect(() => {
+    const root = container.current;
+    const map = mapRef.current;
+    if (!root || !map) return;
+    const apply = () => {
+      root.querySelectorAll(".marker-base > span:last-child").forEach((el) => (el.textContent = t("BASE")));
+      root.querySelectorAll(".marker-dest > span:last-child").forEach((el) => (el.textContent = t("DESTINO")));
+      root.querySelectorAll(".marker-nogo").forEach((el) => (el.textContent = t("NO PISAR")));
+      // Nombres de los POI: se guarda el original (español) la primera vez y se traduce desde ahí.
+      root.querySelectorAll<HTMLElement>(".marker-poi > span:last-child").forEach((el) => {
+        el.dataset.es ??= el.textContent ?? "";
+        el.textContent = t(el.dataset.es);
+      });
+      if (doseEl.current && route) doseEl.current.textContent = `${t("DOSIS")} ${route.doseMSv.toFixed(3)} mSv`;
+    };
+    // Los POI y las zonas NO PISAR se agregan en "load": si aún no corre, se espera.
+    if (map.getLayer("route")) apply();
+    else map.once("load", apply);
+  }, [t, destination, route, layers.radiation]);
+
+  // Simulación de la EVA: un punto que recorre la ruta (ida, muestreo y regreso).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (!simPos) {
+      simMarker.current?.remove();
+      simMarker.current = null;
+      return;
+    }
+    if (!simMarker.current) {
+      const el = document.createElement("div");
+      el.className = "marker-sim";
+      el.innerHTML = '<span class="marker-sim-pulse"></span><span class="marker-sim-dot"></span>';
+      simMarker.current = new Marker({ element: el, anchor: "center" }).setLngLat(simPos).addTo(map);
+    } else simMarker.current.setLngLat(simPos);
+  }, [simPos]);
+
   // El CSS de MapLibre pone `position: relative` al contenedor: por eso va envuelto.
   return (
     <div className="absolute inset-0">
-      <div ref={container} className="h-full w-full" aria-label="Mapa de la zona" />
+      <div ref={container} className="h-full w-full" aria-label={t("Mapa de la zona")} />
       <Legend zone={zone} layers={layers} />
     </div>
   );

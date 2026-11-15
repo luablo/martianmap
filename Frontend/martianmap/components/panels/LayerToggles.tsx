@@ -4,6 +4,7 @@
 
 import Chip from "@/components/ui/Chip";
 import Toggle from "@/components/ui/Toggle";
+import { useI18n } from "@/lib/i18n";
 import { LAYERS, layerAvailable } from "@/lib/layers";
 import type { LayerId, Provenance, ZoneData } from "@/lib/types";
 import { BASEMAPS, type BasemapId } from "@/components/map/layers/basemap";
@@ -69,12 +70,15 @@ export default function LayerToggles({
   onBasemapChange?: (id: BasemapId) => void;
 }) {
   const basemapIds = Object.keys(BASEMAPS) as BasemapId[];
+  const { t } = useI18n();
 
   return (
     <div className="flex flex-col">
       {/* ── Capas de misión ─────────────────────────── */}
       <div className="flex flex-col gap-0.5 pb-1">
-        {LAYERS.map((l) => {
+        {/* Las capas sin datos para esta zona (hoy Térmico y Mineralogía) no se muestran;
+            aparecen solas en cuanto meta.json traiga su archivo. */}
+        {LAYERS.filter((l) => !zone || layerAvailable(zone, l.id)).map((l) => {
           const available = layerAvailable(zone, l.id);
           return (
             <Toggle
@@ -83,12 +87,12 @@ export default function LayerToggles({
               disabled={!available}
               onChange={(v) => onChange(l.id, v)}
             >
-              <span className="block truncate text-sm font-semibold">{l.label}</span>
+              <span className="block truncate text-sm font-semibold">{t(l.label)}</span>
               <span className="mt-0.5 flex items-center gap-1.5">
                 {available ? (
-                  <Chip tone={tone[l.provenance]}>{l.provenance}</Chip>
+                  <Chip tone={tone[l.provenance]}>{t(l.provenance)}</Chip>
                 ) : (
-                  <Chip>SIN DATOS</Chip>
+                  <Chip>{t("SIN DATOS")}</Chip>
                 )}
                 <span className="truncate font-mono text-[11px] text-ink-dim">{l.source}</span>
               </span>
@@ -102,7 +106,7 @@ export default function LayerToggles({
         <>
           <div className="mx-3 my-1 border-t border-line" />
           <p className="px-3 pb-1 pt-1.5 font-mono text-[10px] font-semibold tracking-widest text-ink-dim">
-            MAPA BASE
+            {t("MAPA BASE")}
           </p>
           <div className="flex flex-col gap-0.5 pb-1.5">
             {basemapIds.map((id) => {
@@ -140,10 +144,10 @@ export default function LayerToggles({
                   {/* Texto */}
                   <span className="min-w-0 flex-1">
                     <span className={`block truncate text-sm ${isActive ? "font-semibold" : ""}`}>
-                      {def.label}
+                      {t(def.label)}
                     </span>
                     <span className="block truncate font-mono text-[10px] text-ink-dim">
-                      {def.description.split("—")[0].trim()}
+                      {t(def.description.split("—")[0].trim())}
                     </span>
                   </span>
                 </button>

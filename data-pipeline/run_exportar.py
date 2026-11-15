@@ -95,7 +95,7 @@ meta = {
         "Pendiente: derivada del DTM HiRISE DTEEC_001488_1750 (1 m/px), remuestreada a 4 m/celda; recorte sin bordes vacíos",
         "Radiación: 0.67 mSv/día en superficie, MSL RAD (Hassler et al. 2014, Science) · https://doi.org/10.1126/science.1244797",
         "Clima: MSL REMS, sol 412 (29 oct 2013), PDS Atmospheres Node · https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html",
-        "Mapas base: MRO CTX (NASA/JPL/MSSS, mosaicos de Esri OnMars) · https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer · Viking MDIM 2.1 y MGS MOLA (USGS Astrogeology) · https://planetarymaps.usgs.gov/",
+        "Mapas base: MRO CTX (NASA/JPL/MSSS, mosaicos de Esri OnMars) · https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer · Mars Odyssey THEMIS IR de día 100 m y Viking MDIM 2.1 colorizado (USGS Astrogeology) · https://planetarymaps.usgs.gov/",
         "Zonas NO PISAR y puntos de interés: marcados por el equipo sobre la ortofoto (no son datos de NASA)",
     ],
     "files": {"ortho": "ortho.webp", "slope": "slope.png"},

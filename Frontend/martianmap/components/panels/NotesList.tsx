@@ -1,12 +1,21 @@
 // Dueño: P4. Lista de notas de campo, la más reciente arriba (panel derecho, ≥ 1024 px).
 
+"use client";
+
 import Chip from "@/components/ui/Chip";
+import { useI18n } from "@/lib/i18n";
 import { TAG_LABEL } from "@/components/panels/noteTags";
 import type { Note } from "@/lib/types";
 
 export default function NotesList({ notes }: { notes: Note[] }) {
+  const { lang, t: tr } = useI18n();
   if (notes.length === 0) {
-    return (
+    return lang === "en" ? (
+      <p className="px-3 pb-3 text-sm text-ink-dim">
+        No notes yet. Use <span className="font-semibold text-science">+ NOTE</span> and tap the map
+        where the finding is.
+      </p>
+    ) : (
       <p className="px-3 pb-3 text-sm text-ink-dim">
         Aún no hay notas. Usa <span className="font-semibold text-science">+ NOTA</span> y toca el
         mapa donde está el hallazgo.
@@ -31,7 +40,7 @@ export default function NotesList({ notes }: { notes: Note[] }) {
             <div className="mt-1 flex flex-wrap items-center gap-1">
               {n.tags.map((t) => (
                 <Chip key={t} tone={t === "PELIGRO" ? "danger" : "science"}>
-                  {TAG_LABEL[t]}
+                  {tr(TAG_LABEL[t])}
                 </Chip>
               ))}
               <span className="font-mono text-[10px] text-ink-dim">

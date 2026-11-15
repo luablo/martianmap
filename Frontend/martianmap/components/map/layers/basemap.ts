@@ -1,46 +1,42 @@
-// Dueño: P3 (Mapa). Mapas base de Marte. Dos fuentes según disponibilidad:
+// Dueño: P3 (Mapa). Mapas base de Marte alrededor de la zona HiRISE.
 //
-//   CTX (MRO Context Camera):
-//     Esri Living Atlas OnMars — astro.arcgis.com
-//     Web Mercator XYZ estándar, PNG, CORS:*, ~6 m/px hasta z=12.
-//     Sin transformación de coordenadas.
+// Todos cubren la MISMA área (AREA, ~0.70° × 0.53° alrededor de Gale) y se colocan
+// como image source con sus coordenadas reales, igual que ortho.ts:
 //
-//   MOLA (relieve) y Viking (color fotográfico):
-//     NASA Trek — trek.nasa.gov
-//     Solo tienen datos hasta z=7 EQ (~1.4°/tile). En lugar de tiles dinámicos
-//     (que dan 404 en z>7) se usa el tile exacto que cubre Gale como image source
-//     con sus coordenadas reales, igual que hace ortho.ts con la ortofoto HiRISE.
-//     MapLibre lo escala bilinealmente → suave, sin pixelado, sin errores de red.
+//   CTX (MRO Context Camera, ~6 m/px): Esri Living Atlas OnMars.
+//     El servicio usa una rejilla en grados (wkid 104971), no Web Mercator, así que
+//     se bajan los 12 mosaicos del nivel 10 que cubren AREA y se unen en un canvas.
+//
+//   Relieve (THEMIS IR de día, 100 m/px) y Color (Viking MDIM 2.1 colorizado):
+//     USGS Astrogeology WMS (EPSG:4326, CORS:*), una imagen de 1024 × 768 para AREA (~40 m/px: más
+//     no agrega detalle, porque el servidor amplía por vecino más cercano y se ven bloques;
+//     MapLibre la suaviza al ampliar).
+//     Antes se usaban MOLA_color (rampa de colores saturada y pixelada) y MDIM21 en
+//     gris a 1024 px sobre 1.4°: se veían raros junto a la ortofoto.
 
 import type { Map as MlMap } from "maplibre-gl";
 
 const ESRI = "https://astro.arcgis.com/arcgis/rest/services/OnMars";
 
-// USGS Astrogeology WMS — genera imágenes a resolución arbitraria, CORS:*
-// SRS=EPSG:4326 (lon/lat de Marte tal cual, sin conversión).
-// Usamos image source con la bbox del tile de Gale → imagen HD sin pixelado.
-// La URL se construye con la bbox exacta del tile Trek que cubre Gale.
-const USGS_WMS_BASE = "https://planetarymaps.usgs.gov/cgi-bin/mapserv" +
-  "?map=/maps/mars/mars_simp_cyl.map" +
-  "&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap" +
-  "&SRS=EPSG:4326&STYLES=&FORMAT=image/jpeg" +
-  "&WIDTH=1024&HEIGHT=1024";  // 1024×1024 para alta resolución
-
-// ─── Trek tile de Gale ────────────────────────────────────────────────────────
-// z=7, row=67, col=225 cubre lon 136.4–137.8°, lat -4.2–-5.6° (confirmado OK).
-const T = { z: 7, row: 67, col: 225 };
-const TB = {
-  west:  T.col       * (360 / 256) - 180,  // 136.40625
-  east:  (T.col + 1) * (360 / 256) - 180,  // 137.8125
-  north: 90 - T.row       * (180 / 128),   //  -4.21875
-  south: 90 - (T.row + 1) * (180 / 128),   //  -5.625
+/** Área común de todos los mapas base = los 4 × 3 mosaicos CTX de nivel 10. */
+const AREA = {
+  west:  136.93359375,
+  east:  137.63671875,
+  north: -4.5703125,
+  south: -5.09765625,
 };
-const TREK_COORDS: [[number,number],[number,number],[number,number],[number,number]] = [
-  [TB.west, TB.north],
-  [TB.east, TB.north],
-  [TB.east, TB.south],
-  [TB.west, TB.south],
+const AREA_COORDS: [[number,number],[number,number],[number,number],[number,number]] = [
+  [AREA.west, AREA.north],
+  [AREA.east, AREA.north],
+  [AREA.east, AREA.south],
+  [AREA.west, AREA.south],
 ];
+
+const usgsWms = (layer: string) =>
+  "https://planetarymaps.usgs.gov/cgi-bin/mapserv?map=/maps/mars/mars_simp_cyl.map" +
+  "&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS=EPSG:4326&STYLES=&FORMAT=image/jpeg" +
+  `&WIDTH=1024&HEIGHT=768&LAYERS=${layer}` +
+  `&BBOX=${AREA.west},${AREA.south},${AREA.east},${AREA.north}`;
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -89,22 +85,22 @@ export const BASEMAPS: Record<BasemapId, BasemapDef> = {
     paintBlend: { opacity: 0.5,  contrast: 0.1,  saturation: 0    },
   },
   mola: {
-    id: "mola", label: "Relieve MOLA",
-    description: "Topografía coloreada MGS MOLA · USGS Astrogeology",
-    attribution: "NASA/USGS — MGS MOLA Color Hillshade · planetarymaps.usgs.gov",
-    // WMS con bbox del tile de Gale → imagen 1024×1024 sin pixelado.
+    // El id se queda "mola" para no tocar iconos ni estado guardado; la fuente es THEMIS.
+    id: "mola", label: "Relieve THEMIS",
+    description: "Forma del terreno — THEMIS IR de día, 100 m/px · USGS Astrogeology",
+    attribution: "NASA/JPL/ASU — Mars Odyssey THEMIS IR Day 100 m · planetarymaps.usgs.gov",
     kind: "image",
-    imageUrl: `${USGS_WMS_BASE}&LAYERS=MOLA_color&BBOX=${TB.west},${TB.south},${TB.east},${TB.north}`,
+    imageUrl: usgsWms("THEMIS"),
     minzoom: 0, maxzoom: 20,
     paintSolo:  { opacity: 1,    contrast: 0.25, saturation: 0.5  },
     paintBlend: { opacity: 0.45, contrast: 0.1,  saturation: 0.3  },
   },
   viking: {
     id: "viking", label: "Color Viking",
-    description: "Mosaico Viking VIS MDIM · USGS Astrogeology",
-    attribution: "NASA/USGS — Viking MDIM 2.1 · planetarymaps.usgs.gov",
+    description: "Color natural — Viking MDIM 2.1 colorizado · USGS Astrogeology",
+    attribution: "NASA/USGS — Viking MDIM 2.1 Colorized · planetarymaps.usgs.gov",
     kind: "image",
-    imageUrl: `${USGS_WMS_BASE}&LAYERS=MDIM21&BBOX=${TB.west},${TB.south},${TB.east},${TB.north}`,
+    imageUrl: usgsWms("MDIM21_color"),
     minzoom: 0, maxzoom: 20,
     paintSolo:  { opacity: 1,    contrast: 0.2,  saturation: 0.35 },
     paintBlend: { opacity: 0.5,  contrast: 0.1,  saturation: 0.15 },
@@ -116,22 +112,10 @@ export const BASEMAPS: Record<BasemapId, BasemapDef> = {
 // Nivel 10 = 0.17578125° por mosaico (~20 m/px), suficiente como contexto
 // alrededor de la ortofoto HiRISE. 4 × 3 mosaicos cubren la zona con margen.
 const CTX_LEVEL = 10;
-const CTX_TILE_DEG = 0.17578125;
 const CTX_TILE_PX = 512;
+// Columnas y filas del nivel 10 que forman AREA (west = 1803 × 0.17578125 − 180, etc.).
 const CTX_COLS = [1803, 1804, 1805, 1806]; // lon 136.93–137.64 °E
 const CTX_ROWS = [538, 539, 540];          // lat −4.57–−5.10 °
-const CTX_BOUNDS = {
-  west:  CTX_COLS[0] * CTX_TILE_DEG - 180,
-  east:  (CTX_COLS[CTX_COLS.length - 1] + 1) * CTX_TILE_DEG - 180,
-  north: 90 - CTX_ROWS[0] * CTX_TILE_DEG,
-  south: 90 - (CTX_ROWS[CTX_ROWS.length - 1] + 1) * CTX_TILE_DEG,
-};
-const CTX_COORDS: [[number,number],[number,number],[number,number],[number,number]] = [
-  [CTX_BOUNDS.west, CTX_BOUNDS.north],
-  [CTX_BOUNDS.east, CTX_BOUNDS.north],
-  [CTX_BOUNDS.east, CTX_BOUNDS.south],
-  [CTX_BOUNDS.west, CTX_BOUNDS.south],
-];
 
 let ctxMosaic: Promise<string> | null = null;
 
@@ -170,7 +154,7 @@ function addSource(map: MlMap, def: BasemapDef) {
     map.addSource("basemap", {
       type: "image",
       url: def.imageUrl,
-      coordinates: TREK_COORDS,
+      coordinates: AREA_COORDS,
     });
   } else if (def.kind === "tiles" && def.tilesUrl) {
     map.addSource("basemap", {
@@ -231,7 +215,7 @@ export function applyBasemap(map: MlMap, id: BasemapId, orthoActive = false) {
     loadCtxMosaic()
       .then((url) => {
         if (token !== applyToken || !map.getStyle()) return; // ya se eligió otro
-        replace(() => map.addSource("basemap", { type: "image", url, coordinates: CTX_COORDS }));
+        replace(() => map.addSource("basemap", { type: "image", url, coordinates: AREA_COORDS }));
         // Si la ortofoto se prendió o apagó mientras bajaba, usar el paint vigente.
         const orthoOn = !!map.getLayer("ortho") && map.getLayoutProperty("ortho", "visibility") !== "none";
         updateBasemapPaint(map, id, orthoOn);

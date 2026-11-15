@@ -56,11 +56,13 @@ Los mapas de Marte se hicieron para mirar el planeta, no para caminarlo. Mars Tr
 
 - **Ruta segura:** A* de 8 vecinos sobre una malla de 4 m por celda, que minimiza el **tiempo** y nunca entra en terreno rojo.
 - **Tres modos de transporte:** a pie, rover abierto y rover presurizado. Cambiar de modo recalcula la ruta.
-- **Capas que se prenden y apagan:** imagen de órbita (HiRISE), pendiente y radiación, cada una con su etiqueta **MEDIDO / DERIVADO / ESTIMADO**, más mapas base (MRO CTX, Viking y MOLA) como contexto alrededor de la zona.
+- **Capas que se prenden y apagan:** imagen de órbita (HiRISE), pendiente y radiación, cada una con su etiqueta **MEDIDO / DERIVADO / ESTIMADO**, más mapas base (MRO CTX, relieve THEMIS y color Viking) como contexto alrededor de la zona.
 - **Métricas de la ruta:** distancia, tiempo, pendiente máxima, dosis de radiación (ida y vuelta), recurso restante (oxígeno o batería) y riesgo global.
 - **Casos límite explicados:** destino inalcanzable, fuera de alcance del modo o recurso insuficiente muestran un aviso claro en lugar de una ruta falsa.
 - **Pensada para guantes:** botones de 56 px o más, sin gestos finos ni *hover*, y el color nunca es la única señal (la zona prohibida lleva rayado y texto).
 - **Notas de campo:** el astronauta escribe el mapa, con foto, etiquetas y coordenada, y el compañero lo ve en tiempo real.
+- **Simulación de la EVA:** «Iniciar recorrido» reproduce el viaje: un punto sale de la base, sigue la ruta, se detiene a muestrear y regresa, mientras se llenan en vivo el tiempo de misión, la dosis y el recurso (acelerado).
+- **Español / inglés:** el botón ES/EN cambia toda la interfaz y el dispositivo recuerda la elección.
 - **Responsiva:** teléfono, tablet (objetivo principal) y pantalla del hábitat con el mismo código.
 
 ## Cómo responde al reto
@@ -84,7 +86,7 @@ Cada capa dice en pantalla si es medida, derivada o estimada.
 | Pendiente | **DTM HiRISE** DTEEC_001488_1750 a 1 m/px, con la pendiente calculada por nosotros a 4 m por celda | DERIVADO |
 | Radiación | **MSL RAD**: unos 0.67 mSv/día en superficie (Hassler et al., 2014) | MEDIDO (tasa) · ESTIMADO (dosis por ruta) |
 | Clima del sol | **MSL REMS**, sol 412: −70 / 0 °C, 875 Pa, UV | MEDIDO |
-| Mapas base | **MRO CTX** (Esri OnMars), **Viking** MDIM 2.1 y **MGS MOLA** (USGS Astrogeology) | contexto |
+| Mapas base | **MRO CTX** (Esri OnMars), **Mars Odyssey THEMIS** IR de día y **Viking** MDIM 2.1 colorizado (USGS Astrogeology) | contexto |
 
 Las URLs exactas, fechas y créditos están en [`RESOURCES.md`](RESOURCES.md).
 

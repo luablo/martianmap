@@ -5,6 +5,7 @@ import { useId, useMemo, useRef, useState } from "react";
 import Button from "@/components/ui/Button";
 import Chip from "@/components/ui/Chip";
 import { distanceM } from "@/lib/geo";
+import { useI18n } from "@/lib/i18n";
 import { formatDistance } from "@/lib/metrics";
 import type { LonLat, Poi, PoiType, Weather } from "@/lib/types";
 
@@ -60,6 +61,7 @@ export default function TopBar({
   onHud: () => void;
 }) {
   const listId = useId();
+  const { lang, setLang, t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -68,20 +70,20 @@ export default function TopBar({
   const results = useMemo(() => {
     const q = fold(query.trim());
     return pois
-      .filter((p) => !q || fold(`${p.name} ${p.description ?? ""}`).includes(q))
+      .filter((p) => !q || fold(`${p.name} ${t(p.name)} ${p.description ?? ""}`).includes(q))
       .map((p) => ({ poi: p, dist: base ? distanceM(base, [p.lon, p.lat]) : null }))
       .sort(
         (a, b) =>
           TYPE_ORDER[a.poi.type] - TYPE_ORDER[b.poi.type] || (a.dist ?? 0) - (b.dist ?? 0),
       );
-  }, [pois, base, query]);
+  }, [pois, base, query, t]);
 
   const showList = open && results.length > 0;
   const activeIdx = Math.min(active, results.length - 1);
 
   const pick = (poi: Poi) => {
     onPick(poi);
-    setQuery(poi.name);
+    setQuery(t(poi.name));
     setOpen(false);
     inputRef.current?.blur(); // en teléfono baja el teclado y deja ver la ruta
   };
@@ -108,7 +110,7 @@ export default function TopBar({
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" strokeLinecap="round" />
         </svg>
-        <span className="sr-only">Buscar destino</span>
+        <span className="sr-only">{t("Buscar destino")}</span>
         <input
           ref={inputRef}
           type="search"
@@ -117,7 +119,7 @@ export default function TopBar({
           aria-controls={listId}
           aria-autocomplete="list"
           aria-activedescendant={showList ? `${listId}-${activeIdx}` : undefined}
-          placeholder="¿A dónde vamos?"
+          placeholder={t("¿A dónde vamos?")}
           autoComplete="off"
           enterKeyHint="go"
           value={query}
@@ -147,12 +149,21 @@ export default function TopBar({
           </span>
         )}
         <span className="hidden sm:contents">
-          <Chip tone="safe">ENLACE OK</Chip>
+          <Chip tone="safe">{t("ENLACE OK")}</Chip>
         </span>
-        <Button variant="outline" onClick={onHud} aria-label="Modo HUD (visor del casco)" title="Modo HUD" className="grid place-items-center px-2 font-mono text-[11px] font-semibold tracking-widest">
+        <Button
+          variant="outline"
+          onClick={() => setLang(lang === "es" ? "en" : "es")}
+          aria-label={t("Cambiar idioma")}
+          title={lang === "es" ? "English" : "Español"}
+          className="grid place-items-center px-2 font-mono text-[11px] font-semibold tracking-widest"
+        >
+          {lang === "es" ? "EN" : "ES"}
+        </Button>
+        <Button variant="outline" onClick={onHud} aria-label={t("Modo HUD (visor del casco)")} title={t("Modo HUD")} className="grid place-items-center px-2 font-mono text-[11px] font-semibold tracking-widest">
           HUD
         </Button>
-        <Button variant="outline" onClick={onAbout} aria-label="Supuestos y fuentes" title="Supuestos y fuentes" className="grid place-items-center">
+        <Button variant="outline" onClick={onAbout} aria-label={t("Supuestos y fuentes")} title={t("Supuestos y fuentes")} className="grid place-items-center">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
             <circle cx="12" cy="12" r="9" />
             <path d="M12 11v5M12 8h.01" />
@@ -164,7 +175,7 @@ export default function TopBar({
         <ul
           id={listId}
           role="listbox"
-          aria-label="Destinos"
+          aria-label={t("Destinos")}
           className="panel absolute inset-x-0 top-full z-20 mt-2 max-h-[50dvh] overflow-y-auto bg-surface p-1.5 sm:right-auto sm:w-96"
         >
           {results.map(({ poi, dist }, i) => (
@@ -183,10 +194,10 @@ export default function TopBar({
             >
               <PoiIcon type={poi.type} />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold text-ink">{poi.name}</span>
+                <span className="block truncate text-sm font-semibold text-ink">{t(poi.name)}</span>
                 <span className="block truncate font-mono text-[11px] text-ink-dim">
-                  {TYPE_LABEL[poi.type]}
-                  {poi.description ? ` · ${poi.description}` : ""}
+                  {t(TYPE_LABEL[poi.type])}
+                  {poi.description ? ` · ${t(poi.description)}` : ""}
                 </span>
               </span>
               {dist !== null && poi.type !== "base" && (

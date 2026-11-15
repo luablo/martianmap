@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
+import { useI18n } from "@/lib/i18n";
 import { formatDistance, formatMinutes } from "@/lib/metrics";
 import { RESERVE_PCT } from "@/lib/modes";
 import type { Risk, RouteResult, TransportMode } from "@/lib/types";
@@ -41,11 +42,12 @@ function Metric({
 }
 
 function ClearButton({ onClear, className = "" }: { onClear: () => void; className?: string }) {
+  const { t } = useI18n();
   return (
     <Button
       variant="outline"
       onClick={onClear}
-      aria-label="Quitar destino"
+      aria-label={t("Quitar destino")}
       className={`grid shrink-0 place-items-center ${className}`}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
@@ -76,6 +78,7 @@ export default function MetricsBar({
   computing = false,
   hasDestination,
   onClear,
+  onSimulate,
 }: {
   metrics: RouteResult | null;
   mode: TransportMode;
@@ -83,8 +86,11 @@ export default function MetricsBar({
   computing?: boolean;
   hasDestination: boolean;
   onClear: () => void;
+  /** Arranca la simulación de la EVA (ida, muestreo y regreso). */
+  onSimulate?: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const { t } = useI18n();
 
   if (!metrics) {
     return (
@@ -94,10 +100,10 @@ export default function MetricsBar({
       >
         <p className={`flex-1 ${hasDestination && !computing ? "text-danger" : "text-ink-dim"}`}>
           {!hasDestination
-            ? "Toca el mapa o busca un destino."
+            ? t("Toca el mapa o busca un destino.")
             : computing
-              ? "Calculando ruta…"
-              : `No hay ruta segura hasta ese punto (${mode.label}).`}
+              ? t("Calculando ruta…")
+              : t(`No hay ruta segura hasta ese punto (${mode.label}).`)}
         </p>
         {hasDestination && <ClearButton onClear={onClear} />}
       </footer>
@@ -115,28 +121,42 @@ export default function MetricsBar({
             computing ? "opacity-60" : ""
           }`}
         >
-          <Metric label="DISTANCIA" value={formatDistance(m.distanceM)} className="text-route" />
-          <Metric label="IDA" value={formatMinutes(m.timeMin)} />
-          <Metric label="RIESGO" value={m.risk} className={riskTone[m.risk]} />
+          <Metric label={t("DISTANCIA")} value={formatDistance(m.distanceM)} className="text-route" />
+          <Metric label={t("IDA")} value={formatMinutes(m.timeMin)} />
+          <Metric label={t("RIESGO")} value={t(m.risk)} className={riskTone[m.risk]} />
           <div className={`contents ${open ? "" : "max-sm:hidden"}`}>
             <Metric
-              label="PENDIENTE MÁX"
+              label={t("PENDIENTE MÁX")}
               value={m.maxSlopeDeg === null ? "—" : `${m.maxSlopeDeg.toFixed(0)}°`}
             />
-            <Metric label="DOSIS EST." value={`${m.doseMSv.toFixed(3)} mSv`} className="text-warn" />
+            <Metric label={t("DOSIS EST.")} value={`${m.doseMSv.toFixed(3)} mSv`} className="text-warn" />
             <Metric
-              label={mode.resourceLabel.toUpperCase()}
+              label={t(mode.resourceLabel.toUpperCase())}
               value={`${m.resourcePct.toFixed(0)} %`}
               className={resourceTone(m.resourcePct)}
             />
           </div>
         </div>
         <div className={`flex shrink-0 gap-1.5 ${open ? "max-sm:justify-end" : ""}`}>
+          {onSimulate && !computing && !m.straightLine && m.path.length > 1 && (
+            <Button
+              variant="solid"
+              onClick={onSimulate}
+              title={t("Simular el recorrido de ida y vuelta")}
+              aria-label={t("INICIAR RECORRIDO")}
+              className="flex items-center gap-2 px-3 font-mono text-xs font-semibold tracking-widest sm:px-4"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <path d="M7 4.5v15l13-7.5z" />
+              </svg>
+              <span className="max-sm:hidden">{t("INICIAR RECORRIDO")}</span>
+            </Button>
+          )}
           <Button
             variant="outline"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
-            aria-label={open ? "Ver menos métricas" : "Ver más métricas"}
+            aria-label={open ? t("Ver menos métricas") : t("Ver más métricas")}
             className="grid place-items-center sm:hidden"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className={open ? "rotate-180" : ""} aria-hidden>
@@ -151,14 +171,14 @@ export default function MetricsBar({
       <div aria-live="polite">
         {computing && (
           <p className="mt-2 font-mono text-[11px] tracking-widest text-route motion-safe:animate-pulse">
-            CALCULANDO…
+            {t("CALCULANDO…")}
           </p>
         )}
         {m.warning && (
-          <Note tone={m.risk === "ALTO" ? "danger" : "warn"}>{m.warning}</Note>
+          <Note tone={m.risk === "ALTO" ? "danger" : "warn"}>{t(m.warning)}</Note>
         )}
         {m.straightLine && (
-          <Note tone="warn">LÍNEA RECTA · sin ruteo todavía: no evita pendientes ni zonas prohibidas</Note>
+          <Note tone="warn">{t("LÍNEA RECTA · sin ruteo todavía: no evita pendientes ni zonas prohibidas")}</Note>
         )}
       </div>
     </footer>

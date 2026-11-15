@@ -4,6 +4,7 @@
 // Los estilos que cambian con el modo viven en globals.css bajo [data-mode="hud"].
 
 import Button from "@/components/ui/Button";
+import { useI18n } from "@/lib/i18n";
 import { formatDistance, formatMinutes } from "@/lib/metrics";
 import { RESERVE_PCT } from "@/lib/modes";
 import type { Risk, RouteResult, TransportMode } from "@/lib/types";
@@ -45,6 +46,7 @@ export default function HudOverlay({
   style: React.CSSProperties;
   onExit: () => void;
 }) {
+  const { t } = useI18n();
   const resourceTone =
     route && route.resourcePct < RESERVE_PCT ? "text-danger" : route && route.resourcePct < 50 ? "text-warn" : "text-ink";
 
@@ -57,19 +59,19 @@ export default function HudOverlay({
       <div className="justify-self-start">
         {route ? (
           <Readout
-            label="DISTANCIA"
+            label={t("DISTANCIA")}
             value={formatDistance(route.distanceM)}
-            sub={`IDA ${formatMinutes(route.timeMin)}`}
+            sub={`${t("IDA")} ${formatMinutes(route.timeMin)}`}
             className="text-route"
           />
         ) : (
-          <div className="hud-readout font-mono text-sm text-ink-dim">TOCA EL MAPA PARA MARCAR DESTINO</div>
+          <div className="hud-readout font-mono text-sm text-ink-dim">{t("TOCA EL MAPA PARA MARCAR DESTINO")}</div>
         )}
       </div>
 
       {/* Arriba derecha: riesgo */}
       <div className="justify-self-end text-right">
-        {route && <Readout label="RIESGO" value={route.risk} className={riskTone[route.risk]} />}
+        {route && <Readout label={t("RIESGO")} value={t(route.risk)} className={riskTone[route.risk]} />}
       </div>
 
       <div className="col-span-2" />
@@ -78,9 +80,9 @@ export default function HudOverlay({
       <div className="self-end justify-self-start">
         {route && (
           <Readout
-            label={mode.resourceLabel.toUpperCase()}
+            label={t(mode.resourceLabel.toUpperCase())}
             value={`${route.resourcePct.toFixed(0)} %`}
-            sub={mode.label.toUpperCase()}
+            sub={t(mode.label).toUpperCase()}
             className={resourceTone}
           />
         )}
@@ -93,7 +95,7 @@ export default function HudOverlay({
           onClick={onExit}
           className="px-5 font-mono text-xs font-semibold tracking-widest"
         >
-          SALIR DE HUD
+          {t("SALIR DE HUD")}
         </Button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/ui/Button";
+import { useI18n } from "@/lib/i18n";
 import { MODES, MODE_ORDER } from "@/lib/modes";
 import type { ModeId } from "@/lib/types";
 
@@ -36,8 +37,9 @@ export default function ModeSwitch({
   mode: ModeId;
   onChange: (m: ModeId) => void;
 }) {
+  const { t } = useI18n();
   return (
-    <div role="radiogroup" aria-label="Modo de transporte" className="flex flex-col gap-1.5">
+    <div role="radiogroup" aria-label={t("Modo de transporte")} className="flex flex-col gap-1.5">
       {MODE_ORDER.map((id) => {
         const m = MODES[id];
         const active = id === mode;
@@ -54,9 +56,9 @@ export default function ModeSwitch({
               {icons[id]}
             </svg>
             <span className="min-w-0">
-              <span className="block text-sm font-semibold">{m.label}</span>
+              <span className="block text-sm font-semibold">{t(m.label)}</span>
               <span className="block font-mono text-[11px] text-ink-dim">
-                {m.speedKmh} km/h · máx {m.maxSlopeDeg}°
+                {m.speedKmh} km/h · {t("máx")} {m.maxSlopeDeg}°
               </span>
             </span>
           </Button>

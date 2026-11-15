@@ -5,6 +5,7 @@
 import { useEffect, useId, useRef } from "react";
 import Button from "@/components/ui/Button";
 import Chip from "@/components/ui/Chip";
+import { useI18n } from "@/lib/i18n";
 import { LAYERS, layerAvailable } from "@/lib/layers";
 import { MODES, MODE_ORDER, RAD_MSV_PER_DAY, RESERVE_PCT } from "@/lib/modes";
 import type { Provenance, ZoneData } from "@/lib/types";
@@ -26,6 +27,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function AboutSheet({ zone, onClose }: { zone: ZoneData | null; onClose: () => void }) {
   const titleId = useId();
+  const { lang, t } = useI18n();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   // Foco al botón de cerrar al abrir; Esc cierra.
@@ -54,9 +56,9 @@ export default function AboutSheet({ zone, onClose }: { zone: ZoneData | null; o
       >
         <header className="flex items-center gap-3 border-b border-line py-1.5 pl-5 pr-1.5">
           <h2 id={titleId} className="flex-1 font-mono text-xs font-semibold tracking-widest text-ink">
-            SUPUESTOS Y FUENTES
+            {t("SUPUESTOS Y FUENTES")}
           </h2>
-          <Button ref={closeRef} variant="outline" onClick={onClose} aria-label="Cerrar" className="grid place-items-center">
+          <Button ref={closeRef} variant="outline" onClick={onClose} aria-label={t("Cerrar")} className="grid place-items-center">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
               <path d="M6 6l12 12M18 6 6 18" />
             </svg>
@@ -64,29 +66,37 @@ export default function AboutSheet({ zone, onClose }: { zone: ZoneData | null; o
         </header>
 
         <div className="flex flex-col gap-6 overflow-y-auto p-5 text-sm">
-          <p className="text-ink-dim">
-            MARSWALK combina <strong className="text-ink">datos medidos por NASA</strong> con{" "}
-            <strong className="text-ink">supuestos del equipo</strong>. Cada capa dice cuál es cuál, y las
-            cifras de dosis y recurso son estimaciones del modelo, no mediciones.
-          </p>
-
-          {zone?.meta.fake && (
-            <p className="rounded-xl border border-warn/40 px-3 py-2 font-mono text-xs text-warn">
-              Esta zona usa TERRENO SINTÉTICO para pruebas: todavía no son datos reales.
+          {lang === "en" ? (
+            <p className="text-ink-dim">
+              MARSWALK combines <strong className="text-ink">data measured by NASA</strong> with{" "}
+              <strong className="text-ink">team assumptions</strong>. Each layer says which is which, and the
+              dose and resource figures are model estimates, not measurements.
+            </p>
+          ) : (
+            <p className="text-ink-dim">
+              MARSWALK combina <strong className="text-ink">datos medidos por NASA</strong> con{" "}
+              <strong className="text-ink">supuestos del equipo</strong>. Cada capa dice cuál es cuál, y las
+              cifras de dosis y recurso son estimaciones del modelo, no mediciones.
             </p>
           )}
 
-          <Section title="MODOS DE TRANSPORTE · SUPUESTOS DEL EQUIPO">
+          {zone?.meta.fake && (
+            <p className="rounded-xl border border-warn/40 px-3 py-2 font-mono text-xs text-warn">
+              {t("Esta zona usa TERRENO SINTÉTICO para pruebas: todavía no son datos reales.")}
+            </p>
+          )}
+
+          <Section title={t("MODOS DE TRANSPORTE · SUPUESTOS DEL EQUIPO")}>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[30rem] text-left font-mono text-xs">
                 <thead className="text-ink-dim">
                   <tr className="border-b border-line">
-                    <th className="py-2 pr-3 font-normal">Modo</th>
-                    <th className="py-2 pr-3 font-normal">Pend. máx</th>
-                    <th className="py-2 pr-3 font-normal">Velocidad</th>
-                    <th className="py-2 pr-3 font-normal">Alcance</th>
-                    <th className="py-2 pr-3 font-normal">Recurso</th>
-                    <th className="py-2 font-normal">Blindaje</th>
+                    <th className="py-2 pr-3 font-normal">{t("Modo")}</th>
+                    <th className="py-2 pr-3 font-normal">{t("Pend. máx")}</th>
+                    <th className="py-2 pr-3 font-normal">{t("Velocidad")}</th>
+                    <th className="py-2 pr-3 font-normal">{t("Alcance")}</th>
+                    <th className="py-2 pr-3 font-normal">{t("Recurso")}</th>
+                    <th className="py-2 font-normal">{t("Blindaje")}</th>
                   </tr>
                 </thead>
                 <tbody className="tabular-nums text-ink">
@@ -94,14 +104,14 @@ export default function AboutSheet({ zone, onClose }: { zone: ZoneData | null; o
                     const m = MODES[id];
                     return (
                       <tr key={id} className="border-b border-line/60">
-                        <td className="py-2 pr-3 font-sans font-semibold">{m.label}</td>
+                        <td className="py-2 pr-3 font-sans font-semibold">{t(m.label)}</td>
                         <td className="py-2 pr-3">{m.maxSlopeDeg}°</td>
                         <td className="py-2 pr-3">{m.speedKmh} km/h</td>
                         <td className="py-2 pr-3">{m.rangeKm} km</td>
                         <td className="py-2 pr-3">
-                          {m.resourceLabel} · {m.autonomyH} h
+                          {t(m.resourceLabel)} · {m.autonomyH} h
                         </td>
-                        <td className="py-2">{m.shielding === 1 ? "ninguno" : `×${m.shielding}`}</td>
+                        <td className="py-2">{m.shielding === 1 ? t("ninguno") : `×${m.shielding}`}</td>
                       </tr>
                     );
                   })}
@@ -110,7 +120,26 @@ export default function AboutSheet({ zone, onClose }: { zone: ZoneData | null; o
             </div>
           </Section>
 
-          <Section title="CÓMO SE CALCULA">
+          <Section title={t("CÓMO SE CALCULA")}>
+            {lang === "en" ? (
+            <ul className="flex list-disc flex-col gap-1.5 pl-5 text-ink-dim">
+              <li>
+                <span className="text-ink">Dose</span> = {RAD_MSV_PER_DAY} mSv/day (MSL RAD surface rate)
+                × round-trip time × mode shielding. <Chip tone="warn">ESTIMATED</Chip>
+              </li>
+              <li>
+                <span className="text-ink">Resource</span>: what is left on return; at least a{" "}
+                {RESERVE_PCT} % reserve must remain.
+              </li>
+              <li>
+                <span className="text-ink">HIGH risk</span> if the destination is out of range, the reserve is not
+                enough or the slope exceeds the mode&apos;s maximum.
+              </li>
+              <li>
+                <span className="text-ink">Route</span>: avoids slopes steeper than the mode allows and the NO-GO zones.
+              </li>
+            </ul>
+            ) : (
             <ul className="flex list-disc flex-col gap-1.5 pl-5 text-ink-dim">
               <li>
                 <span className="text-ink">Dosis</span> = {RAD_MSV_PER_DAY} mSv/día (tasa de superficie de MSL RAD)
@@ -128,20 +157,21 @@ export default function AboutSheet({ zone, onClose }: { zone: ZoneData | null; o
                 <span className="text-ink">Ruta</span>: evita pendientes mayores a la del modo y las zonas NO PISAR.
               </li>
             </ul>
+            )}
           </Section>
 
-          <Section title="CAPAS DE DATOS">
+          <Section title={t("CAPAS DE DATOS")}>
             <ul className="flex flex-col gap-2">
               {LAYERS.map((l) => {
                 const available = layerAvailable(zone, l.id);
                 return (
                   <li key={l.id} className="flex flex-wrap items-center gap-2">
                     <span className={`min-w-28 font-semibold ${available ? "text-ink" : "text-ink-dim"}`}>
-                      {l.label}
+                      {t(l.label)}
                     </span>
-                    <Chip tone={PROVENANCE_TONE[l.provenance]}>{l.provenance}</Chip>
+                    <Chip tone={PROVENANCE_TONE[l.provenance]}>{t(l.provenance)}</Chip>
                     <span className="font-mono text-xs text-ink-dim">{l.source}</span>
-                    {!available && <span className="font-mono text-[11px] text-ink-dim">· sin datos en esta zona</span>}
+                    {!available && <span className="font-mono text-[11px] text-ink-dim">{t("· sin datos en esta zona")}</span>}
                   </li>
                 );
               })}
@@ -149,7 +179,7 @@ export default function AboutSheet({ zone, onClose }: { zone: ZoneData | null; o
           </Section>
 
           {sources.length > 0 && (
-            <Section title="FUENTES DE ESTA ZONA">
+            <Section title={t("FUENTES DE ESTA ZONA")}>
               <ul className="flex list-disc flex-col gap-1 pl-5 font-mono text-xs text-ink-dim">
                 {sources.map((s) => (
                   <li key={s}>{s}</li>
@@ -159,8 +189,10 @@ export default function AboutSheet({ zone, onClose }: { zone: ZoneData | null; o
           )}
 
           <p className="font-mono text-[11px] text-ink-dim">
-            NASA Space Apps 2026 · Interplanetary Survival Guide: Martian Map. Se usaron asistentes de IA para
-            código y documentación.
+            NASA Space Apps 2026 · Interplanetary Survival Guide: Martian Map.{" "}
+            {lang === "en"
+              ? "AI assistants were used for code and documentation."
+              : "Se usaron asistentes de IA para código y documentación."}
           </p>
         </div>
       </div>

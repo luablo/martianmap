@@ -22,9 +22,11 @@ Los mapas de Marte que existen se hicieron para mirar el planeta desde órbita, 
 1. **Destino.** Se busca un objetivo («boxwork») o se toca el mapa.
 2. **Ruta.** La ruta evita pendientes más fuertes que las que permite el modo y las zonas marcadas NO PISAR.
 3. **Modo.** A pie, rover abierto o rover presurizado. Cambiar de modo cambia la decisión: en la demo, el boxwork B-4 queda a 2.4 km por la ruta segura a pie, más que los 2 km de alcance, así que sale con riesgo ALTO; en rover abierto la ruta es de 1.8 km y 14 min, con riesgo MEDIO.
-4. **Capas.** Imagen HiRISE, pendiente y radiación. Cada capa dice si es **MEDIDO**, **DERIVADO** o **ESTIMADO**, y de qué instrumento sale. Térmico (THEMIS) y mineralogía (CRISM) ya tienen su lugar en la app, pero todavía no hay datos procesados para esta zona y así lo dice la app.
+4. **Capas.** Imagen HiRISE, pendiente y radiación. Cada capa dice si es **MEDIDO**, **DERIVADO** o **ESTIMADO**, y de qué instrumento sale. Térmico (THEMIS) y mineralogía (CRISM) están listos en el código pero ocultos, porque todavía no hay datos procesados para esta zona.
 5. **Notas de campo.** El astronauta toca el lugar de un hallazgo y deja una nota con título, etiquetas (MUESTRA, GEOLOGÍA, REVISAR, PELIGRO) y foto. La nota queda en el mapa para el resto del equipo y, si no hay red, se guarda en el dispositivo.
-6. **Pensado para guantes.** Todo lo tocable mide al menos 56 px. Funciona en tablet, en teléfono y en modo HUD (visor del casco), que deja solo distancia, riesgo y recurso en las esquinas.
+6. **Simulación del recorrido.** «Iniciar recorrido» muestra al astronauta avanzando por la ruta, muestreando y regresando, con el tiempo, la dosis y el recurso en vivo.
+7. **Español e inglés.** Un botón cambia el idioma de toda la interfaz.
+8. **Pensado para guantes.** Todo lo tocable mide al menos 56 px. Funciona en tablet, en teléfono y en modo HUD (visor del casco), que deja solo distancia, riesgo y recurso en las esquinas.
 
 **Supuestos del modelo** (también dentro de la app, botón «i»)
 
@@ -43,7 +45,7 @@ La zona es el recorte del modelo de elevación HiRISE DTEEC_001488_1750 en el cr
 - **MRO HiRISE**: ortofoto PSP_001488_1750 (imagen de fondo, MEDIDO) y modelo de elevación DTEEC_001488_1750 a 1 m/px, del que sale la pendiente a 4 m por celda (DERIVADO). https://hirise-pds.lpl.arizona.edu/PDS/DTM/PSP/ORB_001400_001499/PSP_001488_1750_PSP_001752_1750/
 - **MSL RAD (Curiosity)**: tasa de radiación en superficie, 0.67 mSv/día (Hassler et al. 2014, *Science*). https://doi.org/10.1126/science.1244797
 - **MSL REMS (Curiosity)**: temperatura y presión de un sol de referencia (sol 412). https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html
-- **Mapas base**: MRO CTX (NASA/JPL/MSSS, vía Esri OnMars), Viking MDIM 2.1 y MGS MOLA (USGS Astrogeology). https://planetarymaps.usgs.gov/
+- **Mapas base**: MRO CTX (NASA/JPL/MSSS, vía Esri OnMars), Mars Odyssey THEMIS IR de día y Viking MDIM 2.1 colorizado (USGS Astrogeology). https://planetarymaps.usgs.gov/
 - **Supuestos del equipo, no de NASA**: la base de la EVA, los objetivos y las zonas NO PISAR se marcaron sobre la ortofoto. Bradbury Landing queda fuera de este recorte.
 
 ## Cómo está hecho

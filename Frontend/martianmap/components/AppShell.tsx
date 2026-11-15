@@ -13,21 +13,29 @@ import MetricsBar from "@/components/panels/MetricsBar";
 import ModeSwitch from "@/components/panels/ModeSwitch";
 import NoteCard from "@/components/panels/NoteCard";
 import NotesList from "@/components/panels/NotesList";
+import SimPanel from "@/components/panels/SimPanel";
 import TopBar from "@/components/panels/TopBar";
 import Button from "@/components/ui/Button";
 import Panel from "@/components/ui/Panel";
 import { useZone } from "@/lib/data/useZone";
+import { useI18n } from "@/lib/i18n";
 import { MODES } from "@/lib/modes";
 import { useNotes } from "@/lib/notes/useNotes";
 import { useRoute } from "@/lib/routing/useRoute";
+import { useSimulation } from "@/lib/simulation";
 import type { LayerId, LonLat, ModeId } from "@/lib/types";
 import type { BasemapId } from "@/components/map/layers/basemap";
 
 // MapLibre necesita `window`: se carga solo en el navegador.
 const MapView = dynamic(() => import("@/components/map/MapView"), {
   ssr: false,
-  loading: () => <CenterMsg>CARGANDO MAPA…</CenterMsg>,
+  loading: () => <LoadingMap />,
 });
+
+function LoadingMap() {
+  const { t } = useI18n();
+  return <CenterMsg>{t("CARGANDO MAPA…")}</CenterMsg>;
+}
 
 function CenterMsg({ children }: { children: React.ReactNode }) {
   return (
@@ -118,6 +126,7 @@ const SAFE_PADDING: React.CSSProperties = {
 
 export default function AppShell() {
   const { zone, error } = useZone();
+  const { t } = useI18n();
   const { notes, addNote } = useNotes();
   const [tool, setTool] = useState<Tool>("route");
   const [draftAt, setDraftAt] = useState<LonLat | null>(null);
@@ -181,9 +190,10 @@ export default function AppShell() {
     [zone],
   );
   const { route, computing } = useRoute(zone, base, destination, mode);
+  const { sim, start: startSim, stop: stopSim } = useSimulation(route);
 
   const layerPanel = (
-    <Panel title="CAPAS">
+    <Panel title={t("CAPAS")}>
       <LayerToggles
         zone={zone}
         active={layers}
@@ -194,7 +204,7 @@ export default function AppShell() {
     </Panel>
   );
   const modePanel = (
-    <Panel title="MODO">
+    <Panel title={t("MODO")}>
       <ModeSwitch mode={mode} onChange={setMode} />
     </Panel>
   );
@@ -219,7 +229,7 @@ export default function AppShell() {
       }}
       className={`px-4 font-mono text-xs font-semibold tracking-widest ${className}`}
     >
-      + NOTA
+      {t("+ NOTA")}
       {notes.length > 0 && (
         <span className="ml-2 rounded-md bg-science/20 px-1.5 py-0.5 text-science">{notes.length}</span>
       )}
@@ -237,22 +247,23 @@ export default function AppShell() {
           notes={notes}
           basemapId={basemapId}
           onMapClick={handleMapClick}
+          simPos={sim?.pos ?? null}
         />
       ) : (
         <CenterMsg>
           {error ? (
             <div className="flex flex-col items-center gap-3">
-              <p className="text-danger">NO SE PUDO CARGAR LA ZONA</p>
+              <p className="text-danger">{t("NO SE PUDO CARGAR LA ZONA")}</p>
               <p className="max-w-sm font-sans text-ink-dim">
-                Revisa la conexión o que existan los archivos de <code>public/data/gale/</code>.
+                {t("Revisa la conexión o que existan los archivos de")} <code>public/data/gale/</code>.
                 <span className="mt-1 block font-mono text-[11px]">{error}</span>
               </p>
               <Button variant="outline" onClick={() => window.location.reload()} className="px-5 text-ink">
-                Reintentar
+                {t("Reintentar")}
               </Button>
             </div>
           ) : (
-            "CARGANDO ZONA…"
+            t("CARGANDO ZONA…")
           )}
         </CenterMsg>
       )}
@@ -261,7 +272,7 @@ export default function AppShell() {
       {zone?.meta.fake && (
         // Teléfono: debajo de los botones CAPAS / MODO / + NOTA, que si no lo tapan.
         <div className="pointer-events-none absolute left-1/2 top-[10.25rem] sm:top-[5.25rem] z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
-          TERRENO SINTÉTICO · no son datos reales
+          {t("TERRENO SINTÉTICO · no son datos reales")}
         </div>
       )}
 
@@ -307,7 +318,7 @@ export default function AppShell() {
               open={leftOpen}
               direction="left"
               onClick={() => setLeftOpen((v) => !v)}
-              label={leftOpen ? "Ocultar panel de capas" : "Mostrar panel de capas"}
+              label={leftOpen ? t("Ocultar panel de capas") : t("Mostrar panel de capas")}
             />
           </div>
 
@@ -318,7 +329,7 @@ export default function AppShell() {
               open={rightOpen}
               direction="right"
               onClick={() => setRightOpen((v) => !v)}
-              label={rightOpen ? "Ocultar panel de modo" : "Mostrar panel de modo"}
+              label={rightOpen ? t("Ocultar panel de modo") : t("Mostrar panel de modo")}
             />
             <div
               className={[
@@ -329,7 +340,7 @@ export default function AppShell() {
               <div className="flex flex-col gap-3">
                 {noteButton("w-full")}
                 {modePanel}
-                <Panel title="NOTAS DE CAMPO" className="hidden lg:block">
+                <Panel title={t("NOTAS DE CAMPO")} className="hidden lg:block">
                   <NotesList notes={notes} />
                 </Panel>
               </div>
@@ -350,7 +361,7 @@ export default function AppShell() {
                 onClick={() => setDrawer(drawer === d ? null : d)}
                 className="px-4 font-mono text-xs font-semibold tracking-widest"
               >
-                {d === "layers" ? "CAPAS" : MODES[mode].label.toUpperCase()}
+                {d === "layers" ? t("CAPAS") : t(MODES[mode].label).toUpperCase()}
               </Button>
             ))}
             {noteButton()}
@@ -367,7 +378,7 @@ export default function AppShell() {
           <div
             className={[
               "w-full transition-all duration-200 overflow-hidden",
-              bottomOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0",
+              bottomOpen ? "max-h-72 opacity-100" : "max-h-0 opacity-0",
             ].join(" ")}
           >
           {tool === "note" && !draftAt ? (
@@ -375,11 +386,13 @@ export default function AppShell() {
               role="status"
               className="panel pointer-events-auto flex min-h-14 items-center gap-3 border-science/60 py-1.5 pl-4 pr-1.5"
             >
-              <p className="flex-1 text-science">Toca el mapa donde está el hallazgo.</p>
+              <p className="flex-1 text-science">{t("Toca el mapa donde está el hallazgo.")}</p>
               <Button variant="outline" onClick={closeNote} className="px-4 text-sm">
-                Cancelar
+                {t("Cancelar")}
               </Button>
             </footer>
+          ) : sim ? (
+            <SimPanel sim={sim} mode={MODES[mode]} onStop={stopSim} onReplay={startSim} />
           ) : (
             <MetricsBar
               metrics={route}
@@ -387,6 +400,7 @@ export default function AppShell() {
               computing={computing}
               hasDestination={destination !== null}
               onClear={() => setDestination(null)}
+              onSimulate={startSim}
             />
           )}
           </div>
@@ -395,7 +409,7 @@ export default function AppShell() {
             open={bottomOpen}
             direction="down"
             onClick={() => setBottomOpen((v) => !v)}
-            label={bottomOpen ? "Ocultar barra de métricas" : "Mostrar barra de métricas"}
+            label={bottomOpen ? t("Ocultar barra de métricas") : t("Mostrar barra de métricas")}
           />
         </div>
       </div>
