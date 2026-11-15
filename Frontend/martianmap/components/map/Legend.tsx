@@ -31,15 +31,11 @@ export default function Legend({
 
   return (
     <div
-      data-hud="hide" // en modo HUD (P4) se oculta: ver globals.css
+      data-hud="hide"
       className={[
-        // z-10: capa del mapa, DEBAJO de la interfaz de AppShell (z-20). Con z-20
-        // taparía la lista del buscador y los cajones del teléfono.
         "panel pointer-events-none absolute z-10 p-2.5 w-36 sm:w-44",
-        // Esquina inferior derecha, justo encima de la barra de métricas (--ui-bottom).
         "bottom-[calc(var(--ui-bottom,5rem)_+_0.75rem)]",
         "right-[calc(0.75rem_+_env(safe-area-inset-right))]",
-        // ≥1024 px: NOTAS DE CAMPO ocupa la columna derecha (16rem) → la leyenda va a su izquierda
         "lg:right-[calc(17.5rem_+_env(safe-area-inset-right))]",
       ].join(" ")}
     >
