@@ -11,7 +11,7 @@
 | P1 · Datos | `░░░░░░░░░░` 0 % | 0 / 15 | Datos reales de HiRISE en `public/data/gale/` (o plan B) |
 | P2 · Ruta | `░░░░░░░░░░` 0 % | 0 / 9 | A* en `findRoute`; hoy la ruta es línea recta |
 | P3 · Mapa | `████████░░` 85 % | 11 / 13 | Prueba en teléfono real y capturas |
-| P4 · Interfaz | `███████░░░` 71 % | 10 / 14 | Confirmar Supabase/Vercel; video y slides (domingo) |
+| P4 · Interfaz | `███████░░░` 71 % | 10 / 14 | Supabase/Vercel (bloque 0); grabar el video y entregar |
 | **Equipo** | `████░░░░░░` **41 %** | **21 / 51** | |
 
 El detalle está al final de la sección de cada persona. **Para actualizarlo:** marca `[x]` en tu casilla y corrige tu fila y tu barra (cada `█` = 10 %).
@@ -271,18 +271,20 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 ### Bloque 3 (22:00–01:00) — extras
 - [x] Pantalla "Acerca de / supuestos": lee `MODES` y `LAYERS` y muestra fuentes (P1 pasa el texto). → botón "i" en la barra superior (`AboutSheet.tsx`).
 - [x] Modo HUD: `data-mode="hud"` en `<html>` cambia los tokens en `globals.css` (fondos transparentes, solo ruta, distancia, recurso y riesgo en las esquinas). Botón para alternarlo. → botón "HUD"; Esc o "SALIR DE HUD" vuelve (`HudOverlay.tsx`).
-- [ ] Domingo: video y presentación son tu prioridad número 1 (ver PLANEACION.md).
+- [ ] Domingo: video y presentación son tu prioridad número 1 (ver PLANEACION.md). → Ya están las capturas, las 7 slides, los subtítulos y la página del proyecto; falta grabar el video y entregar (`presentacion/entrega.md`).
 
-### 📊 Progreso P4 · revisado sáb 14 nov (fase 5 en `rama-luis`)
+### 📊 Progreso P4 · revisado dom 15 nov (fase 6 en `rama-luis`)
 
-`██████████████░░░░░░` **10 / 14 tareas · 71 %** (sin contar el bloque 0, que falta confirmar)
+`██████████████░░░░░░` **10 / 14 tareas · 71 %** (el domingo va a medias; el bloque 0 sigue sin hacer)
 
 | Bloque | Hecho | Falta |
 |---|---|---|
-| 0 · Supabase y Vercel | ? / 3 | **confirmar**: proyecto de Supabase, llaves a P2, Vercel publicando `main` |
+| 0 · Supabase y Vercel | 0 / 3 | proyecto de Supabase, llaves a P2, Vercel publicando `main` (no hay `.env.local` ni proyecto de Vercel) |
 | 1 · Pantalla con datos | 4 / 4 | — |
 | 2 · Notas y presentación | 4 / 4 | — |
-| 3 · Extras | 2 / 3 | video y slides finales (domingo) |
+| 3 · Extras | 2 / 3 | domingo: grabar el video, llenar los `[corchetes]` y entregar |
+
+**Domingo, ya hecho:** `presentacion/capturar.mjs` graba las tomas A–F a 1080p sin tocar el mouse (12 PNG en `presentacion/capturas/`); 7 slides con capturas y notas del orador ([MARSWALK · Pitch](https://claude.ai/artifact/2M422wToS83dVPDy2DFDop)); `video-subtitulos.srt`; `pagina-proyecto.md` con la declaración de uso de IA; `entrega.md` con la lista por hora. Arreglos del último repaso: el aviso "TERRENO SINTÉTICO" ya no queda bajo los botones en teléfono y los círculos de MAPA BASE se ven.
 
 **Además del plan:** `noteTags.ts` y `NotesList.tsx`; arreglo de capas (`@layer`) y del contorno de foco; métricas sin cortes en 375 px; pantalla de error con "Reintentar"; `--ui-bottom` para que los controles del mapa no choquen con la barra; `Backend/requirements.txt`.
 

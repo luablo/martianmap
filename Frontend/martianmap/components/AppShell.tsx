@@ -186,6 +186,13 @@ export default function AppShell() {
         </CenterMsg>
       )}
 
+      {/* Honestidad: se queda mientras meta.fake exista; desaparece solo con los datos reales de P1. */}
+      {zone?.meta.fake && (
+        // Teléfono: debajo de los botones CAPAS / MODO / + NOTA, que si no lo tapan.
+        <div className="pointer-events-none absolute left-1/2 top-[10.25rem] sm:top-[5.25rem] z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
+          TERRENO SINTÉTICO · no son datos reales
+        </div>
+      )}
 
       {hud ? (
         <HudOverlay route={route} mode={MODES[mode]} style={SAFE_PADDING} onExit={() => setHud(false)} />
