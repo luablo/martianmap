@@ -5,7 +5,7 @@
 // Nadie más lo edita. Si tu parte necesita algo nuevo de aquí, pídelo en el chat.
 
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import LayerToggles from "@/components/panels/LayerToggles";
 import MetricsBar from "@/components/panels/MetricsBar";
 import ModeSwitch from "@/components/panels/ModeSwitch";
@@ -56,6 +56,29 @@ export default function AppShell() {
   const [destination, setDestination] = useState<LonLat | null>(null);
   const [drawer, setDrawer] = useState<Drawer>(null);
   const [basemapId, setBasemapId] = useState<BasemapId>("viking");
+
+  // --ui-bottom: distancia del borde inferior de la pantalla al tope de la barra de
+  // métricas. La barra cambia de alto (avisos, hoja abierta en teléfono), así que se
+  // mide en vivo; Legend y BasemapPicker (P3) se colocan justo encima con esta variable.
+  const mainRef = useRef<HTMLElement>(null);
+  const bottomBarRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const main = mainRef.current;
+    const bar = bottomBarRef.current;
+    if (!main || !bar) return;
+    const update = () => {
+      const px = Math.max(0, window.innerHeight - bar.getBoundingClientRect().top);
+      main.style.setProperty("--ui-bottom", `${Math.round(px)}px`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(bar);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, []);
   const [layers, setLayers] = useState<Record<LayerId, boolean>>({
     ortho: true,
     slope: true,
@@ -114,7 +137,7 @@ export default function AppShell() {
   );
 
   return (
-    <main className="relative h-dvh w-full overflow-hidden bg-bg-0">
+    <main ref={mainRef} className="relative h-dvh w-full overflow-hidden bg-bg-0">
       {zone ? (
         <MapView
           zone={zone}
@@ -146,14 +169,16 @@ export default function AppShell() {
       )}
 
       {zone?.meta.fake && (
-        <div className="pointer-events-none absolute left-1/2 top-[5.25rem] z-30 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
+        <div className="pointer-events-none absolute left-1/2 top-[5.25rem] z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
           TERRENO SINTÉTICO · no son datos reales
         </div>
       )}
 
-      {/* Capa de interfaz: z-10. BasemapPicker y Leyenda están en z-20 (dentro del mapa). */}
+      {/* Orden de capas (z): mapa y sus controles (Leyenda, BasemapPicker, aviso de terreno) = 10
+          < interfaz = 20 (buscador, cajones, barra) < tarjeta de nota = 30.
+          La interfaz es pointer-events-none: los controles del mapa siguen tocables donde no hay panel. */}
       <div
-        className="pointer-events-none absolute inset-0 z-10 grid grid-rows-[auto_1fr_auto] gap-3"
+        className="pointer-events-none absolute inset-0 z-20 grid grid-rows-[auto_1fr_auto] gap-3"
         style={SAFE_PADDING}
       >
         <TopBar
@@ -199,6 +224,7 @@ export default function AppShell() {
           )}
         </div>
 
+        <div ref={bottomBarRef}>
         {tool === "note" && !draftAt ? (
           <footer
             role="status"
@@ -218,6 +244,7 @@ export default function AppShell() {
             onClear={() => setDestination(null)}
           />
         )}
+        </div>
       </div>
 
       {/* Tarjeta de nota: hoja inferior en teléfono, panel a la derecha en tablet */}
