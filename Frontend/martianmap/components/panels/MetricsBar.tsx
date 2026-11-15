@@ -33,20 +33,20 @@ function Metric({
   return (
     <div className="min-w-0">
       <div className="truncate font-mono text-[11px] tracking-wider text-ink-dim">{label}</div>
-      <div className={`truncate font-mono text-xl font-semibold tabular-nums sm:text-2xl ${className}`}>
+      <div className={`truncate font-mono text-lg font-semibold tabular-nums sm:text-2xl ${className}`}>
         {value}
       </div>
     </div>
   );
 }
 
-function ClearButton({ onClear }: { onClear: () => void }) {
+function ClearButton({ onClear, className = "" }: { onClear: () => void; className?: string }) {
   return (
     <Button
       variant="outline"
       onClick={onClear}
       aria-label="Quitar destino"
-      className="grid shrink-0 place-items-center"
+      className={`grid shrink-0 place-items-center ${className}`}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
         <path d="M6 6l12 12M18 6 6 18" />
@@ -107,10 +107,11 @@ export default function MetricsBar({
   const m = metrics;
   return (
     <footer className="panel pointer-events-auto p-3 sm:px-5">
-      <div className="flex items-center gap-3">
+      {/* Abierta en teléfono: las métricas usan todo el ancho y los botones bajan a su fila */}
+      <div className={`flex items-center gap-3 ${open ? "max-sm:flex-col max-sm:items-stretch" : ""}`}>
         <div
           aria-busy={computing}
-          className={`grid min-w-0 flex-1 grid-cols-3 gap-x-4 gap-y-3 transition-opacity duration-150 sm:grid-cols-6 ${
+          className={`grid min-w-0 flex-1 grid-cols-3 gap-x-3 gap-y-3 transition-opacity duration-150 sm:grid-cols-6 sm:gap-x-4 ${
             computing ? "opacity-60" : ""
           }`}
         >
@@ -130,7 +131,7 @@ export default function MetricsBar({
             />
           </div>
         </div>
-        <div className="flex shrink-0 gap-1.5">
+        <div className={`flex shrink-0 gap-1.5 ${open ? "max-sm:justify-end" : ""}`}>
           <Button
             variant="outline"
             onClick={() => setOpen(!open)}
@@ -142,7 +143,8 @@ export default function MetricsBar({
               <path d="m6 15 6-6 6 6" />
             </svg>
           </Button>
-          <ClearButton onClear={onClear} />
+          {/* En teléfono, dos botones dejan sin espacio a las métricas: la × solo con la hoja abierta */}
+          <ClearButton onClear={onClear} className={open ? "" : "max-sm:hidden"} />
         </div>
       </div>
 
