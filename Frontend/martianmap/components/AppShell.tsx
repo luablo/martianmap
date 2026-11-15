@@ -100,6 +100,8 @@ export default function AppShell() {
         zone={zone}
         active={layers}
         onChange={(id, on) => setLayers((s) => ({ ...s, [id]: on }))}
+        basemapId={basemapId}
+        onBasemapChange={setBasemapId}
       />
     </Panel>
   );
@@ -147,7 +149,6 @@ export default function AppShell() {
           notes={notes}
           basemapId={basemapId}
           onMapClick={handleMapClick}
-          onBasemapChange={setBasemapId}
         />
       ) : (
         <CenterMsg>
@@ -168,15 +169,7 @@ export default function AppShell() {
         </CenterMsg>
       )}
 
-      {zone?.meta.fake && (
-        <div className="pointer-events-none absolute left-1/2 top-[5.25rem] z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
-          TERRENO SINTÉTICO · no son datos reales
-        </div>
-      )}
-
-      {/* Orden de capas (z): mapa y sus controles (Leyenda, BasemapPicker, aviso de terreno) = 10
-          < interfaz = 20 (buscador, cajones, barra) < tarjeta de nota = 30.
-          La interfaz es pointer-events-none: los controles del mapa siguen tocables donde no hay panel. */}
+      {/* Capa de interfaz: z-10. Leyenda está en z-20 (dentro del mapa). */}
       <div
         className="pointer-events-none absolute inset-0 z-20 grid grid-rows-[auto_1fr_auto] gap-3"
         style={SAFE_PADDING}
