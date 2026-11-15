@@ -75,6 +75,36 @@ body {
 
 /* Estilos del mapa: components/map/map.css (dueño P3) */
 
+/* ── Scrollbar personalizado ─────────────────────────────────────────────────
+   Webkit (Chrome, Edge, Safari): barra delgada con los tokens de color del proyecto.
+   Firefox: thin + colores equivalentes vía scrollbar-color.
+   IE/Edge legacy: no hace nada (degradación silenciosa). */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+/* Webkit */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-dim);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 /*
  * Modo HUD (visor del casco): <html data-mode="hud">. Lo activa AppShell.
  * Sin paneles: el mapa a pantalla completa y lecturas grandes en las esquinas,

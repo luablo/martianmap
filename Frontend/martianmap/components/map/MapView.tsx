@@ -12,8 +12,9 @@ import { addNoGoLayer } from "./layers/nogo";
 import { addOrthoLayer } from "./layers/ortho";
 import { addPoiLayer, povCardEl, snapToPoi } from "./layers/pois";
 import { addSlopeLayer } from "./layers/slope";
+import { addThermalLayer } from "./layers/thermal";
+import { addMineralLayer } from "./layers/mineral";
 import { applyBasemap, trekTransformRequest, type BasemapId } from "./layers/basemap";
-import BasemapPicker from "./BasemapPicker";
 import Legend from "./Legend";
 import { syncNoteMarkers } from "./layers/notes";
 
@@ -21,13 +22,10 @@ export interface MapViewProps {
   zone: ZoneData;
   destination: LonLat | null;
   route: RouteResult | null;
-  /** Qué capas pidió encender el usuario (P3 decide cómo pintarlas) */
   layers: Record<LayerId, boolean>;
   notes: Note[];
   basemapId: BasemapId;
-  /** Toque dentro de la zona */
   onMapClick: (p: LonLat) => void;
-  onBasemapChange: (id: BasemapId) => void;
 }
 
 function markerEl(kind: "base" | "dest", label: string) {
@@ -103,10 +101,10 @@ function uiPadding(map: MlMap) {
 }
 
 // Capas de imagen/ráster que se prenden y apagan con un toggle de visibilidad.
-// "radiation" no va aquí: se pinta sobre la ruta (bloque 2, line-gradient).
-const RASTER_LAYERS = ["ortho", "slope"] as const;
+// "radiation" no va aquí: se pinta sobre la ruta (line-gradient).
+const RASTER_LAYERS = ["ortho", "slope", "thermal", "mineral"] as const;
 
-export default function MapView({ zone, destination, route, layers, notes, basemapId, onMapClick, onBasemapChange }: MapViewProps) {
+export default function MapView({ zone, destination, route, layers, notes, basemapId, onMapClick }: MapViewProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const destMarker = useRef<Marker | null>(null);
@@ -205,6 +203,8 @@ export default function MapView({ zone, destination, route, layers, notes, basem
       // entregó files.ortho. La visibilidad inicial de ambas sale del ref.
       addSlopeLayer(map, zone);
       addOrthoLayer(map, zone);
+      addThermalLayer(map, zone);
+      addMineralLayer(map, zone);
       for (const id of RASTER_LAYERS) {
         if (map.getLayer(id)) {
           map.setLayoutProperty(id, "visibility", layersRef.current[id] ? "visible" : "none");
@@ -414,7 +414,6 @@ export default function MapView({ zone, destination, route, layers, notes, basem
   return (
     <div className="absolute inset-0">
       <div ref={container} className="h-full w-full" aria-label="Mapa de la zona" />
-      <BasemapPicker active={basemapId} onChange={onBasemapChange} />
       <Legend zone={zone} layers={layers} />
     </div>
   );
