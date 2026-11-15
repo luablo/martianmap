@@ -17,8 +17,10 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 # CRS geografico de Marte (lo que usa MapLibre)
 MARS_GEO_CRS = "GEOGCS['GCS_MARS',DATUM['D_MARS',SPHEROID['MARS_localRadius',3396190,0]],PRIMEM['Reference_Meridian',0],UNIT['degree',0.0174532925199433]]"
 
-BASE_LAT = -4.5895
-BASE_LON = 137.4417
+# Base EVA: punto supuesto dentro del DTM (igual que "base" en pois.geojson).
+# Bradbury Landing (-4.5895, 137.4417) queda fuera de este recorte.
+BASE_LAT = -4.7859
+BASE_LON = 137.2984
 MAX_PX   = 4096
 
 if not ORTHO_IN.exists():
@@ -70,52 +72,32 @@ ortho_path = OUT_DIR / "ortho.webp"
 img.save(ortho_path, format="WEBP", quality=85, method=6)
 print(f"OK ortho.webp  ({new_w}x{new_h} px)")
 
-# Leer dimensiones de slope.bin para el meta
-slope_bin = OUT_DIR / "slope.bin"
-slope_data = np.fromfile(slope_bin, dtype=np.uint8)
-total = slope_data.size
-slope_h = 3383
-slope_w  = total // slope_h
+# Contrato (lib/types.ts): width/height = malla de slope.bin, no la ortofoto.
+slope_w, slope_h = Image.open(OUT_DIR / "slope.png").size
+assert (OUT_DIR / "slope.bin").stat().st_size == slope_w * slope_h, "slope.bin no coincide con slope.png"
+assert west <= BASE_LON <= east and south <= BASE_LAT <= north, "la base queda fuera de la zona"
 
+HIRISE = "https://hirise-pds.lpl.arizona.edu/PDS/DTM/PSP/ORB_001400_001499/PSP_001488_1750_PSP_001752_1750/"
 meta = {
-    "width":       new_w,
-    "height":      new_h,
+    "width":  slope_w,
+    "height": slope_h,
     "metersPerPixel": 4.0,
-    "slopeWidth":  slope_w,
-    "slopeHeight": slope_h,
     "bounds": {
         "west":  round(west,  6),
         "south": round(south, 6),
         "east":  round(east,  6),
         "north": round(north, 6),
     },
-    "base": {
-        "lat": BASE_LAT,
-        "lon": BASE_LON,
-    },
+    "base": {"lat": BASE_LAT, "lon": BASE_LON},
+    # Texto plano: la app los muestra tal cual en "Supuestos y fuentes".
     "sources": [
-        {
-            "layer":    "ortho",
-            "name":     "PSP_001488_1750 RED Orthophoto (HiRISE/MRO)",
-            "provider": "NASA/JPL/UA HiRISE",
-            "label":    "MEDIDO",
-            "url":      "https://hirise-pds.lpl.arizona.edu/PDS/DTM/PSP/ORB_001400_001499/PSP_001488_1750_PSP_001752_1750/"
-        },
-        {
-            "layer":    "slope",
-            "name":     "Pendiente derivada de DTEEC_001488_1750 DTM 1m/px",
-            "provider": "NASA/JPL/UA HiRISE / USGS Astrogeology",
-            "label":    "DERIVADO",
-            "url":      "https://hirise-pds.lpl.arizona.edu/PDS/DTM/PSP/ORB_001400_001499/PSP_001488_1750_PSP_001752_1750/"
-        },
-        {
-            "layer":    "radiation",
-            "name":     "Tasa RAD: 0.67 mSv/dia (Hassler et al. 2014)",
-            "provider": "NASA/JPL - instrumento RAD (MSL)",
-            "label":    "MEDIDO",
-            "url":      "https://doi.org/10.1126/science.1244797"
-        },
+        f"Ortofoto: HiRISE PSP_001488_1750 RED (NASA/JPL/UArizona) · {HIRISE}",
+        "Pendiente: derivada del DTM HiRISE DTEEC_001488_1750 (1 m/px), remuestreada a 4 m/celda",
+        "Radiación: 0.67 mSv/día en superficie, MSL RAD (Hassler et al. 2014, Science) · https://doi.org/10.1126/science.1244797",
+        "Clima: MSL REMS, PDS Atmospheres Node · https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html",
+        "Zonas NO PISAR y puntos de interés: marcados por el equipo sobre la ortofoto (no son datos de NASA)",
     ],
+    "files": {"ortho": "ortho.webp", "slope": "slope.png"},
     "fake": False,
 }
 
