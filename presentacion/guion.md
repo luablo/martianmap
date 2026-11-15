@@ -37,6 +37,8 @@ Música libre de derechos (YouTube Audio Library o Pixabay Music). Subtítulos s
 
 ## 3. Lista de tomas (grabar en la versión de Vercel, 1080p)
 
+> **Capturas fijas (slides) automáticas:** `node presentacion/capturar.mjs https://<app>.vercel.app` repite las tomas A–F (más supuestos, HUD y tablet) y guarda los PNG en `presentacion/capturas/`. Ya hay una versión con el terreno sintético. El video sí se graba a mano con esta tabla.
+
 **Preparación (una vez):**
 - [ ] Ventana del navegador a **1920 × 1080**, zoom 100 %, sin extensiones ni barra de marcadores.
 - [ ] Cursor grande o resaltado de clics activado; mover el mouse despacio.

@@ -172,13 +172,15 @@
 
 | Hora | Qué |
 |---|---|
-| 07:00–08:00 | Último detalle de interfaz. Probar en teléfono, tablet y laptop. |
+| 07:00–08:00 | Último detalle de interfaz. Probar en teléfono, tablet y laptop. ✅ (adelantado el sábado: aviso sintético en teléfono y radios de MAPA BASE) |
 | **08:00** | **Congelamiento.** Solo correcciones de errores. |
 | 08:00–09:00 | Con P1: grabar capturas a 1080p en Vercel con la EVA 07 precargada (lista de tomas de `guion.md`). |
 | 09:00–09:30 | **Primera versión fea del video** (30 s). |
 | 09:30–10:30 | Video mejorado · slides terminadas con P3 · página del proyecto con P1 (incluye declaración de uso de IA). |
 | 10:30–11:00 | Ensayo con cronómetro ×2. Revisión en ventana de incógnito. |
 | **11:00–11:30** | **Subo la entrega** (video, URL de Vercel, repo público, página). P1 revisa. |
+
+**Adelantado:** capturas automáticas (`presentacion/capturar.mjs` → `capturas/`), slides armadas ([MARSWALK · Pitch](https://claude.ai/artifact/2M422wToS83dVPDy2DFDop)), `video-subtitulos.srt`, `pagina-proyecto.md` (con declaración de IA) y `entrega.md` (la lista de esta tabla con casillas). El domingo queda: regrabar capturas contra Vercel con datos reales, grabar el video, llenar los `[corchetes]`, ensayar y subir.
 
 ---
 

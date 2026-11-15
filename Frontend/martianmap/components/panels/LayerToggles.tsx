@@ -125,7 +125,8 @@ export default function LayerToggles({
                     className={[
                       "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
                       "transition-colors duration-150",
-                      isActive ? "border-route bg-route/15" : "border-line",
+                      // Inactivo con ink-dim: con border-line el círculo no se distinguía del panel
+                    isActive ? "border-route bg-route/15" : "border-ink-dim/60",
                     ].join(" ")}
                     aria-hidden
                   >
