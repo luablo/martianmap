@@ -1,6 +1,6 @@
 1
 00:00:00,000 --> 00:00:05,000
-Sol 412. Tu objetivo está a 2 km.
+Sol 412. Tu objetivo está a 2.4 km.
 ¿Por dónde caminas?
 
 2

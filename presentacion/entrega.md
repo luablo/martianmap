@@ -16,12 +16,12 @@
 Desde aquí solo correcciones de errores. Nada de funciones nuevas.
 
 ## 08:00–09:00 · Capturas finales
-- [ ] Jalar `main` con los datos reales de P1 y la ruta de P2.
-- [ ] Regrabar todas las tomas contra Vercel (salen sin el aviso sintético si `meta.fake` ya no existe):
+- [x] Jalar `main` con los datos reales de P1 y la ruta de P2 (dom 15 nov, 01:00).
+- [x] Regrabar todas las tomas con los datos reales (en local; repetir contra Vercel cuando esté publicada):
   ```
   node presentacion/capturar.mjs https://<app>.vercel.app
   ```
-- [ ] Revisar `capturas/`: la ruta ya no es línea recta y rodea el escarpe (toma B).
+- [x] Revisar `capturas/`: la ruta ya no es línea recta y rodea las pendientes (toma B).
 - [ ] Subir las capturas nuevas a las slides (reemplazar imagen en cada slide).
 
 | Archivo | Toma | Slide |
@@ -44,8 +44,8 @@ Desde aquí solo correcciones de errores. Nada de funciones nuevas.
 ## 09:30–10:30 · Pulir
 - [ ] Video mejorado (cortes en los 1.5 s de cada modo, zoom a DOSIS y OXÍGENO).
 - [ ] Slides con P3: llenar `[4 nombres]`, `[URL de Vercel]`, `[repo]`, `[video]` y la tabla de fuentes de P1 (slide 5).
-- [ ] Slide 7: quitar «Supabase» si no quedó conectado.
-- [ ] Página del proyecto con P1: llenar los `[corchetes]` de `pagina-proyecto.md`.
+- [ ] Slide 7: quitar «Supabase» si no quedó conectado (las notas igual se guardan en el dispositivo).
+- [ ] Página del proyecto: ya tiene fuentes y repo; faltan `[URL de Vercel]`, `[enlace del video]`, `[4 nombres]` y confirmar Supabase.
 
 ## 10:30–11:00 · Ensayo
 - [ ] Pitch con cronómetro ×2 (guion.md §4, ~2 min).

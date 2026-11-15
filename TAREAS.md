@@ -4,15 +4,23 @@
 > Horario y puntos de control: [PLANEACION.md](PLANEACION.md) · Datos, supuestos y diseño: [CONTEXTO.md](CONTEXTO.md).
 > Todo lo de código vive en `Frontend/martianmap/` salvo que se diga otra cosa.
 
-### 📊 Avance del equipo · revisado sáb 14 nov contra `main` (`db6b95c`)
+### 📊 Avance del equipo · revisado dom 15 nov, 01:15, contra `main` + `rama-luis`
 
 | Persona | Avance | Tareas | Lo más urgente |
 |---|---|---|---|
-| P1 · Datos | `░░░░░░░░░░` 0 % | 0 / 15 | Datos reales de HiRISE en `public/data/gale/` (o plan B) |
-| P2 · Ruta | `░░░░░░░░░░` 0 % | 0 / 9 | A* en `findRoute`; hoy la ruta es línea recta |
-| P3 · Mapa | `████████░░` 85 % | 11 / 13 | Prueba en teléfono real y capturas |
-| P4 · Interfaz | `███████░░░` 71 % | 10 / 14 | Supabase/Vercel (bloque 0); grabar el video y entregar |
-| **Equipo** | `████░░░░░░` **41 %** | **21 / 51** | |
+| P1 · Datos | `████████░░` 80 % | 12 / 15 | Confirmar los valores de REMS del sol 412 y la fecha de descarga del DTM |
+| P2 · Ruta | `████████░░` 78 % | 7 / 9 | Probar las notas en tiempo real cuando exista el proyecto de Supabase |
+| P3 · Mapa | `█████████░` 92 % | 12 / 13 | Probar en un teléfono real |
+| P4 · Interfaz | `███████░░░` 71 % | 10 / 14 | **Supabase y Vercel (bloque 0)**, grabar el video y entregar |
+| **Equipo** | `████████░░` **80 %** | **41 / 51** | |
+
+**Lo que falta para entregar (domingo), en orden:**
+1. **P4 · Vercel:** conectar el repo (raíz `Frontend/martianmap`) y confirmar que publica `main`. Sin esto no hay URL para la entrega.
+2. **P4 · Supabase (opcional):** crear el proyecto, pegar `supabase/schema.sql` en el SQL Editor y poner las dos llaves en `.env.local` y en Vercel. Sin Supabase la app funciona igual: las notas se guardan en el dispositivo.
+3. **P4 · Video** de 30 s con `presentacion/guion.md` §2 y los subtítulos de `video-subtitulos.srt`.
+4. **Todos:** llenar los `[corchetes]` que quedan (nombres, URL de Vercel, enlace del video) en las slides y en `presentacion/pagina-proyecto.md`.
+5. **P3 o quien tenga teléfono:** abrir la URL de Vercel en un teléfono real y probar arrastrar el mapa.
+6. Fusionar `rama-luis` a `main` antes de grabar (tiene las notas que persisten y el terreno sin datos bloqueado).
 
 El detalle está al final de la sección de cada persona. **Para actualizarlo:** marca `[x]` en tu casilla y corrige tu fila y tu barra (cada `█` = 10 %).
 
@@ -28,8 +36,8 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
    useZone()          useRoute()       <MapView/>        paneles          useNotes()
    lib/data/          lib/routing/     components/map/   components/      lib/notes/
    P1                 P2               P3                panels/ ui/  P4  P2 desde el bloque 3
-   lee public/data    hoy: línea recta hoy: rejilla,     hoy: completos   hoy: en memoria
-   (hoy sintéticos)   → A* en Worker   ruta, NO PISAR    con datos falsos → Supabase
+   datos reales       A* en Worker     ortofoto, capas,  completos        Supabase o
+   de HiRISE                           ruta, NO PISAR                     localStorage
 ```
 
 ### Quién es dueño de qué
@@ -37,7 +45,7 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 | Archivo o carpeta | Dueño | Notas |
 |---|---|---|
 | `data-pipeline/**` (Python) | **P1** | |
-| `public/data/gale/**` | **P1** | Hoy tiene datos sintéticos; P1 los sobrescribe |
+| `public/data/gale/**` | **P1** | Datos reales de HiRISE (desde el PR #25) |
 | `lib/data/**`, `lib/layers.ts` | **P1** | Cargar la zona; catálogo de capas |
 | `lib/routing/**`, `lib/modes.ts`, `lib/metrics.ts` | **P2** | |
 | `scripts/fake-terrain.mjs` | **P2** | Nadie lo corre cuando ya haya datos reales |
@@ -91,50 +99,51 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 **No tocas:** nada fuera de `data-pipeline/`, `public/data/`, `lib/data/` y `lib/layers.ts`.
 
 ### Bloque 0 (hora 0)
-- [ ] `python -m venv .venv`, luego `pip install -r data-pipeline/requirements.txt`. Si `rasterio` no instala en Windows en 15 min → usar conda (`conda install -c conda-forge rasterio`).
-- [ ] Ubicar la zona boxwork sobre el recorrido de Curiosity y fijar un cuadro de ~3 × 3 km. Anotar las 4 esquinas en lon/lat.
+- [x] `python -m venv .venv`, luego `pip install -r data-pipeline/requirements.txt`. Si `rasterio` no instala en Windows en 15 min → usar conda (`conda install -c conda-forge rasterio`).
+- [x] Ubicar la zona boxwork sobre el recorrido de Curiosity y fijar un cuadro de ~3 × 3 km. Anotar las 4 esquinas en lon/lat.
 
 ### Bloque 1 (14:00–18:00) — datos reales en pantalla
-- [ ] `data-pipeline/recortar.py`: recortar DEM y ortofoto al cuadro, sin bajar el archivo completo (`/vsicurl/` o `rasterio` con `window`). Plan B a las 15:00: un solo DTM HiRISE.
-- [ ] `data-pipeline/pendiente.py`:
+- [x] `data-pipeline/recortar.py`: recortar DEM y ortofoto al cuadro, sin bajar el archivo completo (`/vsicurl/` o `rasterio` con `window`). Plan B a las 15:00: un solo DTM HiRISE.
+- [x] `data-pipeline/pendiente.py`:
   - Remuestrear el DEM a **4 m/celda** (promedio de bloques).
   - Pendiente en grados: `np.degrees(np.arctan(np.hypot(*np.gradient(dem, 4))))`.
   - Guardar `slope.bin`: `np.clip(np.round(s), 0, 255).astype(np.uint8).tofile(...)`, fila 0 = norte.
-- [ ] `data-pipeline/exportar.py`:
+- [x] `data-pipeline/exportar.py`:
   - `ortho.webp` (máximo 4096 px de lado, Pillow).
   - `slope.png` coloreado con transparencia: < 9° transparente, 9–15° ámbar `#FBBF24`, > 15° rojo `#EF4444`, alfa ~60 %.
   - `meta.json` con `width`, `height`, `metersPerPixel: 4`, `bounds` **en grados lon/lat de Marte**, `base`, `sources`, `files: { "ortho": "ortho.webp", "slope": "slope.png" }` y **sin** `fake`.
-- [ ] Ojo con la proyección: si el DEM viene en metros (equirectangular de Marte), convertir con `grados = metros / (3389500 · π / 180)` y sumar el meridiano central si lo tiene.
-- [ ] Probar: `npm run dev`, desaparece el aviso "TERRENO SINTÉTICO", la rejilla cuadra con la zona y en Capas se habilitan Imagen y Pendiente.
+- [x] Ojo con la proyección: si el DEM viene en metros (equirectangular de Marte), convertir con `grados = metros / (3389500 · π / 180)` y sumar el meridiano central si lo tiene.
+- [x] Probar: `npm run dev`, desaparece el aviso "TERRENO SINTÉTICO", la rejilla cuadra con la zona y en Capas se habilitan Imagen y Pendiente.
 
 **Listo cuando:** la app carga `meta.json` y `slope.bin` reales sin cambiar código de nadie.
 
 ### Bloque 2 (18:00–22:00) — lo que da sentido a la ruta
-- [ ] `nogo.geojson`: polígonos NO PISAR. La forma rápida es tomar celdas con pendiente > 30°, dilatarlas y convertirlas con `rasterio.features.shapes`, más 1–2 polígonos dibujados a mano sobre la ortofoto (roca suelta). `properties.reason` con el motivo.
-- [ ] `pois.geojson`: `Base`, `Boxwork B-4` (objetivo principal, a ~2.4 km) y 1–2 objetivos más. Formato: `Feature<Point>` con `properties: { id, name, type: "base" | "target" | "pov", description }`.
+- [x] `nogo.geojson`: polígonos NO PISAR. La forma rápida es tomar celdas con pendiente > 30°, dilatarlas y convertirlas con `rasterio.features.shapes`, más 1–2 polígonos dibujados a mano sobre la ortofoto (roca suelta). `properties.reason` con el motivo.
+- [x] `pois.geojson`: `Base`, `Boxwork B-4` (objetivo principal, a ~2.4 km) y 1–2 objetivos más. Formato: `Feature<Point>` con `properties: { id, name, type: "base" | "target" | "pov", description }`.
 - [ ] `weather.json` de REMS (un sol real) y confirmar la tasa de RAD; si cambia, se la pasas a P2 para `RAD_MSV_PER_DAY`.
-- [ ] `data-pipeline/FUENTES.md` lleno.
-- [ ] Revisar con P2 que la ruta "tenga sentido" sobre la imagen.
+- [x] `data-pipeline/FUENTES.md` lleno.
+- [x] Revisar con P2 que la ruta "tenga sentido" sobre la imagen.
 
 ### Bloque 3 (22:00–01:00) — extras
 - [ ] Fotos POV: 8–12 imágenes de Curiosity en `public/data/gale/pov/` (JPG, ≤ 1600 px, < 300 KB cada una) y puntos `type: "pov"` en `pois.geojson` con `photo`, `sol` y `camera`.
 - [ ] Si sobra tiempo: `thermal.png` de THEMIS y `files.thermal` en `meta.json`.
-- [ ] Pasar a P4 la tabla de supuestos y fuentes para la slide 5.
+- [x] Pasar a P4 la tabla de supuestos y fuentes para la slide 5.
 
-### 📊 Progreso P1 · revisado sáb 14 nov contra `main` (`db6b95c`)
+### 📊 Progreso P1 · revisado dom 15 nov, 01:15
 
-`░░░░░░░░░░░░░░░░░░░░` **0 / 15 tareas · 0 %**
+`████████████████░░░░` **12 / 15 tareas · 80 %**
 
 | Bloque | Hecho | Falta |
 |---|---|---|
-| 0 · Hora 0 | 0 / 2 | entorno Python, cuadro de la zona |
-| 1 · Datos reales | 0 / 5 | `recortar.py`, `pendiente.py`, `exportar.py`, proyección, prueba |
-| 2 · Sentido de la ruta | 0 / 5 | `nogo`, `pois`, `weather` **reales**, `FUENTES.md`, revisión con P2 |
-| 3 · Extras | 0 / 3 | fotos POV, térmico, tabla para la slide 5 |
+| 0 · Hora 0 | 2 / 2 | — |
+| 1 · Datos reales | 5 / 5 | — (se usó el plan B: un solo DTM HiRISE, DTEEC_001488_1750) |
+| 2 · Sentido de la ruta | 4 / 5 | confirmar que `weather.json` tiene los valores reales de REMS del sol 412 |
+| 3 · Extras | 1 / 3 | fotos POV y térmico (opcionales; no hacen falta para entregar) |
 
-- **En `main` todo sigue sintético:** `meta.json` dice `"fake": true`, no hay `ortho.webp` y `data-pipeline/` solo tiene `FUENTES.md` (vacío) y `requirements.txt`.
-- **⚠️ Es lo más urgente del equipo:** sin datos reales no hay "datos de NASA" en la demo. Si a la hora del punto de control no hay DEM, activar el **plan B** (un solo DTM HiRISE).
-- Lo que ya existe en `public/data/gale/` (nogo, pois, weather) es sintético, de `scripts/fake-terrain.mjs` (P2).
+- **Ya en `main` (PR #25 de Julieta, con arreglos):** ortofoto, pendiente a 4 m/celda (1703 × 3383), `meta.json` según el contrato, `weather.json`, `pois.geojson`, `nogo.geojson` y `FUENTES.md`. El aviso "TERRENO SINTÉTICO" ya no sale.
+- **Arreglos del repaso:** `sources` como texto (tumbaba la hoja "i"), `width`/`height` de la malla de pendiente, base dentro de la zona, `files` con ortofoto y pendiente, clima con el formato del contrato y sin `elevation.bin` (11.5 MB que nadie usaba). `run_exportar.py` ya escribe el `meta.json` correcto.
+- **Nuevo en `rama-luis`:** `limpiar_sin_datos.py`. El 25 % del rectángulo no tiene datos de HiRISE (la franja es inclinada); antes salía como terreno plano y la ruta podía cruzarlo. Ahora vale 255 (bloqueado) y es transparente. **Si se vuelve a correr el pipeline, correr este script al final.**
+- **Honestidad:** Bradbury Landing queda fuera del recorte, así que la base es "Base EVA", un punto supuesto. Boxwork B-4 se movió 34 m porque estaba en un hueco rodeado de pendientes > 15°. Las fotos POV de Curiosity se quitaron (daban 403 y eran de otra zona). Los motivos de NO PISAR dicen que las zonas las marcó el equipo.
 
 ---
 
@@ -145,10 +154,10 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 **No tocas:** `components/**`, `app/**`, `public/data/**`.
 
 ### Bloque 0
-- [ ] Leer `scripts/fake-terrain.mjs`: el terreno sintético tiene un **escarpe > 30°** entre la Base y Boxwork B-4 con un paso al noreste, y una **loma de ~20°** junto al paso (a pie se rodea, en rover abierto no). Con eso pruebas que tu A* funciona.
+- [x] Leer `scripts/fake-terrain.mjs`: el terreno sintético tiene un **escarpe > 30°** entre la Base y Boxwork B-4 con un paso al noreste, y una **loma de ~20°** junto al paso (a pie se rodea, en rover abierto no). Con eso pruebas que tu A* funciona.
 
 ### Bloque 1 (14:00–18:00) — A* que funciona
-- [ ] `lib/routing/astar.ts` → `findRoute(zone, from, to, mode)`, función pura sin React:
+- [x] `lib/routing/astar.ts` → `findRoute(zone, from, to, mode)`, función pura sin React:
   - Malla `zone.meta.width × height`; celda ↔ lon/lat con `lonLatToCell` / `cellToLonLat` de `lib/geo.ts`.
   - **Máscara de bloqueo** (`Uint8Array`): pendiente > `maxSlopeDeg` del modo **o** dentro de `zone.nogo`. El NO PISAR se rasteriza una vez por zona (punto en polígono por celda) y se guarda en caché.
   - 8 vecinos; paso = 4 m (recto) o 5.66 m (diagonal); `velocidad = speedKmh × (1 − 0.6 × pendiente / maxSlope)`; costo = paso / velocidad.
@@ -157,39 +166,39 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
   - Si origen o destino están bloqueados → mover a la celda libre más cercana.
   - Salida `RouteResult`: `path` simplificado (Douglas–Peucker o 1 de cada 5 puntos), `distanceM` con `pathLengthM`, `timeMin` = suma de costos, `maxSlopeDeg` real del camino, y el resto con `computeMetrics`.
   - Sin camino → `null`.
-- [ ] Meta: **< 1 s** por ruta en la malla de 750 × 750.
+- [x] Meta: **< 1 s** por ruta en la malla de 750 × 750.
 
 **Listo cuando:** sobre el terreno sintético, la ruta a pie rodea el escarpe y la loma; la del rover abierto cruza la loma.
 
 ### Bloque 2 (18:00–22:00) — conectado y sin congelar la pantalla
-- [ ] `lib/routing/worker.ts`: recibe `slope` una sola vez (transferido) y luego mensajes `{ from, to, mode }`; responde `RouteResult | null`.
-- [ ] `useRoute.ts`: crea el worker con `new Worker(new URL("./worker.ts", import.meta.url), { type: "module" })`, `computing: true` mientras calcula y la última ruta válida mientras tanto.
-- [ ] `lib/metrics.ts`: riesgo con la pendiente real; `warning` en español cuando no hay camino ("No hay ruta segura a pie: prueba en rover"), está fuera de alcance o el recurso no alcanza para volver con 20 % de reserva.
+- [x] `lib/routing/worker.ts`: recibe `slope` una sola vez (transferido) y luego mensajes `{ from, to, mode }`; responde `RouteResult | null`.
+- [x] `useRoute.ts`: crea el worker con `new Worker(new URL("./worker.ts", import.meta.url), { type: "module" })`, `computing: true` mientras calcula y la última ruta válida mientras tanto.
+- [x] `lib/metrics.ts`: riesgo con la pendiente real; `warning` en español cuando no hay camino ("No hay ruta segura a pie: prueba en rover"), está fuera de alcance o el recurso no alcanza para volver con 20 % de reserva.
 - [ ] Ajustar con P1 los costos si la ruta zigzaguea.
 
 ### Bloque 3 (22:00–01:00) — notas de campo en Supabase
-- [ ] `lib/notes/useNotes.ts` (ya es tuyo): mismo contrato `{ notes, addNote }`.
+- [x] `lib/notes/useNotes.ts` (ya es tuyo): mismo contrato `{ notes, addNote }`.
   - Leer `annotations` de Supabase al cargar y suscribirse a `postgres_changes` (tiempo real).
   - `addNote`: insertar; si trae foto, subirla antes al bucket `field-photos` y guardar `photoUrl`.
   - Si `supabase` es `null` o falla → guardar en `localStorage` con la misma forma. **La demo nunca depende de la red.**
   - Ojo: mapear `snake_case` de la tabla ↔ `camelCase` de `Note`.
 - [ ] Probar con dos pestañas: la nota de una aparece en la otra.
 
-### 📊 Progreso P2 · revisado sáb 14 nov contra `main` (`db6b95c`)
+### 📊 Progreso P2 · revisado dom 15 nov, 01:15
 
-`░░░░░░░░░░░░░░░░░░░░` **0 / 9 tareas · 0 %** (más el terreno sintético, que ya estaba hecho desde la base)
+`████████████████░░░░` **7 / 9 tareas · 78 %**
 
 | Bloque | Hecho | Falta |
 |---|---|---|
-| 0 · Leer el terreno sintético | ? / 1 | confirmar |
-| 1 · A* | 0 / 2 | `findRoute` (hoy lanza "pendiente de implementar"), meta < 1 s |
-| 2 · Worker y avisos | 0 / 4 | `worker.ts`, `useRoute` con `computing`, `warning` en `metrics.ts`, ajuste de costos |
-| 3 · Notas en Supabase | 0 / 2 | `useNotes` con Supabase + `localStorage`, prueba con dos pestañas |
+| 0 · Leer el terreno sintético | 1 / 1 | — |
+| 1 · A* | 2 / 2 | — (40–700 ms por ruta en la malla real de 1703 × 3383) |
+| 2 · Worker y avisos | 3 / 4 | ajuste fino de costos (la ruta no zigzaguea; opcional) |
+| 3 · Notas en Supabase | 1 / 2 | probar el tiempo real entre dos dispositivos cuando exista el proyecto de Supabase |
 
-- **En `main` la ruta sigue siendo línea recta** (`useRoute` devuelve `straightLine: true`) y la barra lo avisa.
-- La interfaz ya está lista para recibir lo de P2: "CALCULANDO…" con `computing`, avisos con `warning` y "No hay ruta segura" cuando la ruta es `null`.
-- **Pendiente de acordar con P4:** `addNote(n, photo?: File)` para que la foto de la nota se suba a `field-photos`.
-- `useNotes.ts` volvió a empezar vacío: se quitaron las 2 notas de prueba que causaban el error de hydration.
+- **A* de Fer en `main`:** 8 vecinos, máscara por modo (pendiente + NO PISAR), Web Worker con respaldo en el hilo principal, avisos "Fuera de alcance" y "No hay ruta segura", y pruebas en `scripts/test-astar.ts` y `scripts/test-route.ts` (`npx tsx scripts/test-route.ts`).
+- **Con los datos reales, a Boxwork B-4:** a pie 2.4 km, 1 h 7 min, **ALTO** (fuera de alcance) · rover abierto 1.8 km, 14 min, MEDIO · presurizado 1.9 km, 11 min, MEDIO.
+- **`useNotes` en `rama-luis` (lo hizo P4 para avanzar; revísalo, Fer):** Supabase con tiempo real y fotos en `field-photos` si hay llaves; si no, `localStorage` con la misma forma, sincronizado entre pestañas. La foto se reduce a JPEG ≤ 800 px. Probado: la nota con foto sigue ahí al recargar y aparece en otra pestaña.
+- **Mejora posible:** si el destino cae en un hueco rodeado de pendientes, hoy sale "No hay ruta segura". `nearestFree` podría buscar la celda alcanzable más cercana en vez de solo la celda libre más cercana.
 
 ---
 
@@ -219,18 +228,20 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 ### Bloque 3 (22:00–01:00) — extras
 - [x] Notas en el mapa (prop `notes`): punto morado con icono; al tocarlo, tarjeta con título, foto y etiquetas.
 - [x] POV: al tocar un POI `pov`, popup con la foto de Curiosity, sol y cámara.
-- [ ] Ayudar a P4 con capturas de pantalla limpias para el video.
+- [x] Ayudar a P4 con capturas de pantalla limpias para el video. → `presentacion/capturar.mjs` las saca solas.
 - [x] *(Extra, no estaba en el plan)* Mapa base de Marte desde NASA Trek (Viking, MOLA, MOLA+HRSC) con selector (`BasemapPicker.tsx`, `layers/basemap.ts`).
 
-### 📊 Progreso P3 · revisado sáb 14 nov contra `main` (`db6b95c`)
+### 📊 Progreso P3 · revisado dom 15 nov, 01:15
 
-`█████████████████░░░` **11 / 13 tareas · 85 %** + 1 extra (mapa base de Trek)
+`██████████████████░░` **12 / 13 tareas · 92 %** + 1 extra (mapa base de Trek)
 
 | Bloque | Hecho | Falta |
 |---|---|---|
-| 1 · Capas encendibles | 5 / 5 | — (la ortofoto aparece sola cuando P1 entregue `files.ortho`) |
-| 2 · Legible y tocable | 4 / 5 | probar en teléfono real que arrastrar el mapa no abre paneles |
-| 3 · Extras | 2 / 3 | capturas limpias para el video |
+| 1 · Capas encendibles | 5 / 5 | — (la ortofoto real ya se ve) |
+| 2 · Legible y tocable | 4 / 5 | probar en teléfono real que arrastrar el mapa no abre paneles (en el emulador de 375 px se ve bien) |
+| 3 · Extras | 3 / 3 | — |
+
+**Cambio en `MapView.tsx` (en `rama-luis`, avisar a Julio):** la vista inicial ahora encuadra la base y los objetivos, y `maxBounds` se ajusta a la forma de la zona. Antes, con la franja real (6.8 × 13.5 km), la base quedaba fuera de la pantalla y no se podía alejar lo suficiente para ver la zona entera.
 
 **Arreglado en la revisión del merge (avisar a P3 y hacer `git pull`):**
 - 🔴 Radiación tumbaba la app al marcar destino (el marcador de dosis se agregaba sin coordenadas).
@@ -288,7 +299,15 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 
 **Además del plan:** `noteTags.ts` y `NotesList.tsx`; arreglo de capas (`@layer`) y del contorno de foco; métricas sin cortes en 375 px; pantalla de error con "Reintentar"; `--ui-bottom` para que los controles del mapa no choquen con la barra; `Backend/requirements.txt`.
 
-**Pendiente con otros:** foto de la nota (P2, `addNote(n, photo?)`); tabla de fuentes para la slide 5 (P1); capturas limpias (P3).
+**Madrugada del domingo (en `rama-luis`):** la foto de la nota ya se guarda (`addNote(n, photo)`); `supabase/schema.sql` listo para pegar; slides con las capturas y cifras reales y la tabla de fuentes; `pagina-proyecto.md` con fuentes, enlaces y repo; guion, subtítulos y lista de entrega al día.
+
+**Bloque 0, paso a paso (lo único que necesita tus cuentas):**
+1. **Vercel:** vercel.com → Add New → Project → importar `luablo/martianmap` → Root Directory `Frontend/martianmap` → Deploy. Confirmar que publica `main`.
+2. **Supabase (opcional):** supabase.com → New project → SQL Editor → pegar `supabase/schema.sql` → Run. Luego Project Settings → API: copiar *Project URL* y *anon public key*.
+3. Poner las dos llaves en `Frontend/martianmap/.env.local` (no se sube) y en Vercel → Settings → Environment Variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`) → Redeploy.
+4. Probar con dos navegadores: una nota en uno aparece en el otro.
+
+**Pendiente con otros:** confirmar los valores de REMS (P1); revisar `useNotes` (P2); prueba en teléfono real (P3).
 
 ---
 
@@ -296,13 +315,13 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 
 | Quién espera | Qué | A quién | Mientras tanto usa |
 |---|---|---|---|
-| P2, P3 | Datos reales | P1 (bloque 1) | Terreno sintético (ya está en el repo) |
-| P3 | Ruta real para dibujar | P2 (bloque 1–2) | La línea recta de `useRoute` |
-| P4 | Ruta real para las métricas | P2 | Las métricas de la línea recta |
-| P4 | `pois`, `weather` reales | P1 (bloque 2) | Los sintéticos |
-| P4 (NoteCard) | `useNotes` con Supabase | P2 (bloque 3) | La versión en memoria (mismo contrato) |
-| P3 (notas en el mapa) | Notas con datos | P2 / P4 | Crear 2 notas falsas en su propio código de prueba |
-| P2 | Llaves de Supabase | P4 (hora 0) | `localStorage` |
+| ~~P2, P3~~ | ~~Datos reales~~ | ~~P1~~ | ✅ en `main` |
+| ~~P3, P4~~ | ~~Ruta real~~ | ~~P2~~ | ✅ en `main` |
+| ~~P4~~ | ~~`pois` y `weather` reales~~ | ~~P1~~ | ✅ en `main` |
+| ~~P4 (NoteCard)~~ | ~~`useNotes` con foto~~ | ~~P2~~ | ✅ en `rama-luis` |
+| Todos | URL de Vercel para el video y la entrega | P4 | `localhost` |
+| P2 | Llaves de Supabase | P4 | `localStorage` (ya funciona) |
+| P1 | Valores reales de REMS del sol 412 | P1 | Los de `weather.json` (sin confirmar) |
 
 ## 9. Si un contrato tiene que cambiar
 
