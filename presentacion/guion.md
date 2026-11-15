@@ -85,13 +85,13 @@ Música libre de derechos (YouTube Audio Library o Pixabay Music). Subtítulos s
 
 - Dosis: tasa de superficie de **0.67 mSv/día** (MSL RAD) × tiempo de ida y vuelta × blindaje → 0.062 mSv a pie y 0.013 mSv en rover abierto para B-4. **ESTIMADO.**
 - Reserva: el recurso debe alcanzar para volver con **20 %** de margen.
-- Fuentes y enlaces: `data-pipeline/FUENTES.md` y la sección «Datos de NASA usados» de `pagina-proyecto.md`.
+- Fuentes y enlaces: `RESOURCES.md` y la sección «Datos de NASA usados» de `pagina-proyecto.md`.
 
 ---
 
 ## 6. Pendientes de otros
 
-- [x] **P1:** tabla de fuentes con enlaces (ya está en `pagina-proyecto.md` y `FUENTES.md`).
+- [x] **P1:** tabla de fuentes con enlaces (ya está en `pagina-proyecto.md` y `RESOURCES.md`).
 - [ ] **P1:** foto real de Curiosity para el segundo 0 del video (con su crédito NASA/JPL-Caltech).
 - [x] **P3:** capturas limpias con la ortofoto real (las saca `capturar.mjs`).
 - [x] **P2:** la ruta real rodea las pendientes (A* de Fer, probado en los 3 modos).

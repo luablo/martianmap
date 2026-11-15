@@ -4,23 +4,23 @@
 > Horario y puntos de control: [PLANEACION.md](PLANEACION.md) · Datos, supuestos y diseño: [CONTEXTO.md](CONTEXTO.md).
 > Todo lo de código vive en `Frontend/martianmap/` salvo que se diga otra cosa.
 
-### 📊 Avance del equipo · revisado dom 15 nov, 01:15, contra `main` + `rama-luis`
+### 📊 Avance del equipo · revisado dom 15 nov, ~10:30, contra `main` (incluye PR #26, #27 y #28)
 
 | Persona | Avance | Tareas | Lo más urgente |
 |---|---|---|---|
 | P1 · Datos | `████████░░` 80 % | 12 / 15 | Confirmar los valores de REMS del sol 412 y la fecha de descarga del DTM |
-| P2 · Ruta | `████████░░` 78 % | 7 / 9 | Probar las notas en tiempo real cuando exista el proyecto de Supabase |
-| P3 · Mapa | `█████████░` 92 % | 12 / 13 | Probar en un teléfono real |
-| P4 · Interfaz | `███████░░░` 71 % | 10 / 14 | **Supabase y Vercel (bloque 0)**, grabar el video y entregar |
-| **Equipo** | `████████░░` **80 %** | **41 / 51** | |
+| P2 · Ruta | `█████████░` 89 % | 8 / 9 | — (solo queda el ajuste fino de costos, opcional) |
+| P3 · Mapa | `██████████` 100 % | 13 / 13 | — |
+| P4 · Interfaz | `█████████░` 93 % | 13 / 14 | Grabar el video, llenar los `[corchetes]` y entregar (sin slides: solo video) |
+| **Equipo** | `█████████░` **90 %** | **46 / 51** | Sin contar los 3 opcionales (fotos POV, térmico, ajuste de costos): **46 / 48 · 96 %** |
+
+**Ya hecho (dom 15 nov):** ✅ Vercel publica `main` en https://martianmap-rosy.vercel.app · ✅ Supabase creado, con `schema.sql` corrido y llaves en Vercel · ✅ `rama-luis`, `ramajulio` y `Julieta-3.0` fusionadas en `main` (PR #26, #27, #28) · ✅ Notas en tiempo real probadas entre dos dispositivos · ✅ Probado en teléfono real · ✅ README con la URL y `RESOURCES.md` en inglés (fuentes, herramientas y cómo se hizo) · **Decisión:** no habrá slides, la presentación es solo el video.
 
 **Lo que falta para entregar (domingo), en orden:**
-1. **P4 · Vercel:** conectar el repo (raíz `Frontend/martianmap`) y confirmar que publica `main`. Sin esto no hay URL para la entrega.
-2. **P4 · Supabase (opcional):** crear el proyecto, pegar `supabase/schema.sql` en el SQL Editor y poner las dos llaves en `.env.local` y en Vercel. Sin Supabase la app funciona igual: las notas se guardan en el dispositivo.
-3. **P4 · Video** de 30 s con `presentacion/guion.md` §2 y los subtítulos de `video-subtitulos.srt`.
-4. **Todos:** llenar los `[corchetes]` que quedan (nombres, URL de Vercel, enlace del video) en las slides y en `presentacion/pagina-proyecto.md`.
-5. **P3 o quien tenga teléfono:** abrir la URL de Vercel en un teléfono real y probar arrastrar el mapa.
-6. Fusionar `rama-luis` a `main` antes de grabar (tiene las notas que persisten y el terreno sin datos bloqueado).
+1. **P1 · REMS:** confirmar los valores de `weather.json` del sol 412 y la fecha de descarga del DTM (anotarlos en `RESOURCES.md`).
+2. **P4 · Video** de 30 s con `presentacion/guion.md` §2 y los subtítulos de `video-subtitulos.srt`, grabado sobre https://martianmap-rosy.vercel.app. Borrar antes las notas de prueba en Supabase (*Table Editor → annotations*) si no se quieren en el video.
+3. **Todos:** llenar los `[corchetes]` que quedan en `presentacion/pagina-proyecto.md` (nombres del equipo y enlace del video).
+4. **P4 · Entrega** (`presentacion/entrega.md`): video, URL de Vercel, repo público y página del proyecto.
 
 El detalle está al final de la sección de cada persona. **Para actualizarlo:** marca `[x]` en tu casilla y corrige tu fila y tu barra (cada `█` = 10 %).
 
@@ -121,7 +121,7 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 - [x] `nogo.geojson`: polígonos NO PISAR. La forma rápida es tomar celdas con pendiente > 30°, dilatarlas y convertirlas con `rasterio.features.shapes`, más 1–2 polígonos dibujados a mano sobre la ortofoto (roca suelta). `properties.reason` con el motivo.
 - [x] `pois.geojson`: `Base`, `Boxwork B-4` (objetivo principal, a ~2.4 km) y 1–2 objetivos más. Formato: `Feature<Point>` con `properties: { id, name, type: "base" | "target" | "pov", description }`.
 - [ ] `weather.json` de REMS (un sol real) y confirmar la tasa de RAD; si cambia, se la pasas a P2 para `RAD_MSV_PER_DAY`.
-- [x] `data-pipeline/FUENTES.md` lleno.
+- [x] `data-pipeline/FUENTES.md` lleno. (Ahora vive en inglés en `RESOURCES.md`, en la raíz.)
 - [x] Revisar con P2 que la ruta "tenga sentido" sobre la imagen.
 
 ### Bloque 3 (22:00–01:00) — extras
@@ -182,18 +182,18 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
   - `addNote`: insertar; si trae foto, subirla antes al bucket `field-photos` y guardar `photoUrl`.
   - Si `supabase` es `null` o falla → guardar en `localStorage` con la misma forma. **La demo nunca depende de la red.**
   - Ojo: mapear `snake_case` de la tabla ↔ `camelCase` de `Note`.
-- [ ] Probar con dos pestañas: la nota de una aparece en la otra.
+- [x] Probar con dos pestañas: la nota de una aparece en la otra. (Probado en Vercel entre dos dispositivos, dom 15 nov.)
 
 ### 📊 Progreso P2 · revisado dom 15 nov, 01:15
 
-`████████████████░░░░` **7 / 9 tareas · 78 %**
+`██████████████████░░` **8 / 9 tareas · 89 %**
 
 | Bloque | Hecho | Falta |
 |---|---|---|
 | 0 · Leer el terreno sintético | 1 / 1 | — |
 | 1 · A* | 2 / 2 | — (40–700 ms por ruta en la malla real de 1703 × 3383) |
 | 2 · Worker y avisos | 3 / 4 | ajuste fino de costos (la ruta no zigzaguea; opcional) |
-| 3 · Notas en Supabase | 1 / 2 | probar el tiempo real entre dos dispositivos cuando exista el proyecto de Supabase |
+| 3 · Notas en Supabase | 2 / 2 | — (tiempo real probado entre dos dispositivos) |
 
 - **A* de Fer en `main`:** 8 vecinos, máscara por modo (pendiente + NO PISAR), Web Worker con respaldo en el hilo principal, avisos "Fuera de alcance" y "No hay ruta segura", y pruebas en `scripts/test-astar.ts` y `scripts/test-route.ts` (`npx tsx scripts/test-route.ts`).
 - **Con los datos reales, a Boxwork B-4:** a pie 2.4 km, 1 h 7 min, **ALTO** (fuera de alcance) · rover abierto 1.8 km, 14 min, MEDIO · presurizado 1.9 km, 11 min, MEDIO.
@@ -223,7 +223,7 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 - [x] POI con nombre (marcadores HTML como BASE/DESTINO, color ciencia `#A78BFA`).
 - [x] Tocar cerca de un POI (≤ 40 px) → `onMapClick` con las coordenadas **exactas del POI** (imán). No requiere props nuevas.
 - [x] Al llegar una ruta nueva: `fitBounds` suave a la ruta (respetando `prefers-reduced-motion`).
-- [ ] Probar en teléfono: arrastrar el mapa no debe abrir ni cerrar paneles.
+- [x] Probar en teléfono: arrastrar el mapa no debe abrir ni cerrar paneles. (Probado en teléfono real sobre Vercel, dom 15 nov.)
 
 ### Bloque 3 (22:00–01:00) — extras
 - [x] Notas en el mapa (prop `notes`): punto morado con icono; al tocarlo, tarjeta con título, foto y etiquetas.
@@ -233,12 +233,12 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 
 ### 📊 Progreso P3 · revisado dom 15 nov, 01:15
 
-`██████████████████░░` **12 / 13 tareas · 92 %** + 1 extra (mapa base de Trek)
+`████████████████████` **13 / 13 tareas · 100 %** + 1 extra (mapa base de Trek) + botones del panel de mapa (PR #28)
 
 | Bloque | Hecho | Falta |
 |---|---|---|
 | 1 · Capas encendibles | 5 / 5 | — (la ortofoto real ya se ve) |
-| 2 · Legible y tocable | 4 / 5 | probar en teléfono real que arrastrar el mapa no abre paneles (en el emulador de 375 px se ve bien) |
+| 2 · Legible y tocable | 5 / 5 | — (probado en teléfono real) |
 | 3 · Extras | 3 / 3 | — |
 
 **Cambio en `MapView.tsx` (en `rama-luis`, avisar a Julio):** la vista inicial ahora encuadra la base y los objetivos, y `maxBounds` se ajusta a la forma de la zona. Antes, con la franja real (6.8 × 13.5 km), la base quedaba fuera de la pantalla y no se podía alejar lo suficiente para ver la zona entera.
@@ -263,9 +263,9 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 **No tocas:** `lib/routing/**`, `lib/data/**`, `components/map/**`.
 
 ### Bloque 0 (hora 0)
-- [ ] Crear el proyecto en Supabase. Correr el SQL de CONTEXTO.md §7, crear el bucket público `field-photos`, activar Realtime en `annotations` y políticas abiertas para `anon`.
-- [ ] `.env.local` con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`; pasar las llaves a P2 **por mensaje privado**, nunca en el repo.
-- [ ] Conectar el repo a Vercel (raíz: `Frontend/martianmap`), con las mismas variables. Confirmar que `main` se publica.
+- [x] Crear el proyecto en Supabase. Correr el SQL de CONTEXTO.md §7, crear el bucket público `field-photos`, activar Realtime en `annotations` y políticas abiertas para `anon`.
+- [x] `.env.local` con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`; pasar las llaves a P2 **por mensaje privado**, nunca en el repo.
+- [x] Conectar el repo a Vercel (raíz: `Frontend/martianmap`), con las mismas variables. Confirmar que `main` se publica.
 
 ### Bloque 1 (14:00–18:00) — la pantalla con datos de la zona
 - [x] TopBar: el buscador filtra `zone.pois` (pasarlos desde AppShell); al elegir uno, `setDestination`. Lista de resultados con filas ≥ 56 px.
@@ -282,18 +282,18 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 ### Bloque 3 (22:00–01:00) — extras
 - [x] Pantalla "Acerca de / supuestos": lee `MODES` y `LAYERS` y muestra fuentes (P1 pasa el texto). → botón "i" en la barra superior (`AboutSheet.tsx`).
 - [x] Modo HUD: `data-mode="hud"` en `<html>` cambia los tokens en `globals.css` (fondos transparentes, solo ruta, distancia, recurso y riesgo en las esquinas). Botón para alternarlo. → botón "HUD"; Esc o "SALIR DE HUD" vuelve (`HudOverlay.tsx`).
-- [ ] Domingo: video y presentación son tu prioridad número 1 (ver PLANEACION.md). → Ya están las capturas, las 7 slides, los subtítulos y la página del proyecto; falta grabar el video y entregar (`presentacion/entrega.md`).
+- [ ] Domingo: video y presentación son tu prioridad número 1 (ver PLANEACION.md). → **Sin slides: la presentación es solo el video.** Ya están las capturas, los subtítulos y la página del proyecto; falta grabar el video y entregar (`presentacion/entrega.md`).
 
-### 📊 Progreso P4 · revisado dom 15 nov (fase 6 en `rama-luis`)
+### 📊 Progreso P4 · revisado dom 15 nov, ~10:00 (todo en `main`)
 
-`██████████████░░░░░░` **10 / 14 tareas · 71 %** (el domingo va a medias; el bloque 0 sigue sin hacer)
+`██████████████████░░` **13 / 14 tareas · 93 %** (falta grabar el video y entregar)
 
 | Bloque | Hecho | Falta |
 |---|---|---|
-| 0 · Supabase y Vercel | 0 / 3 | proyecto de Supabase, llaves a P2, Vercel publicando `main` (no hay `.env.local` ni proyecto de Vercel) |
+| 0 · Supabase y Vercel | 3 / 3 | — (Vercel: martianmap-rosy.vercel.app publica `main`; Supabase con tablas, bucket `field-photos` y tiempo real) |
 | 1 · Pantalla con datos | 4 / 4 | — |
 | 2 · Notas y presentación | 4 / 4 | — |
-| 3 · Extras | 2 / 3 | domingo: grabar el video, llenar los `[corchetes]` y entregar |
+| 3 · Extras | 2 / 3 | domingo: grabar el video, llenar los `[corchetes]` y entregar (las slides se descartaron) |
 
 **Domingo, ya hecho:** `presentacion/capturar.mjs` graba las tomas A–F a 1080p sin tocar el mouse (12 PNG en `presentacion/capturas/`); 7 slides con capturas y notas del orador ([MARSWALK · Pitch](https://claude.ai/artifact/2M422wToS83dVPDy2DFDop)); `video-subtitulos.srt`; `pagina-proyecto.md` con la declaración de uso de IA; `entrega.md` con la lista por hora. Arreglos del último repaso: el aviso "TERRENO SINTÉTICO" ya no queda bajo los botones en teléfono y los círculos de MAPA BASE se ven.
 
@@ -301,13 +301,13 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 
 **Madrugada del domingo (en `rama-luis`):** la foto de la nota ya se guarda (`addNote(n, photo)`); `supabase/schema.sql` listo para pegar; slides con las capturas y cifras reales y la tabla de fuentes; `pagina-proyecto.md` con fuentes, enlaces y repo; guion, subtítulos y lista de entrega al día.
 
-**Bloque 0, paso a paso (lo único que necesita tus cuentas):**
+**Bloque 0, paso a paso (ya hecho; se deja como referencia):**
 1. **Vercel:** vercel.com → Add New → Project → importar `luablo/martianmap` → Root Directory `Frontend/martianmap` → Deploy. Confirmar que publica `main`.
 2. **Supabase (opcional):** supabase.com → New project → SQL Editor → pegar `supabase/schema.sql` → Run. Luego Project Settings → API: copiar *Project URL* y *anon public key*.
 3. Poner las dos llaves en `Frontend/martianmap/.env.local` (no se sube) y en Vercel → Settings → Environment Variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`) → Redeploy.
 4. Probar con dos navegadores: una nota en uno aparece en el otro.
 
-**Pendiente con otros:** confirmar los valores de REMS (P1); revisar `useNotes` (P2); prueba en teléfono real (P3).
+**Pendiente con otros:** confirmar los valores de REMS (P1). El tiempo real (P2) y la prueba en teléfono (P3) ya están.
 
 ---
 

@@ -4,6 +4,8 @@
 
 NASA Space Apps Challenge 2026 · Reto *Interplanetary Survival Guide: Martian Map*.
 
+**▶ Probar la app: https://martianmap-rosy.vercel.app** (funciona en escritorio, tablet y teléfono; las notas de campo se comparten en tiempo real).
+
 Los mapas de Marte que existen se hicieron para mirar el planeta desde órbita, no para caminarlo. MARSWALK es un mapa hiperlocal para una caminata extravehicular (EVA): el astronauta elige un destino y la app traza la ruta segura desde la base, con distancia, tiempo, riesgo, dosis de radiación estimada y el recurso que le queda al volver.
 
 ![Ruta a pie hasta Boxwork B-4 sobre la imagen HiRISE de Gale](presentacion/capturas/C1-a-pie.png)
@@ -26,9 +28,13 @@ Los mapas de Marte que existen se hicieron para mirar el planeta desde órbita, 
 | Clima | MSL REMS, sol 412 | Temperatura en la barra superior |
 | Mapas base | NASA Mars Trek (Viking, MOLA, MOLA + HRSC) | Contexto alrededor de la zona |
 
-La zona es un recorte del cráter Gale (137.24–137.35 °E, 4.72–4.95 °S). La base de la EVA, los objetivos y las zonas NO PISAR son supuestos del equipo marcados sobre la imagen. Detalle y enlaces: [data-pipeline/FUENTES.md](data-pipeline/FUENTES.md).
+La zona es un recorte del cráter Gale (137.24–137.35 °E, 4.72–4.95 °S). La base de la EVA, los objetivos y las zonas NO PISAR son supuestos del equipo marcados sobre la imagen. Fuentes, herramientas y cómo se hizo todo (en inglés): [RESOURCES.md](RESOURCES.md).
 
 ## Correrlo
+
+En línea: **https://martianmap-rosy.vercel.app** (Vercel publica `main` automáticamente; las notas usan Supabase).
+
+En local:
 
 ```bash
 cd Frontend/martianmap
@@ -48,10 +54,10 @@ Pruebas de la ruta: `npx tsx scripts/test-route.ts` (dentro de `Frontend/martian
 | `Frontend/martianmap/lib/routing/` | A*, Web Worker y métricas |
 | `Frontend/martianmap/public/data/gale/` | Datos de la zona ya procesados |
 | `data-pipeline/` | Python (rasterio, NumPy, Pillow): recorte, pendiente y exportación |
-| `supabase/` | Esquema de la base de datos de notas |
+| `supabase/` | Esquema de la base de datos de notas (Postgres, Realtime y Storage) |
 | `presentacion/` | Guion, slides, subtítulos y el script que saca las capturas |
 
-Más contexto: [CONTEXTO.md](CONTEXTO.md) (supuestos y diseño) y [TAREAS.md](TAREAS.md) (quién hizo qué).
+Fuentes y herramientas: [RESOURCES.md](RESOURCES.md). Más contexto: [CONTEXTO.md](CONTEXTO.md) (supuestos y diseño) y [TAREAS.md](TAREAS.md) (quién hizo qué).
 
 ## Limitaciones conocidas
 

@@ -2,7 +2,7 @@
 
 > Dueño: P4. Fase 6 del plan. P1 revisa antes de subir.
 > Material listo en esta carpeta: `guion.md`, `slides.md`, `capturas/`, `capturar.mjs`, `video-subtitulos.srt`, `pagina-proyecto.md`.
-> Slides: [MARSWALK · Pitch](https://claude.ai/artifact/2M422wToS83dVPDy2DFDop) (privada hasta que se comparta desde Share; se exporta a PPTX o PDF).
+> **Decisión (dom 15 nov): no habrá slides; la presentación es solo el video.** App: https://martianmap-rosy.vercel.app
 
 ---
 
@@ -10,7 +10,7 @@
 - [x] Recorrido en 1920×1080, 1024×768 (tablet) y 375×812 (teléfono) con `capturar.mjs`.
 - [x] Corregido: en teléfono los botones CAPAS / MODO / + NOTA tapaban el aviso "TERRENO SINTÉTICO".
 - [x] Corregido: en MAPA BASE no se veía el círculo de las opciones no elegidas.
-- [ ] Probar en un teléfono y una tablet reales sobre la URL de Vercel.
+- [x] Probar en un teléfono real sobre la URL de Vercel (y notas en tiempo real entre dos dispositivos).
 
 ## 08:00 · Congelamiento
 Desde aquí solo correcciones de errores. Nada de funciones nuevas.
@@ -22,7 +22,7 @@ Desde aquí solo correcciones de errores. Nada de funciones nuevas.
   node presentacion/capturar.mjs https://<app>.vercel.app
   ```
 - [x] Revisar `capturas/`: la ruta ya no es línea recta y rodea las pendientes (toma B).
-- [ ] Subir las capturas nuevas a las slides (reemplazar imagen en cada slide).
+- [x] ~~Subir las capturas nuevas a las slides~~ — no aplica: sin slides.
 
 | Archivo | Toma | Slide |
 |---|---|---|
@@ -37,20 +37,20 @@ Desde aquí solo correcciones de errores. Nada de funciones nuevas.
 
 ## 09:00–09:30 · Primera versión fea del video (30 s)
 - [ ] Grabar la pantalla siguiendo la tabla de `guion.md` §2 (las tomas en video, no en foto).
-- [ ] Toma E con dos ventanas si Supabase en tiempo real funciona; si no, una sola y la voz sin «al instante».
+- [ ] Toma E con dos ventanas: Supabase en tiempo real ya funciona.
 - [ ] Música libre de derechos (YouTube Audio Library o Pixabay Music).
 - [ ] Subtítulos: importar `video-subtitulos.srt` en el editor (CapCut, Clipchamp, DaVinci).
 
 ## 09:30–10:30 · Pulir
 - [ ] Video mejorado (cortes en los 1.5 s de cada modo, zoom a DOSIS y OXÍGENO).
-- [ ] Slides con P3: llenar `[4 nombres]`, `[URL de Vercel]`, `[repo]`, `[video]` y la tabla de fuentes de P1 (slide 5).
-- [ ] Slide 7: quitar «Supabase» si no quedó conectado (las notas igual se guardan en el dispositivo).
-- [ ] Página del proyecto: ya tiene fuentes y repo; faltan `[URL de Vercel]`, `[enlace del video]`, `[4 nombres]` y confirmar Supabase.
+- [x] ~~Slides con P3~~ — no aplica: sin slides.
+- [x] ~~Slide 7~~ — no aplica: sin slides (Supabase sí quedó conectado).
+- [ ] Página del proyecto: ya tiene fuentes, repo, URL de Vercel y Supabase; faltan `[enlace del video]` y `[4 nombres]`.
 
 ## 10:30–11:00 · Ensayo
-- [ ] Pitch con cronómetro ×2 (guion.md §4, ~2 min).
+- [ ] Ver el video completo ×2 antes de subirlo (audio, subtítulos, duración).
 - [ ] Abrir la URL de Vercel en una ventana de incógnito: carga, busca, traza ruta, cambia modo.
-- [ ] Exportar slides a PDF y abrirlas en otra computadora.
+- [x] ~~Exportar slides a PDF~~ — no aplica: sin slides.
 
 ## 11:00–11:30 · Subir la entrega
 - [ ] Video (enlace público, sin restricción de edad ni región).

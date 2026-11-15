@@ -38,7 +38,7 @@ Los mapas de Marte que existen se hicieron para mirar el planeta desde órbita, 
 - El recurso debe alcanzar para volver con al menos 20 % de reserva.
 
 ## Datos de NASA usados
-La zona es el recorte del modelo de elevación HiRISE DTEEC_001488_1750 en el cráter Gale (137.24–137.35 °E, 4.72–4.95 °S, unos 6.8 × 13.5 km). El detalle está en `data-pipeline/FUENTES.md`.
+La zona es el recorte del modelo de elevación HiRISE DTEEC_001488_1750 en el cráter Gale (137.24–137.35 °E, 4.72–4.95 °S, unos 6.8 × 13.5 km). El detalle está en `RESOURCES.md`.
 
 - **MRO HiRISE**: ortofoto PSP_001488_1750 (imagen de fondo, MEDIDO) y modelo de elevación DTEEC_001488_1750 a 1 m/px, del que sale la pendiente a 4 m por celda (DERIVADO). https://hirise-pds.lpl.arizona.edu/PDS/DTM/PSP/ORB_001400_001499/PSP_001488_1750_PSP_001752_1750/
 - **MSL RAD (Curiosity)**: tasa de radiación en superficie, 0.67 mSv/día (Hassler et al. 2014, *Science*). https://doi.org/10.1126/science.1244797
@@ -47,15 +47,15 @@ La zona es el recorte del modelo de elevación HiRISE DTEEC_001488_1750 en el cr
 - **Supuestos del equipo, no de NASA**: la base de la EVA, los objetivos y las zonas NO PISAR se marcaron sobre la ortofoto. Bradbury Landing queda fuera de este recorte.
 
 ## Cómo está hecho
-Next.js 16 y MapLibre en el navegador; la ruta es un A* sobre la malla de pendiente que corre en un Web Worker para no congelar la pantalla. Los datos de la zona se procesaron con Python (rasterio, NumPy y Pillow). Las notas se guardan en Supabase con tiempo real y, si no hay red, en el dispositivo [confirmar que Supabase quedó conectado]. Código: https://github.com/luablo/martianmap
+Next.js 16 y MapLibre en el navegador; la ruta es un A* sobre la malla de pendiente que corre en un Web Worker para no congelar la pantalla. Los datos de la zona se procesaron con Python (rasterio, NumPy y Pillow). Las notas se guardan en Supabase con tiempo real y, si no hay red, en el dispositivo. Código: https://github.com/luablo/martianmap
 
 ## Enlaces
-- App: [URL de Vercel]
+- App: https://martianmap-rosy.vercel.app
 - Video (30 s): [enlace]
 - Repositorio: https://github.com/luablo/martianmap
 
 ## Declaración de uso de inteligencia artificial
-El equipo usó asistentes de IA (Claude) como apoyo para escribir y revisar código, resolver conflictos de git y redactar documentación, el guion y las slides. Las decisiones de diseño, los supuestos del modelo y la elección de datos son del equipo, y todo el código generado se revisó y probó antes de integrarlo. Las capturas de la presentación salen de la app real; no se generaron imágenes con IA. [Ajustar si alguien del equipo usó otra herramienta.]
+El equipo usó asistentes de IA (Claude) como apoyo para escribir y revisar código, resolver conflictos de git y redactar documentación y el guion del video. Las decisiones de diseño, los supuestos del modelo y la elección de datos son del equipo, y todo el código generado se revisó y probó antes de integrarlo. Las capturas de la presentación salen de la app real; no se generaron imágenes con IA. [Ajustar si alguien del equipo usó otra herramienta.]
 
 ## Equipo
 [4 nombres y roles: P1 datos · P2 ruta y notas · P3 mapa · P4 interfaz e historia]
