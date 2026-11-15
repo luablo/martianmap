@@ -33,7 +33,6 @@ export default function Legend({
     <div
       className="panel pointer-events-none absolute z-20 p-2.5 w-36 sm:w-44"
       style={{
-        // Esquina inferior derecha, justo encima de la barra de métricas.
         bottom: "calc(var(--ui-bottom, 5rem) + 0.75rem)",
         right: "calc(0.75rem + env(safe-area-inset-right))",
       }}

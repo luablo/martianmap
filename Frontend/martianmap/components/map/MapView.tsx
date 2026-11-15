@@ -92,8 +92,9 @@ function uiPadding(map: MlMap) {
   // Al llegar la primera ruta la barra aún muestra "Toca el mapa…" (~68 px) y crece
   // justo después con las métricas: se usa como mínimo su alto con ruta.
   const withRoute = w < 640 ? 135 : 120;
-  // + ~110 px: la Leyenda y el selector de mapa base van justo encima de la barra.
-  const bottom = Math.max(Number.isFinite(measured) ? measured : 0, withRoute) + 110;
+  // + ~150 px: la Leyenda (hasta 3 capas) y el selector de mapa base van justo encima
+  // de la barra, y el nombre del POI destino va debajo de su punto.
+  const bottom = Math.max(Number.isFinite(measured) ? measured : 0, withRoute) + 150;
   if (w < 640) return { top: 170, bottom, left: 40, right: 40 };
   if (w < 1024) return { top: 100, bottom, left: 250, right: 230 };
   return { top: 100, bottom, left: 280, right: 300 };

@@ -55,6 +55,7 @@ export default function BasemapPicker({
 
   return (
     <div
+      data-hud="hide" // en modo HUD (P4) se oculta: ver globals.css
       className={[
         // z-10: capa del mapa, debajo de la interfaz de AppShell (z-20).
         "panel pointer-events-auto absolute z-10 overflow-hidden",

@@ -11,8 +11,8 @@
 | P1 · Datos | `░░░░░░░░░░` 0 % | 0 / 15 | Datos reales de HiRISE en `public/data/gale/` (o plan B) |
 | P2 · Ruta | `░░░░░░░░░░` 0 % | 0 / 9 | A* en `findRoute`; hoy la ruta es línea recta |
 | P3 · Mapa | `████████░░` 85 % | 11 / 13 | Prueba en teléfono real y capturas |
-| P4 · Interfaz | `██████░░░░` 57 % | 8 / 14 | Confirmar Supabase/Vercel; extras del bloque 3 |
-| **Equipo** | `████░░░░░░` **37 %** | **19 / 51** | |
+| P4 · Interfaz | `███████░░░` 71 % | 10 / 14 | Confirmar Supabase/Vercel; video y slides (domingo) |
+| **Equipo** | `████░░░░░░` **41 %** | **21 / 51** | |
 
 El detalle está al final de la sección de cada persona. **Para actualizarlo:** marca `[x]` en tu casilla y corrige tu fila y tu barra (cada `█` = 10 %).
 
@@ -269,20 +269,20 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 - [x] Empezar `presentacion/guion.md` y el esqueleto de 7 slides (ver PLANEACION.md §5).
 
 ### Bloque 3 (22:00–01:00) — extras
-- [ ] Pantalla "Acerca de / supuestos": lee `MODES` y `LAYERS` y muestra fuentes (P1 pasa el texto).
-- [ ] Modo HUD: `data-mode="hud"` en `<html>` cambia los tokens en `globals.css` (fondos transparentes, solo ruta, distancia, recurso y riesgo en las esquinas). Botón para alternarlo.
+- [x] Pantalla "Acerca de / supuestos": lee `MODES` y `LAYERS` y muestra fuentes (P1 pasa el texto). → botón "i" en la barra superior (`AboutSheet.tsx`).
+- [x] Modo HUD: `data-mode="hud"` en `<html>` cambia los tokens en `globals.css` (fondos transparentes, solo ruta, distancia, recurso y riesgo en las esquinas). Botón para alternarlo. → botón "HUD"; Esc o "SALIR DE HUD" vuelve (`HudOverlay.tsx`).
 - [ ] Domingo: video y presentación son tu prioridad número 1 (ver PLANEACION.md).
 
-### 📊 Progreso P4 · revisado sáb 14 nov contra `main` (`db6b95c`)
+### 📊 Progreso P4 · revisado sáb 14 nov (fase 5 en `rama-luis`)
 
-`███████████░░░░░░░░░` **8 / 14 tareas · 57 %** (sin contar el bloque 0, que falta confirmar)
+`██████████████░░░░░░` **10 / 14 tareas · 71 %** (sin contar el bloque 0, que falta confirmar)
 
 | Bloque | Hecho | Falta |
 |---|---|---|
 | 0 · Supabase y Vercel | ? / 3 | **confirmar**: proyecto de Supabase, llaves a P2, Vercel publicando `main` |
 | 1 · Pantalla con datos | 4 / 4 | — |
 | 2 · Notas y presentación | 4 / 4 | — |
-| 3 · Extras | 0 / 3 | Acerca de / supuestos, modo HUD, video y slides finales (domingo) |
+| 3 · Extras | 2 / 3 | video y slides finales (domingo) |
 
 **Además del plan:** `noteTags.ts` y `NotesList.tsx`; arreglo de capas (`@layer`) y del contorno de foco; métricas sin cortes en 375 px; pantalla de error con "Reintentar"; `--ui-bottom` para que los controles del mapa no choquen con la barra; `Backend/requirements.txt`.
 
