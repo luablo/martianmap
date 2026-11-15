@@ -37,25 +37,31 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Panel flotante translúcido (glassmorphism) */
-.panel {
-  background: color-mix(in srgb, var(--color-surface) 80%, transparent);
-  border: 1px solid var(--color-line);
-  border-radius: 16px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* Clases propias en @layer components: las utilidades de Tailwind pueden sobrescribirlas */
+@layer components {
+  /* Panel flotante translúcido (glassmorphism) */
+  .panel {
+    background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Todo lo tocable: mínimo 56 px (guantes presurizados) */
+  .touch {
+    min-height: 56px;
+    min-width: 56px;
+    touch-action: manipulation;
+  }
 }
 
-/* Todo lo tocable: mínimo 56 px (guantes presurizados) */
-.touch {
-  min-height: 56px;
-  min-width: 56px;
-  touch-action: manipulation;
-}
-
-:focus-visible {
-  outline: 2px solid var(--color-route);
-  outline-offset: 2px;
+/* En @layer base para que una utilidad (p. ej. focus:outline-none) pueda quitarlo */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-route);
+    outline-offset: 2px;
+  }
 }
 
 /* Rayado para zonas prohibidas: nunca solo color */
