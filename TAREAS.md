@@ -4,6 +4,18 @@
 > Horario y puntos de control: [PLANEACION.md](PLANEACION.md) · Datos, supuestos y diseño: [CONTEXTO.md](CONTEXTO.md).
 > Todo lo de código vive en `Frontend/martianmap/` salvo que se diga otra cosa.
 
+### 📊 Avance del equipo · revisado sáb 14 nov contra `main` (`db6b95c`)
+
+| Persona | Avance | Tareas | Lo más urgente |
+|---|---|---|---|
+| P1 · Datos | `░░░░░░░░░░` 0 % | 0 / 15 | Datos reales de HiRISE en `public/data/gale/` (o plan B) |
+| P2 · Ruta | `░░░░░░░░░░` 0 % | 0 / 9 | A* en `findRoute`; hoy la ruta es línea recta |
+| P3 · Mapa | `████████░░` 85 % | 11 / 13 | Prueba en teléfono real y capturas |
+| P4 · Interfaz | `███████░░░` 71 % | 10 / 14 | Confirmar Supabase/Vercel; video y slides (domingo) |
+| **Equipo** | `████░░░░░░` **41 %** | **21 / 51** | |
+
+El detalle está al final de la sección de cada persona. **Para actualizarlo:** marca `[x]` en tu casilla y corrige tu fila y tu barra (cada `█` = 10 %).
+
 ---
 
 ## 1. Cómo está cortado el código
@@ -109,6 +121,21 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 - [ ] Si sobra tiempo: `thermal.png` de THEMIS y `files.thermal` en `meta.json`.
 - [ ] Pasar a P4 la tabla de supuestos y fuentes para la slide 5.
 
+### 📊 Progreso P1 · revisado sáb 14 nov contra `main` (`db6b95c`)
+
+`░░░░░░░░░░░░░░░░░░░░` **0 / 15 tareas · 0 %**
+
+| Bloque | Hecho | Falta |
+|---|---|---|
+| 0 · Hora 0 | 0 / 2 | entorno Python, cuadro de la zona |
+| 1 · Datos reales | 0 / 5 | `recortar.py`, `pendiente.py`, `exportar.py`, proyección, prueba |
+| 2 · Sentido de la ruta | 0 / 5 | `nogo`, `pois`, `weather` **reales**, `FUENTES.md`, revisión con P2 |
+| 3 · Extras | 0 / 3 | fotos POV, térmico, tabla para la slide 5 |
+
+- **En `main` todo sigue sintético:** `meta.json` dice `"fake": true`, no hay `ortho.webp` y `data-pipeline/` solo tiene `FUENTES.md` (vacío) y `requirements.txt`.
+- **⚠️ Es lo más urgente del equipo:** sin datos reales no hay "datos de NASA" en la demo. Si a la hora del punto de control no hay DEM, activar el **plan B** (un solo DTM HiRISE).
+- Lo que ya existe en `public/data/gale/` (nogo, pois, weather) es sintético, de `scripts/fake-terrain.mjs` (P2).
+
 ---
 
 ## 5. P2 — Ruta (y notas desde el bloque 3)
@@ -148,6 +175,22 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
   - Ojo: mapear `snake_case` de la tabla ↔ `camelCase` de `Note`.
 - [ ] Probar con dos pestañas: la nota de una aparece en la otra.
 
+### 📊 Progreso P2 · revisado sáb 14 nov contra `main` (`db6b95c`)
+
+`░░░░░░░░░░░░░░░░░░░░` **0 / 9 tareas · 0 %** (más el terreno sintético, que ya estaba hecho desde la base)
+
+| Bloque | Hecho | Falta |
+|---|---|---|
+| 0 · Leer el terreno sintético | ? / 1 | confirmar |
+| 1 · A* | 0 / 2 | `findRoute` (hoy lanza "pendiente de implementar"), meta < 1 s |
+| 2 · Worker y avisos | 0 / 4 | `worker.ts`, `useRoute` con `computing`, `warning` en `metrics.ts`, ajuste de costos |
+| 3 · Notas en Supabase | 0 / 2 | `useNotes` con Supabase + `localStorage`, prueba con dos pestañas |
+
+- **En `main` la ruta sigue siendo línea recta** (`useRoute` devuelve `straightLine: true`) y la barra lo avisa.
+- La interfaz ya está lista para recibir lo de P2: "CALCULANDO…" con `computing`, avisos con `warning` y "No hay ruta segura" cuando la ruta es `null`.
+- **Pendiente de acordar con P4:** `addNote(n, photo?: File)` para que la foto de la nota se suba a `field-photos`.
+- `useNotes.ts` volvió a empezar vacío: se quitaron las 2 notas de prueba que causaban el error de hydration.
+
 ---
 
 ## 6. P3 — Mapa
@@ -158,25 +201,47 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 **Regla interna:** cada capa en su archivo `components/map/layers/<capa>.ts`; `MapView.tsx` solo las llama.
 
 ### Bloque 1 (14:00–18:00) — capas encendibles
-- [ ] Efecto sobre la prop `layers`: mostrar u ocultar con `map.setLayoutProperty(id, "visibility", ...)`.
-- [ ] `layers/ortho.ts`: `image` source con `zone.meta.files.ortho` y las 4 esquinas de `bounds`, debajo de todo.
-- [ ] `layers/slope.ts`: si existe `files.slope`, se usa esa imagen. **Mientras no exista**, se pinta desde `zone.slope` en un `<canvas>` (mismos colores que P1: ámbar 9–15°, rojo > 15°) y se usa como `image` source con `canvas.toDataURL()`. Así funciona hoy con datos sintéticos.
-- [ ] `layers/nogo.ts`: rayado diagonal real (`map.addImage` con un patrón de canvas 12 × 12 + `fill-pattern`) y la etiqueta "NO PISAR".
-- [ ] Leyenda en `components/map/Legend.tsx` (la renderiza `MapView`, esquina inferior derecha sobre el mapa, solo con capas activas).
+- [x] Efecto sobre la prop `layers`: mostrar u ocultar con `map.setLayoutProperty(id, "visibility", ...)`.
+- [x] `layers/ortho.ts`: `image` source con `zone.meta.files.ortho` y las 4 esquinas de `bounds`, debajo de todo.
+- [x] `layers/slope.ts`: si existe `files.slope`, se usa esa imagen. **Mientras no exista**, se pinta desde `zone.slope` en un `<canvas>` (mismos colores que P1: ámbar 9–15°, rojo > 15°) y se usa como `image` source con `canvas.toDataURL()`. Así funciona hoy con datos sintéticos.
+- [x] `layers/nogo.ts`: rayado diagonal real (`map.addImage` con un patrón de canvas 12 × 12 + `fill-pattern`) y la etiqueta "NO PISAR".
+- [x] Leyenda en `components/map/Legend.tsx` (la renderiza `MapView`, esquina inferior derecha sobre el mapa, solo con capas activas).
 
 **Listo cuando:** con datos sintéticos se pueden prender y apagar la pendiente y el NO PISAR, y se ve la leyenda.
 
 ### Bloque 2 (18:00–22:00) — legible y tocable con guantes
-- [ ] Radiación: no es un ráster (la tasa es uniforme). Al activarla, la **ruta se colorea por dosis acumulada** (`lineMetrics: true` en la fuente `route` + `line-gradient` de turquesa a ámbar) y aparece una etiqueta con la dosis total.
-- [ ] POI con nombre (marcadores HTML como BASE/DESTINO, color ciencia `#A78BFA`).
-- [ ] Tocar cerca de un POI (≤ 40 px) → `onMapClick` con las coordenadas **exactas del POI** (imán). No requiere props nuevas.
-- [ ] Al llegar una ruta nueva: `fitBounds` suave a la ruta (respetando `prefers-reduced-motion`).
+- [x] Radiación: no es un ráster (la tasa es uniforme). Al activarla, la **ruta se colorea por dosis acumulada** (`lineMetrics: true` en la fuente `route` + `line-gradient` de turquesa a ámbar) y aparece una etiqueta con la dosis total.
+- [x] POI con nombre (marcadores HTML como BASE/DESTINO, color ciencia `#A78BFA`).
+- [x] Tocar cerca de un POI (≤ 40 px) → `onMapClick` con las coordenadas **exactas del POI** (imán). No requiere props nuevas.
+- [x] Al llegar una ruta nueva: `fitBounds` suave a la ruta (respetando `prefers-reduced-motion`).
 - [ ] Probar en teléfono: arrastrar el mapa no debe abrir ni cerrar paneles.
 
 ### Bloque 3 (22:00–01:00) — extras
-- [ ] Notas en el mapa (prop `notes`): punto morado con icono; al tocarlo, tarjeta con título, foto y etiquetas.
-- [ ] POV: al tocar un POI `pov`, popup con la foto de Curiosity, sol y cámara.
+- [x] Notas en el mapa (prop `notes`): punto morado con icono; al tocarlo, tarjeta con título, foto y etiquetas.
+- [x] POV: al tocar un POI `pov`, popup con la foto de Curiosity, sol y cámara.
 - [ ] Ayudar a P4 con capturas de pantalla limpias para el video.
+- [x] *(Extra, no estaba en el plan)* Mapa base de Marte desde NASA Trek (Viking, MOLA, MOLA+HRSC) con selector (`BasemapPicker.tsx`, `layers/basemap.ts`).
+
+### 📊 Progreso P3 · revisado sáb 14 nov contra `main` (`db6b95c`)
+
+`█████████████████░░░` **11 / 13 tareas · 85 %** + 1 extra (mapa base de Trek)
+
+| Bloque | Hecho | Falta |
+|---|---|---|
+| 1 · Capas encendibles | 5 / 5 | — (la ortofoto aparece sola cuando P1 entregue `files.ortho`) |
+| 2 · Legible y tocable | 4 / 5 | probar en teléfono real que arrastrar el mapa no abre paneles |
+| 3 · Extras | 2 / 3 | capturas limpias para el video |
+
+**Arreglado en la revisión del merge (avisar a P3 y hacer `git pull`):**
+- 🔴 Radiación tumbaba la app al marcar destino (el marcador de dosis se agregaba sin coordenadas).
+- 🔴 Notas de prueba en `useNotes.ts` → error de hydration ("1 Issue").
+- 🟡 Mosaicos de Trek pedidos al nivel equivocado (un cuarto del mosaico estirado ×2). Ahora: nivel Mercator `z` → nivel EQ `z − 1`, misma columna.
+- 🟡 Radiación y mapa base esperaban `isStyleLoaded()`, que es falso mientras bajan mosaicos de Trek → el cambio nunca se aplicaba.
+- 🟡 Leyenda y selector de mapa base: ahora se colocan sobre la barra de métricas con `--ui-bottom` (lo mide AppShell); la leyenda ya no tapa NOTAS DE CAMPO.
+- 🟡 `fitBounds` dejaba la ruta debajo de los paneles; DESTINO se encimaba con el nombre del POI.
+- Botones del selector de mapa base a 56 px (antes 44).
+
+**Ojo:** el mapa base depende de internet (trek.nasa.gov). A esa escala solo trae unos pocos píxeles para toda la zona: sirve de contexto, no de detalle. Si no hay red, el mapa sigue funcionando con fondo oscuro.
 
 ---
 
@@ -192,21 +257,36 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 - [ ] Conectar el repo a Vercel (raíz: `Frontend/martianmap`), con las mismas variables. Confirmar que `main` se publica.
 
 ### Bloque 1 (14:00–18:00) — la pantalla con datos de la zona
-- [ ] TopBar: el buscador filtra `zone.pois` (pasarlos desde AppShell); al elegir uno, `setDestination`. Lista de resultados con filas ≥ 56 px.
-- [ ] Chip de clima desde `zone.weather` (temperatura mín/máx), oculto en teléfono.
-- [ ] `components/ui/Button.tsx` y `components/ui/Panel.tsx` para dejar de repetir clases.
-- [ ] MetricsBar: estado `computing` ("CALCULANDO…") y `warning`; texto de recurso en ámbar si queda < 50 % y en rojo si queda < 20 %.
+- [x] TopBar: el buscador filtra `zone.pois` (pasarlos desde AppShell); al elegir uno, `setDestination`. Lista de resultados con filas ≥ 56 px.
+- [x] Chip de clima desde `zone.weather` (temperatura mín/máx), oculto en teléfono.
+- [x] `components/ui/Button.tsx` y `components/ui/Panel.tsx` para dejar de repetir clases.
+- [x] MetricsBar: estado `computing` ("CALCULANDO…") y `warning`; texto de recurso en ámbar si queda < 50 % y en rojo si queda < 20 %.
 
 ### Bloque 2 (18:00–22:00) — notas y presentación
-- [ ] `components/panels/NoteCard.tsx`: formulario con título, nota, etiquetas (MUESTRA / GEOLOGÍA / REVISAR / PELIGRO), foto (`<input type="file" accept="image/*" capture="environment">`), lat/lon y sol automáticos. Llama a `addNote` de `useNotes` (el interior lo hace P2).
-- [ ] Modo "nota" en AppShell: botón "+ NOTA"; mientras está activo, el siguiente toque al mapa fija la ubicación de la nota en vez del destino.
-- [ ] Panel de notas (≥ 1024 px): lista de notas recientes.
-- [ ] Empezar `presentacion/guion.md` y el esqueleto de 7 slides (ver PLANEACION.md §5).
+- [x] `components/panels/NoteCard.tsx`: formulario con título, nota, etiquetas (MUESTRA / GEOLOGÍA / REVISAR / PELIGRO), foto (`<input type="file" accept="image/*" capture="environment">`), lat/lon y sol automáticos. Llama a `addNote` de `useNotes` (el interior lo hace P2).
+- [x] Modo "nota" en AppShell: botón "+ NOTA"; mientras está activo, el siguiente toque al mapa fija la ubicación de la nota en vez del destino.
+- [x] Panel de notas (≥ 1024 px): lista de notas recientes.
+- [x] Empezar `presentacion/guion.md` y el esqueleto de 7 slides (ver PLANEACION.md §5).
 
 ### Bloque 3 (22:00–01:00) — extras
-- [ ] Pantalla "Acerca de / supuestos": lee `MODES` y `LAYERS` y muestra fuentes (P1 pasa el texto).
-- [ ] Modo HUD: `data-mode="hud"` en `<html>` cambia los tokens en `globals.css` (fondos transparentes, solo ruta, distancia, recurso y riesgo en las esquinas). Botón para alternarlo.
+- [x] Pantalla "Acerca de / supuestos": lee `MODES` y `LAYERS` y muestra fuentes (P1 pasa el texto). → botón "i" en la barra superior (`AboutSheet.tsx`).
+- [x] Modo HUD: `data-mode="hud"` en `<html>` cambia los tokens en `globals.css` (fondos transparentes, solo ruta, distancia, recurso y riesgo en las esquinas). Botón para alternarlo. → botón "HUD"; Esc o "SALIR DE HUD" vuelve (`HudOverlay.tsx`).
 - [ ] Domingo: video y presentación son tu prioridad número 1 (ver PLANEACION.md).
+
+### 📊 Progreso P4 · revisado sáb 14 nov (fase 5 en `rama-luis`)
+
+`██████████████░░░░░░` **10 / 14 tareas · 71 %** (sin contar el bloque 0, que falta confirmar)
+
+| Bloque | Hecho | Falta |
+|---|---|---|
+| 0 · Supabase y Vercel | ? / 3 | **confirmar**: proyecto de Supabase, llaves a P2, Vercel publicando `main` |
+| 1 · Pantalla con datos | 4 / 4 | — |
+| 2 · Notas y presentación | 4 / 4 | — |
+| 3 · Extras | 2 / 3 | video y slides finales (domingo) |
+
+**Además del plan:** `noteTags.ts` y `NotesList.tsx`; arreglo de capas (`@layer`) y del contorno de foco; métricas sin cortes en 375 px; pantalla de error con "Reintentar"; `--ui-bottom` para que los controles del mapa no choquen con la barra; `Backend/requirements.txt`.
+
+**Pendiente con otros:** foto de la nota (P2, `addNote(n, photo?)`); tabla de fuentes para la slide 5 (P1); capturas limpias (P3).
 
 ---
 

@@ -26,6 +26,8 @@
 }
 .marker-dest {
   color: var(--color-science);
+  /* Etiqueta ARRIBA del punto: abajo va el nombre del POI cuando el destino es uno. */
+  flex-direction: column-reverse;
 }
 
 .marker-poi {
