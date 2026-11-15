@@ -1,10 +1,10 @@
 // Dueño: P3 (Mapa). Selector compacto de mapa base.
 //
 // Responsivo en dos formatos:
-//   Teléfono (<sm):  columna de iconos solos (26×26 px cada uno, ≥56 px táctil).
-//                    Se ubica en la DERECHA inferior para no chocar con la Leyenda.
-//   Tablet / hab (≥sm): columna de icono + etiqueta. Ubicado en la IZQUIERDA inferior,
-//                    con margen inferior adaptado al MetricsBar (~6.5 rem + safe-area).
+//   Teléfono (<sm):  columna de iconos solos (≥56 px táctil), a la DERECHA inferior
+//                    para no chocar con la Leyenda.
+//   Tablet / hab (≥sm): columna de icono + etiqueta, a la IZQUIERDA inferior.
+//   En ambos queda justo encima de la barra de métricas (--ui-bottom, lo mide AppShell).
 
 import React from "react";
 import { BASEMAPS, type BasemapId } from "./layers/basemap";
@@ -56,14 +56,15 @@ export default function BasemapPicker({
   return (
     <div
       className={[
-        "panel pointer-events-auto absolute z-20 overflow-hidden",
-        // Teléfono: derecha inferior (no choca con Leyenda que va a la izquierda)
+        // z-10: capa del mapa, debajo de la interfaz de AppShell (z-20).
+        "panel pointer-events-auto absolute z-10 overflow-hidden",
+        // Justo encima de la barra de métricas: AppShell mide su alto en vivo (--ui-bottom).
+        "bottom-[calc(var(--ui-bottom,6.5rem)_+_0.75rem)]",
+        // Teléfono: derecha (no choca con la Leyenda, que va a la izquierda)
         "right-[calc(0.75rem_+_env(safe-area-inset-right))]",
-        "bottom-[calc(5rem_+_env(safe-area-inset-bottom))]",
-        // Tablet: vuelve a la izquierda con más margen inferior
+        // Tablet: izquierda, debajo de CAPAS
         "sm:right-auto",
         "sm:left-[calc(0.75rem_+_env(safe-area-inset-left))]",
-        "sm:bottom-[calc(6.5rem_+_env(safe-area-inset-bottom))]",
       ].join(" ")}
     >
       {ids.map((id) => {
@@ -79,8 +80,8 @@ export default function BasemapPicker({
             className={[
               "relative flex w-full items-center transition-colors",
               "hover:bg-line/60 active:bg-line",
-              // Teléfono: solo icono, cuadrado táctil 44px
-              "min-h-[44px] min-w-[44px] justify-center px-3 sm:justify-start sm:gap-2 sm:py-2",
+              // Táctil ≥ 56 px (guantes, CONTEXTO §8). Teléfono: solo icono.
+              "touch justify-center px-3 sm:justify-start sm:gap-2",
               isActive ? "text-route" : "text-ink-dim",
             ].join(" ")}
           >

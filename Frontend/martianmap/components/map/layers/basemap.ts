@@ -67,20 +67,29 @@ export const BASEMAPS: Record<BasemapId, BasemapDef> = {
 
 // ─── Conversión de coordenadas ────────────────────────────────────────────────
 
-/** Convierte fila XYZ (Mercator) → fila EQ (latitud lineal) para el mismo z. */
+// Nivel EQ k de Trek: 2·2^k columnas × 2^k filas, cada mosaico de 180/2^k grados.
+// Un mosaico Mercator de nivel z mide 360/2^z grados de ancho = 180/2^(z−1).
+// → el mosaico EQ del MISMO tamaño es el de nivel k = z − 1, con la misma columna x.
+// (Pedir nivel z con columna 2x traía un mosaico de la mitad de ancho y alto y lo
+//  estiraba al doble: la imagen quedaba desplazada y deformada.)
+// La fila sí cambia: Mercator no es lineal en latitud. Cerca del ecuador (Gale, −4.7°)
+// la diferencia dentro de un mosaico es despreciable.
+
+/** Nivel EQ de Trek equivalente al nivel XYZ (Mercator) z. */
+function eqLevel(z: number): number {
+  return z - 1;
+}
+
+/** Convierte fila XYZ (Mercator, nivel z) → fila EQ (latitud lineal, nivel z − 1). */
 function mercatorRowToEQ(xyzRow: number, z: number): number {
   const n = Math.pow(2, z);
   // Centro del tile en normalizado [0,1] en Mercator (0=norte, 1=sur)
   const yNorm = (xyzRow + 0.5) / n;
   // Latitud correspondiente en grados
   const lat = Math.atan(Math.sinh(Math.PI * (1 - yNorm * 2))) * (180 / Math.PI);
-  // Fila EQ: Trek tiene n filas, fila 0 = norte (+90°)
-  return Math.max(0, Math.min(n - 1, Math.floor(((90 - lat) / 180) * n)));
-}
-
-/** Convierte columna XYZ → columna EQ Trek (Trek tiene el doble de columnas). */
-function mercatorColToEQ(xyzCol: number): number {
-  return xyzCol * 2;
+  // Fila EQ: en el nivel z − 1 hay 2^(z−1) filas, fila 0 = norte (+90°)
+  const rows = Math.pow(2, eqLevel(z));
+  return Math.max(0, Math.min(rows - 1, Math.floor(((90 - lat) / 180) * rows)));
 }
 
 // ─── transformRequest ─────────────────────────────────────────────────────────
@@ -101,8 +110,7 @@ export const trekTransformRequest: RequestTransformFunction = (
   const z     = parseInt(parts[parts.length - 3], 10);
   const layer = parts.slice(0, -3).join("/");
   const eqRow = mercatorRowToEQ(y, z);
-  const eqCol = mercatorColToEQ(x);
-  return { url: `${TREK}/${layer}/1.0.0/default/default028mm/${z}/${eqRow}/${eqCol}.jpg` };
+  return { url: `${TREK}/${layer}/1.0.0/default/default028mm/${eqLevel(z)}/${eqRow}/${x}.jpg` };
 };
 
 // ─── applyBasemap ─────────────────────────────────────────────────────────────
@@ -120,8 +128,9 @@ export function applyBasemap(map: MlMap, id: BasemapId) {
     tiles: [`${TREK_PROXY_PREFIX}${def.layer}/{z}/{y}/{x}`],
     tileSize: 256,
     attribution: def.attribution,
-    minzoom: 0,
-    maxzoom: def.maxZoom,
+    // En niveles Mercator: el nivel z usa el EQ z − 1, así que van de 1 a maxZoom + 1.
+    minzoom: 1,
+    maxzoom: def.maxZoom + 1,
   });
 
   const firstLayerId = map.getStyle().layers[1]?.id;

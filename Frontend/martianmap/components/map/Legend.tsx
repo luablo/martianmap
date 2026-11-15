@@ -1,4 +1,4 @@
-// Dueño: P3 (Mapa). Leyenda de las capas activas, esquina inferior derecha sobre el mapa.
+// Dueño: P3 (Mapa). Leyenda de las capas activas, abajo sobre el mapa, encima de la barra de métricas.
 //
 // Solo muestra las capas encendidas (prop `layers`) Y con datos disponibles
 // (layerAvailable). Cada fila: muestra de color + etiqueta + fuente + proveniencia
@@ -37,16 +37,19 @@ export default function Legend({
   return (
     <div
       className={[
-        "panel pointer-events-none absolute z-20 p-2.5",
-        // Teléfono: izquierda inferior, estrecha
+        // z-10: capa del mapa, debajo de la interfaz de AppShell (z-20).
+        "panel pointer-events-none absolute z-10 p-2.5",
+        // Justo encima de la barra de métricas: AppShell mide su alto en vivo (--ui-bottom).
+        "bottom-[calc(var(--ui-bottom,6.5rem)_+_0.75rem)]",
+        // Teléfono: izquierda, estrecha (el selector de mapa base va a la derecha)
         "left-[calc(0.75rem_+_env(safe-area-inset-left))]",
-        "bottom-[calc(5rem_+_env(safe-area-inset-bottom))]",
         "w-36",
-        // Tablet: derecha inferior, más ancha, más margen (MetricsBar expandido ~9rem)
+        // Tablet: derecha (la columna derecha solo tiene + NOTA y MODO, termina arriba)
         "sm:left-auto",
         "sm:right-[calc(0.75rem_+_env(safe-area-inset-right))]",
-        "sm:bottom-[calc(9rem_+_env(safe-area-inset-bottom))]",
         "sm:w-44",
+        // ≥1024 px: NOTAS DE CAMPO ocupa la columna derecha (16rem) → la leyenda va a su izquierda
+        "lg:right-[calc(17.5rem_+_env(safe-area-inset-right))]",
       ].join(" ")}
     >
       <h3 className="mb-1.5 font-mono text-[10px] font-semibold tracking-widest text-ink-dim">
