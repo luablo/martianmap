@@ -41,6 +41,73 @@ type Drawer = "layers" | "mode" | null;
 /** Qué hace un toque en el mapa: marcar destino o ubicar una nota. */
 type Tool = "route" | "note";
 
+// ── Botón de colapso de panel ─────────────────────────────────────────────────
+// Pestaña pegada al borde del panel con una flecha SVG, centrada en el eje del panel.
+// direction: hacia qué lado está el PANEL (izquierda = panel a la izquierda del botón,
+// derecha = panel a la derecha, abajo = panel encima del botón).
+function CollapseBtn({
+  open,
+  direction,
+  onClick,
+  label,
+}: {
+  open: boolean;
+  direction: "left" | "right" | "down";
+  onClick: () => void;
+  label: string;
+}) {
+  // Cuando está abierto la flecha apunta HACIA el panel (para "cerrarlo").
+  // Cuando está cerrado la flecha apunta ALEJÁNDOSE del panel (para "abrirlo").
+  //
+  //   left  (panel a la izq): abierto → apunta izq (‹), cerrado → apunta der (›)
+  //   right (panel a la der): abierto → apunta der (›), cerrado → apunta izq (‹)
+  //   down  (panel encima):   abierto → apunta abajo (∨), cerrado → apunta arriba (∧)
+  const chevronRotate: Record<string, string> = {
+    left:  open ? "rotate-0"   : "rotate-180",   // ‹ → ›
+    right: open ? "rotate-0" : "rotate-180",     // › → ‹  (invertido respecto a left)
+    down:  open ? "rotate-0"   : "rotate-180",   // ∨ → ∧
+  };
+
+  const isVertical = direction === "down";
+
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      aria-expanded={open}
+      onClick={onClick}
+      className={[
+        "pointer-events-auto flex shrink-0 items-center justify-center self-center",
+        "bg-surface/80 border border-line backdrop-blur-sm",
+        "text-ink-dim hover:text-ink hover:bg-line/60 transition-colors duration-150",
+        isVertical
+          ? "h-5 w-10 rounded-b-xl border-t-0"
+          : direction === "right"
+            ? "h-10 w-5 rounded-l-xl border-r-0"
+            : "h-10 w-5 rounded-r-xl border-l-0",
+      ].join(" ")}
+    >
+      <svg
+        width="10"
+        height="10"
+        viewBox="0 0 10 10"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={`transition-transform duration-200 ${chevronRotate[direction]}`}
+        aria-hidden
+      >
+        {isVertical
+          ? <path d="M1 3 L5 7 L9 3" />    /* chevron ∨ */
+          : <path d="M7 1 L3 5 L7 9" />    /* chevron ‹ */
+        }
+      </svg>
+    </button>
+  );
+}
+
 // Márgenes que respetan el notch y la barra de gestos del teléfono.
 const SAFE_PADDING: React.CSSProperties = {
   paddingTop: "max(0.75rem, env(safe-area-inset-top))",
@@ -57,9 +124,13 @@ export default function AppShell() {
   const [mode, setMode] = useState<ModeId>("walk");
   const [destination, setDestination] = useState<LonLat | null>(null);
   const [drawer, setDrawer] = useState<Drawer>(null);
-  const [basemapId, setBasemapId] = useState<BasemapId>("viking");
+  const [basemapId, setBasemapId] = useState<BasemapId>("ctx");
   const [aboutOpen, setAboutOpen] = useState(false);
   const [hud, setHud] = useState(false);
+  // Colapso de paneles en tablet/hábitat.
+  const [leftOpen,   setLeftOpen]   = useState(true);
+  const [rightOpen,  setRightOpen]  = useState(true);
+  const [bottomOpen, setBottomOpen] = useState(true);
 
   // Modo HUD: <html data-mode="hud"> activa los estilos de globals.css; Esc sale.
   useEffect(() => {
@@ -186,8 +257,10 @@ export default function AppShell() {
         </CenterMsg>
       )}
 
+      {/* Honestidad: se queda mientras meta.fake exista; desaparece solo con los datos reales de P1. */}
       {zone?.meta.fake && (
-        <div className="pointer-events-none absolute left-1/2 top-[5.25rem] z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
+        // Teléfono: debajo de los botones CAPAS / MODO / + NOTA, que si no lo tapan.
+        <div className="pointer-events-none absolute left-1/2 top-[10.25rem] sm:top-[5.25rem] z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-warn/40 bg-bg-0/80 px-2 py-0.5 font-mono text-[11px] text-warn">
           TERRENO SINTÉTICO · no son datos reales
         </div>
       )}
@@ -216,16 +289,53 @@ export default function AppShell() {
           }}
         />
 
-        {/* Tablet y hábitat: paneles fijos a los lados */}
-        <div className="hidden min-h-0 items-start justify-between gap-3 sm:flex">
-          <div className="max-h-full w-52 shrink-0 overflow-y-auto lg:w-60">{layerPanel}</div>
-          <div className="flex max-h-full w-48 shrink-0 flex-col gap-3 overflow-y-auto lg:w-64">
-            {noteButton("w-full")}
-            {modePanel}
-            <Panel title="NOTAS DE CAMPO" className="hidden lg:block">
-              <NotesList notes={notes} />
-            </Panel>
+        {/* Tablet y hábitat: paneles colapsables a los lados */}
+        <div className="hidden min-h-0 items-stretch justify-between gap-0 sm:flex">
+
+          {/* Panel izquierdo — CAPAS */}
+          <div className="flex min-h-0 items-stretch">
+            <div
+              className={[
+                "max-h-full overflow-y-auto transition-all duration-200",
+                leftOpen ? "w-52 lg:w-60 opacity-100" : "w-0 opacity-0 overflow-hidden",
+              ].join(" ")}
+            >
+              {layerPanel}
+            </div>
+            {/* Pestaña pegada al borde derecho del panel izquierdo, centrada verticalmente */}
+            <CollapseBtn
+              open={leftOpen}
+              direction="left"
+              onClick={() => setLeftOpen((v) => !v)}
+              label={leftOpen ? "Ocultar panel de capas" : "Mostrar panel de capas"}
+            />
           </div>
+
+          {/* Panel derecho — MODO + NOTAS */}
+          <div className="flex min-h-0 items-stretch">
+            {/* Pestaña pegada al borde izquierdo del panel derecho, centrada verticalmente */}
+            <CollapseBtn
+              open={rightOpen}
+              direction="right"
+              onClick={() => setRightOpen((v) => !v)}
+              label={rightOpen ? "Ocultar panel de modo" : "Mostrar panel de modo"}
+            />
+            <div
+              className={[
+                "max-h-full overflow-y-auto transition-all duration-200",
+                rightOpen ? "w-48 lg:w-64 opacity-100" : "w-0 opacity-0 overflow-hidden",
+              ].join(" ")}
+            >
+              <div className="flex flex-col gap-3">
+                {noteButton("w-full")}
+                {modePanel}
+                <Panel title="NOTAS DE CAMPO" className="hidden lg:block">
+                  <NotesList notes={notes} />
+                </Panel>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* Teléfono: botones flotantes que abren un panel */}
@@ -252,26 +362,41 @@ export default function AppShell() {
           )}
         </div>
 
-        <div ref={bottomBarRef}>
-        {tool === "note" && !draftAt ? (
-          <footer
-            role="status"
-            className="panel pointer-events-auto flex min-h-14 items-center gap-3 border-science/60 py-1.5 pl-4 pr-1.5"
+        <div ref={bottomBarRef} className="flex flex-col items-center gap-0">
+          {/* Contenido de la barra: se colapsa hacia abajo */}
+          <div
+            className={[
+              "w-full transition-all duration-200 overflow-hidden",
+              bottomOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0",
+            ].join(" ")}
           >
-            <p className="flex-1 text-science">Toca el mapa donde está el hallazgo.</p>
-            <Button variant="outline" onClick={closeNote} className="px-4 text-sm">
-              Cancelar
-            </Button>
-          </footer>
-        ) : (
-          <MetricsBar
-            metrics={route}
-            mode={MODES[mode]}
-            computing={computing}
-            hasDestination={destination !== null}
-            onClear={() => setDestination(null)}
+          {tool === "note" && !draftAt ? (
+            <footer
+              role="status"
+              className="panel pointer-events-auto flex min-h-14 items-center gap-3 border-science/60 py-1.5 pl-4 pr-1.5"
+            >
+              <p className="flex-1 text-science">Toca el mapa donde está el hallazgo.</p>
+              <Button variant="outline" onClick={closeNote} className="px-4 text-sm">
+                Cancelar
+              </Button>
+            </footer>
+          ) : (
+            <MetricsBar
+              metrics={route}
+              mode={MODES[mode]}
+              computing={computing}
+              hasDestination={destination !== null}
+              onClear={() => setDestination(null)}
+            />
+          )}
+          </div>
+          {/* Pestaña centrada horizontalmente, cuelga debajo del panel */}
+          <CollapseBtn
+            open={bottomOpen}
+            direction="down"
+            onClick={() => setBottomOpen((v) => !v)}
+            label={bottomOpen ? "Ocultar barra de métricas" : "Mostrar barra de métricas"}
           />
-        )}
         </div>
       </div>
       </>
@@ -291,9 +416,8 @@ export default function AppShell() {
               at={draftAt}
               sol={zone?.weather?.sol ?? 412}
               onCancel={closeNote}
-              onSave={async (n) => {
-                // La foto todavía no se guarda: falta que addNote la reciba (acordar con P2).
-                await addNote(n);
+              onSave={async (n, photo) => {
+                await addNote(n, photo);
                 closeNote();
               }}
             />

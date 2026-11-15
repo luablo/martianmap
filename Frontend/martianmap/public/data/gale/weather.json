@@ -1,37 +1,10 @@
 {
   "sol": 412,
-  "earth_date": "2013-10-29",
-  "source": "MSL REMS (Rover Environmental Monitoring Station)",
-  "label": "MEDIDO",
-  "confirmed": true,
-  "url": "https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity/rems.html",
-  "reference": "Gomez-Elvira et al. (2012), Space Sci Rev, doi:10.1007/s11214-012-9921-1",
-  "temperature": {
-    "min_c": -70,
-    "max_c": 0,
-    "unit": "C",
-    "note": "Valores tipicos Sol 300-500, confirmados con PIA16913 NASA/JPL"
-  },
-  "pressure": {
-    "avg_pa": 875,
-    "unit": "Pa",
-    "note": "Presion media de superficie en Gale, temporada de primavera sur"
-  },
-  "uv_index": {
-    "max": 2.9,
-    "risk": "MODERATE",
-    "note": "Sin capa de ozono significativa — proteccion requerida"
-  },
-  "radiation": {
-    "dose_msv_per_day": 0.67,
-    "source": "MSL RAD — Hassler et al. 2014 (doi:10.1126/science.1244797)",
-    "label": "MEDIDO"
-  },
-  "wind": {
-    "avg_ms": 3.5,
-    "max_ms": 12.0,
-    "unit": "m/s",
-    "label": "ESTIMADO",
-    "note": "Valor tipico diurno en Gale — sin dato puntual para Sol 412"
-  }
+  "earthDate": "2013-10-29",
+  "tempMinC": -70,
+  "tempMaxC": 0,
+  "pressurePa": 875,
+  "uv": "Moderado",
+  "source": "MSL REMS (PDS Atmospheres Node)",
+  "reference": "Gómez-Elvira et al. (2012), Space Sci Rev, doi:10.1007/s11214-012-9921-1"
 }

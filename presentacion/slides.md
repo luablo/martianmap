@@ -3,6 +3,8 @@
 > Dueño: P4 (P3 ayuda a terminarlas el domingo 09:00–10:30). Herramienta: la que use el equipo (Google Slides o Canva).
 > Estilo: fondo `#070A10`, texto `#E5E7EB`, acento turquesa `#2DD4BF`; ámbar y rojo **solo** para peligro. Tipografías: Inter y JetBrains Mono (las de la app).
 > Regla: una idea por slide, máximo ~20 palabras en pantalla; lo demás va en lo que se dice.
+>
+> **Versión armada:** [MARSWALK · Pitch](https://claude.ai/artifact/2M422wToS83dVPDy2DFDop): las 7 slides con las capturas de `capturas/` y lo que se dice en las notas del orador. Se exporta a PPTX (Google Slides / Canva la importan) o PDF. Falta llenar los `[corchetes]` (nombres, URL de Vercel, video).
 
 ---
 
@@ -46,7 +48,7 @@
 ---
 
 ## Checklist antes de exportar
-- [ ] Todas las capturas con la versión final (sin aviso "TERRENO SINTÉTICO" si ya hay datos reales).
-- [ ] Fuentes de NASA citadas en la slide 5 con enlace.
-- [ ] Declaración de uso de IA en la página del proyecto (Space Apps la pide).
+- [x] Todas las capturas con los datos reales (ya sin aviso "TERRENO SINTÉTICO").
+- [x] Fuentes de NASA citadas en la slide 5 con enlace.
+- [x] Declaración de uso de IA en la página del proyecto (Space Apps la pide).
 - [ ] Exportar a PDF y probar que abre en otra computadora.

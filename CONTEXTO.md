@@ -57,7 +57,7 @@ El reto sugiere **mínimo 3 tipos de datos**. Cada capa lleva en pantalla una et
 | Recorrido de Curiosity | Mapa "Where is Curiosity" (mars.nasa.gov) | Para ubicar la zona boxwork y como referencia de terreno transitable. |
 | Geología | USGS-NASA Planetary Geologic Mapping Program | Contexto para la presentación. |
 
-> Todas las URLs exactas se anotan en `data-pipeline/FUENTES.md` conforme se bajen: fuente, fecha, licencia/crédito. **Esto va también en la página del proyecto.**
+> Todas las URLs exactas se anotan en `RESOURCES.md` conforme se bajen: fuente, fecha, licencia/crédito. **Esto va también en la página del proyecto.**
 
 **Truco para no bajar GB:** si el GeoTIFF está en un servidor con *range requests*, GDAL lo recorta en remoto:
 
@@ -102,7 +102,7 @@ SpaceAppNasa/
 ├─ CONTEXTO.md  PLANEACION.md  TAREAS.md (quién toca qué)
 ├─ data-pipeline/              # P1 · Python. Salida → Frontend/martianmap/public/data/gale/
 │  ├─ recortar.py  pendiente.py  exportar.py
-│  ├─ requirements.txt  FUENTES.md
+│  ├─ requirements.txt  (fuentes: RESOURCES.md)
 ├─ Frontend/martianmap/        # Next.js 16 + Tailwind 4 (¡leer AGENTS.md: tiene cambios de API!)
 │  ├─ app/            P4 · page.tsx  layout.tsx  globals.css (tokens de color)
 │  ├─ components/

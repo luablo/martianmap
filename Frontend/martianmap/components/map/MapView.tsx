@@ -14,7 +14,7 @@ import { addPoiLayer, povCardEl, snapToPoi } from "./layers/pois";
 import { addSlopeLayer } from "./layers/slope";
 import { addThermalLayer } from "./layers/thermal";
 import { addMineralLayer } from "./layers/mineral";
-import { applyBasemap, trekTransformRequest, type BasemapId } from "./layers/basemap";
+import { applyBasemap, updateBasemapPaint, type BasemapId } from "./layers/basemap";
 import Legend from "./Legend";
 import { syncNoteMarkers } from "./layers/notes";
 
@@ -144,7 +144,19 @@ export default function MapView({ zone, destination, route, layers, notes, basem
 
     const { meta } = zone;
     const { west, south, east, north } = meta.bounds;
-    const pad = 0.02;
+    // maxBounds también limita el zoom de salida: con un margen fijo, una zona alta y
+    // angosta (la franja HiRISE es 6.8 × 13.5 km) nunca cabía entera en pantalla
+    // horizontal. El margen se ajusta a la forma de la zona.
+    const padLon = Math.max(0.02, (north - south) * 0.6);
+    const padLat = Math.max(0.02, (east - west) * 0.6);
+    // Vista inicial: la base y los puntos de interés (ahí empieza la EVA), no la zona entera.
+    const pts = zone.pois.length ? zone.pois : [{ lon: meta.base.lon, lat: meta.base.lat }];
+    const view: [number, number, number, number] = [
+      Math.min(...pts.map((p) => p.lon)),
+      Math.min(...pts.map((p) => p.lat)),
+      Math.max(...pts.map((p) => p.lon)),
+      Math.max(...pts.map((p) => p.lat)),
+    ];
 
     // Estilo vacío: MapLibre cree que está en la Tierra, pero aquí solo usamos
     // lon/lat de Marte como coordenadas. No hay mapa base terrestre.
@@ -157,14 +169,19 @@ export default function MapView({ zone, destination, route, layers, notes, basem
           { id: "bg", type: "background", paint: { "background-color": "#070a10" } },
         ],
       },
-      bounds: [west, south, east, north],
-      fitBoundsOptions: { padding: 40 },
-      maxBounds: [west - pad, south - pad, east + pad, north + pad],
+      bounds: view,
+      // Margen para que los paneles no tapen los puntos (en teléfono los paneles flotan).
+      fitBoundsOptions: {
+        padding:
+          container.current.clientWidth >= 640
+            ? { top: 140, bottom: 140, left: 300, right: 300 }
+            : { top: 170, bottom: 110, left: 40, right: 40 },
+        maxZoom: 15,
+      },
+      maxBounds: [west - padLon, south - padLat, east + padLon, north + padLat],
       attributionControl: false,
       dragRotate: false,
       pitchWithRotate: false,
-      // Convierte URLs trek-eq:// → URLs reales de Trek con coordenadas EQ correctas
-      transformRequest: trekTransformRequest,
     });
     map.touchZoomRotate.disableRotation();
     mapRef.current = map;
@@ -184,7 +201,7 @@ export default function MapView({ zone, destination, route, layers, notes, basem
 
     map.on("load", () => {
       // Mapa base de Marte (Trek WMTS): se inserta primero, debajo de todo
-      applyBasemap(map, basemapRef.current);
+      applyBasemap(map, basemapRef.current, false); // la ortofoto se añade justo después
 
       map.addSource("grid", {
         type: "geojson",
@@ -330,15 +347,25 @@ export default function MapView({ zone, destination, route, layers, notes, basem
   }, [destination, route]);
 
   // Mapa base: se reemplaza reactivamente al cambiar basemapId.
+  // Pasa orthoActive para ajustar opacidad/contraste según si la ortofoto está encima.
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    const apply = () => applyBasemap(map, basemapId);
+    const orthoActive = layers.ortho && !!map.getLayer("ortho");
+    const apply = () => applyBasemap(map, basemapId, orthoActive);
     // No usar isStyleLoaded(): es false mientras bajan mosaicos de Trek y, como "load"
     // ya pasó, el cambio nunca se aplicaría. "grid" existe ⇔ el "load" ya corrió.
     if (map.getSource("grid")) apply();
     else map.once("load", apply);
-  }, [basemapId]);
+  }, [basemapId, layers.ortho]);
+
+  // Cuando la ortofoto se enciende/apaga, actualiza el paint del basemap sin recrearlo.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !map.getSource("grid")) return;
+    const orthoActive = layers.ortho && !!map.getLayer("ortho");
+    updateBasemapPaint(map, basemapId, orthoActive);
+  }, [layers.ortho, basemapId]);
 
   // Capas de imagen/ráster: encender/apagar según `layers`. Si una capa aún no
   // existe (el mapa no cargó o P1 no la entregó), se salta; la visibilidad inicial

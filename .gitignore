@@ -1,4 +1,4 @@
-﻿# Secretos
+# Secretos
 .env
 .env.*
 !.env.example
@@ -18,14 +18,16 @@ PLAN-P4.md
 node_modules/
 .next/
 
-# Data pipeline - archivos crudos y temporales (pesan cientos de MB)
+# Data pipeline — archivos crudos y temporales (pesan cientos de MB)
 data-pipeline/*.img
 data-pipeline/*.tif
 data-pipeline/*.jp2
 data-pipeline/*.txt
 data-pipeline/*.log
+*.log
+Frontend/martianmap/public/data/gale/elevation.bin
 
-# Excepciones - estos si van al repo
+# Excepciones: estos sí van al repo
 !data-pipeline/*.py
 !data-pipeline/*.md
 !data-pipeline/requirements.txt

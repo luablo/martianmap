@@ -1,0 +1,28 @@
+1
+00:00:00,000 --> 00:00:05,000
+Sol 412. Tu objetivo está a 2.4 km.
+¿Por dónde caminas?
+
+2
+00:00:05,000 --> 00:00:12,000
+MARSWALK calcula la ruta más segura
+con datos de NASA.
+
+3
+00:00:12,000 --> 00:00:18,000
+Cambia cómo te mueves.
+El camino cambia contigo.
+
+4
+00:00:18,000 --> 00:00:24,000
+Pendiente, radiación, oxígeno:
+el peligro se ve, no se lee.
+
+5
+00:00:24,000 --> 00:00:28,000
+Y cada hallazgo
+se queda en el mapa.
+
+6
+00:00:28,000 --> 00:00:30,000
+MARSWALK.

@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-import os, subprocess, sys
+import os, shutil, subprocess, sys
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-GDAL = r"C:\Users\Colet\miniconda3\envs\marswalk\Library\bin\gdal_translate.exe"
-os.environ["GDAL_DATA"] = r"C:\Users\Colet\miniconda3\envs\marswalk\Library\share\gdal"
+# gdal_translate se toma de la variable GDAL_TRANSLATE o del PATH (conda install gdal).
+# Antes estaba fija la ruta de una sola computadora.
+GDAL = os.environ.get("GDAL_TRANSLATE") or shutil.which("gdal_translate")
+if not GDAL:
+    sys.exit("ERROR: no encuentro gdal_translate. Instala GDAL o define GDAL_TRANSLATE con su ruta.")
 
 ULX = "-2130.6315"
 ULY = "-280484.2874"
@@ -27,4 +30,4 @@ for src, dst in jobs:
     size_mb = os.path.getsize(dst) / 1024 / 1024
     print(f"OK {dst} ({size_mb:.1f} MB)")
 
-print("Recorte completado.")
+print("Recorte completado. Siguiente: run_pendiente.py y luego run_exportar.py")

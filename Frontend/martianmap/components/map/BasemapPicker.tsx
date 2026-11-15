@@ -18,12 +18,16 @@ const ICON: Record<BasemapId, React.ReactNode> = {
       <line x1="14" y1="4" x2="4" y2="14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   ),
-  viking: (
+  ctx: (
+    // Satélite con detalle — representa MRO Context Camera
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-      <rect x="1" y="4" width="16" height="11" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-      <circle cx="9" cy="9.5" r="3" stroke="currentColor" strokeWidth="1.5"/>
-      <path d="M6 4 L7.5 2 H10.5 L12 4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-      <circle cx="9" cy="9.5" r="1" fill="currentColor"/>
+      <rect x="4" y="6" width="10" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
+      <line x1="4" y1="2" x2="4" y2="6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="1.5" y1="2" x2="6.5" y2="2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="11.5" y1="2" x2="16.5" y2="2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="7" y1="10" x2="11" y2="10" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.6"/>
+      <line x1="7" y1="12" x2="10" y2="12" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.4"/>
     </svg>
   ),
   mola: (
@@ -33,13 +37,12 @@ const ICON: Record<BasemapId, React.ReactNode> = {
       <path d="M5.5 11 Q7 7.5 9 6 Q11 4.5 12.5 7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeOpacity="0.4"/>
     </svg>
   ),
-  mola_hrsc: (
+  viking: (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-      <path d="M2 14 Q5 8 9 8 Q13 8 16 14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-      <path d="M3.5 16 Q6 11 9 11 Q12 11 14.5 16" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.5"/>
-      <circle cx="9" cy="4" r="1.5" fill="currentColor" fillOpacity="0.9"/>
-      <line x1="6" y1="4" x2="4" y2="4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="12" y1="4" x2="14" y2="4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+      <rect x="1" y="4" width="16" height="11" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+      <circle cx="9" cy="9.5" r="3" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M6 4 L7.5 2 H10.5 L12 4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <circle cx="9" cy="9.5" r="1" fill="currentColor"/>
     </svg>
   ),
 };
