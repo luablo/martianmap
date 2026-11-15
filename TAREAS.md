@@ -4,22 +4,24 @@
 > Horario y puntos de control: [PLANEACION.md](PLANEACION.md) · Datos, supuestos y diseño: [CONTEXTO.md](CONTEXTO.md).
 > Todo lo de código vive en `Frontend/martianmap/` salvo que se diga otra cosa.
 
-### 📊 Avance del equipo · revisado dom 15 nov, ~12:00, contra `main` (merge final: PR #26–#32, ramas de Julio y Julieta y README de Fer)
+### 📊 Avance del equipo · revisado dom 15 nov, ~13:30, contra `main` (merge final con el video)
 
 | Persona | Avance | Tareas | Lo más urgente |
 |---|---|---|---|
 | P1 · Datos | `█████████░` 87 % | 13 / 15 | — (solo quedan los opcionales: fotos POV y térmico; Térmico y Mineralogía quedan ocultos en la app) |
 | P2 · Ruta | `█████████░` 89 % | 8 / 9 | — (solo queda el ajuste fino de costos, opcional) |
 | P3 · Mapa | `██████████` 100 % | 13 / 13 | — (+ controles del mapa y mapa base CTX) |
-| P4 · Interfaz | `█████████░` 93 % | 13 / 14 | Grabar el video, poner su enlace y entregar (sin slides: solo video) · extra: español/inglés y simulación de la EVA |
-| **Equipo** | `█████████░` **92 %** | **47 / 51** | Sin contar los 3 opcionales (fotos POV, térmico, ajuste de costos): **47 / 48 · 98 %** |
+| P4 · Interfaz | `██████████` 100 % | 14 / 14 | — (video listo; extra: español/inglés y simulación de la EVA) |
+| **Equipo** | `█████████░` **94 %** | **48 / 51** | Sin contar los 3 opcionales (fotos POV, térmico, ajuste de costos): **48 / 48 · 100 %** |
 
 **Ya hecho (dom 15 nov):** ✅ Vercel publica `main` en https://martianmap-rosy.vercel.app · ✅ Supabase creado, con `schema.sql` corrido y llaves en Vercel · ✅ `rama-luis`, `ramajulio` y `Julieta-3.0` fusionadas en `main` (PR #26, #27, #28) · ✅ Notas en tiempo real probadas entre dos dispositivos · ✅ Probado en teléfono real · ✅ README con la URL y `RESOURCES.md` en inglés (fuentes, herramientas y cómo se hizo) · **Decisión:** no habrá slides, la presentación es solo el video. · ✅ Datos nuevos de Julieta (PR #30) integrados: recorte limpio sin bordes negros (964 × 3045), REMS del sol 412 confirmado y fecha de descarga del DTM (14 nov 2026). · ✅ `npm run check-data` revisa los datos antes de cada build. · ✅ Rama de Julio fusionada: controles de colapso de paneles y mapa base CTX (MRO), Viking y MOLA desde USGS. Arreglado: CTX salía en otra parte de Marte (la rejilla de Esri es en grados, no Web Mercator); ahora se unen los 12 mosaicos de la zona. · ✅ README de Fer convertido en el `README.md` principal **en inglés** (con capturas reales, URL y equipo); el español queda en `README.es.md`. · ✅ Nombres del equipo en `pagina-proyecto.md`. · ✅ Rama de Julieta revisada: su último merge (PR #32) solo sincroniza `main`, no trae cambios pendientes. · ✅ **Merge final:** Térmico y Mineralogía ocultos (sin datos; aparecen solos si `meta.json` trae su archivo) · mapas base nuevos: Relieve THEMIS (IR de día, 100 m) y Color Viking colorizado, en lugar de MOLA y Viking gris que se veían raros · botón **ES/EN** que cambia toda la interfaz · **Iniciar recorrido**: simulación en la que el punto sale de la base, llega al destino, muestrea y regresa, con tiempo, dosis y recurso en vivo.
 
-**Lo que falta para entregar (domingo), en orden:**
-1. **P4 · Video** de 30 s con `presentacion/guion.md` §2 y los subtítulos de `video-subtitulos.srt`, grabado sobre https://martianmap-rosy.vercel.app. Borrar antes las notas de prueba en Supabase (*Table Editor → annotations*) si no se quieren en el video.
-2. **P4 · Enlace del video:** ponerlo en `README.md` y `README.es.md` (fila *Video*) y en `presentacion/pagina-proyecto.md` (`[enlace]`). Es lo único entre corchetes que queda. (Claude lo pone en cuanto llegue el enlace.)
-3. **P4 · Entrega** (`presentacion/entrega.md`): video, URL de Vercel, repo público y página del proyecto.
+**✅ Video listo:** https://drive.google.com/file/d/1jNl4tkWjWRfV7VHoph0uLnI0YVjWQJjU/view?usp=sharing (29.5 s, voz del equipo, subtítulos en inglés). Está en `README.md`, `README.es.md` y `presentacion/pagina-proyecto.md`; el proyecto de Remotion que lo genera está en `presentacion/video/`.
+
+**Lo que falta para entregar, en orden:**
+1. **Música:** confirmar que `drone.wav` (fondo del video) es propia o libre de derechos.
+2. **P1:** revisar la página del proyecto y el video.
+3. **Enviar** con «Submit for Judging» en el sitio de Space Apps antes del domingo 15 nov, 11:59 p. m. (`presentacion/entrega.md`).
 
 El detalle está al final de la sección de cada persona. **Para actualizarlo:** marca `[x]` en tu casilla y corrige tu fila y tu barra (cada `█` = 10 %).
 
@@ -281,18 +283,18 @@ La app ya corre de punta a punta con piezas provisionales. **Cada pieza tiene un
 ### Bloque 3 (22:00–01:00) — extras
 - [x] Pantalla "Acerca de / supuestos": lee `MODES` y `LAYERS` y muestra fuentes (P1 pasa el texto). → botón "i" en la barra superior (`AboutSheet.tsx`).
 - [x] Modo HUD: `data-mode="hud"` en `<html>` cambia los tokens en `globals.css` (fondos transparentes, solo ruta, distancia, recurso y riesgo en las esquinas). Botón para alternarlo. → botón "HUD"; Esc o "SALIR DE HUD" vuelve (`HudOverlay.tsx`).
-- [ ] Domingo: video y presentación son tu prioridad número 1 (ver PLANEACION.md). → **Sin slides: la presentación es solo el video.** Ya están las capturas, los subtítulos y la página del proyecto; falta grabar el video y entregar (`presentacion/entrega.md`).
+- [x] Domingo: video y presentación son tu prioridad número 1 (ver PLANEACION.md). → **Sin slides: la presentación es solo el video.** Video listo: https://drive.google.com/file/d/1jNl4tkWjWRfV7VHoph0uLnI0YVjWQJjU/view?usp=sharing
 
 ### 📊 Progreso P4 · revisado dom 15 nov, ~10:00 (todo en `main`)
 
-`██████████████████░░` **13 / 14 tareas · 93 %** (falta grabar el video y entregar)
+`████████████████████` **14 / 14 tareas · 100 %** (video listo; solo queda enviar)
 
 | Bloque | Hecho | Falta |
 |---|---|---|
 | 0 · Supabase y Vercel | 3 / 3 | — (Vercel: martianmap-rosy.vercel.app publica `main`; Supabase con tablas, bucket `field-photos` y tiempo real) |
 | 1 · Pantalla con datos | 4 / 4 | — |
 | 2 · Notas y presentación | 4 / 4 | — |
-| 3 · Extras | 2 / 3 | domingo: grabar el video, llenar los `[corchetes]` y entregar (las slides se descartaron) |
+| 3 · Extras | 3 / 3 | — (video listo; las slides se descartaron) |
 
 **Domingo, ya hecho:** `presentacion/capturar.mjs` graba las tomas A–F a 1080p sin tocar el mouse (12 PNG en `presentacion/capturas/`); 7 slides con capturas y notas del orador ([MARSWALK · Pitch](https://claude.ai/artifact/2M422wToS83dVPDy2DFDop)); `video-subtitulos.srt`; `pagina-proyecto.md` con la declaración de uso de IA; `entrega.md` con la lista por hora. Arreglos del último repaso: el aviso "TERRENO SINTÉTICO" ya no queda bajo los botones en teléfono y los círculos de MAPA BASE se ven.
 

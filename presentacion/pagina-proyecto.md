@@ -53,7 +53,7 @@ Next.js 16 y MapLibre en el navegador; la ruta es un A* sobre la malla de pendie
 
 ## Enlaces
 - App: https://martianmap-rosy.vercel.app
-- Video (30 s): [enlace]
+- Video (30 s): https://drive.google.com/file/d/1jNl4tkWjWRfV7VHoph0uLnI0YVjWQJjU/view?usp=sharing
 - Repositorio: https://github.com/luablo/martianmap
 
 ## Declaración de uso de inteligencia artificial

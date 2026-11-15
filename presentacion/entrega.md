@@ -36,16 +36,16 @@ Desde aquí solo correcciones de errores. Nada de funciones nuevas.
 | `H-hud.png` · `I-tablet.png` | Modo HUD y tablet | respaldo |
 
 ## 09:00–09:30 · Primera versión fea del video (30 s)
-- [ ] Grabar la pantalla siguiendo la tabla de `guion.md` §2 (las tomas en video, no en foto).
-- [ ] Toma E con dos ventanas: Supabase en tiempo real ya funciona.
-- [ ] Música libre de derechos (YouTube Audio Library o Pixabay Music).
-- [ ] Subtítulos: importar `video-subtitulos.srt` en el editor (CapCut, Clipchamp, DaVinci).
+- [x] Video armado con Remotion (`presentacion/video/`) a partir de capturas reales de la app en inglés (`capturar-en.mjs`) y el guion `video-script-en.md`, con la voz del equipo.
+- [x] Toma E: nota de campo con foto que queda en el mapa.
+- [ ] Música: el video usa `music/drone.wav` de fondo. Confirmar que es propia o libre de derechos antes de enviar.
+- [x] Subtítulos en inglés integrados en el video (componente `Subtitles` de `Video.tsx`).
 
 ## 09:30–10:30 · Pulir
-- [ ] Video mejorado (cortes en los 1.5 s de cada modo, zoom a DOSIS y OXÍGENO).
+- [x] Video final de 29.5 s (885 cuadros a 30 fps), por debajo del límite de 30 s.
 - [x] ~~Slides con P3~~ — no aplica: sin slides.
 - [x] ~~Slide 7~~ — no aplica: sin slides (Supabase sí quedó conectado).
-- [ ] Página del proyecto: ya tiene fuentes, repo, URL de Vercel y Supabase; ya tiene los nombres; falta `[enlace del video]` (también en `README.md`).
+- [x] Página del proyecto completa: fuentes, repo, URL de Vercel, Supabase, nombres y video (https://drive.google.com/file/d/1jNl4tkWjWRfV7VHoph0uLnI0YVjWQJjU/view?usp=sharing). También en `README.md` y `README.es.md`.
 
 ## 10:30–11:00 · Ensayo
 - [ ] Ver el video completo ×2 antes de subirlo (audio, subtítulos, duración).
@@ -53,8 +53,9 @@ Desde aquí solo correcciones de errores. Nada de funciones nuevas.
 - [x] ~~Exportar slides a PDF~~ — no aplica: sin slides.
 
 ## 11:00–11:30 · Subir la entrega
-- [ ] Video (enlace público, sin restricción de edad ni región).
-- [ ] URL de Vercel.
-- [ ] Repositorio público en GitHub (revisar que no haya llaves: `git grep -n "supabase.co"` vacío y `.env.local` fuera).
-- [ ] Página del proyecto con la declaración de uso de IA.
+- [x] Video con enlace público de Google Drive (se abre sin iniciar sesión; comprobado dom 15 nov).
+- [x] URL de Vercel: https://martianmap-rosy.vercel.app
+- [x] Repositorio público en GitHub, sin llaves (`git grep` sin URL ni llave de Supabase; `.env.local` fuera del repo).
+- [x] Página del proyecto con la declaración de uso de IA.
 - [ ] P1 revisa todo antes de enviar.
+- [ ] **Enviar con «Submit for Judging»** en el sitio de Space Apps antes del domingo 15 nov, 11:59 p. m. (hora local).

@@ -1,0 +1,14 @@
+node_modules/
+out/
+
+# Medios: el video final está en Google Drive (enlace en el README).
+# Grabaciones de voz del equipo y audios de prueba: no se suben al repo.
+Pon aquí tu voz/
+public/vo/
+public/vo2/
+public/vo3/
+public/music/
+# Capturas y ortofoto: se regeneran con `node capturar-en.mjs <url>` y copiando
+# Frontend/martianmap/public/data/gale/ortho.webp a public/.
+public/shots/
+public/ortho.webp

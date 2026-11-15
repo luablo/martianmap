@@ -18,7 +18,7 @@
 | | |
 |---|---|
 | **Live app** | **https://martianmap-rosy.vercel.app** |
-| **Video** | ⟨video link⟩ |
+| **Video (30 s)** | **[Watch on Google Drive](https://drive.google.com/file/d/1jNl4tkWjWRfV7VHoph0uLnI0YVjWQJjU/view?usp=sharing)** |
 | **Repository** | https://github.com/luablo/martianmap |
 | **Sources, tools and how it was built** | [RESOURCES.md](RESOURCES.md) |
 
