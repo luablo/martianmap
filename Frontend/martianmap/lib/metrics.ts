@@ -4,13 +4,16 @@ import type { Risk, RouteMetrics, TransportMode } from "./types";
 /**
  * Métricas a partir de distancia y modo. `maxSlopeDeg` llega del ruteo real;
  * mientras no exista (línea recta) se pasa null y la velocidad es la de plano.
+ * `timeMinOverride` (solo ida) llega del A* y ya considera la pendiente.
  */
 export function computeMetrics(
   distanceM: number,
   mode: TransportMode,
   maxSlopeDeg: number | null = null,
+  timeMinOverride?: number,
 ): RouteMetrics {
-  const timeH = distanceM / 1000 / mode.speedKmh;
+  const timeH =
+    timeMinOverride !== undefined ? timeMinOverride / 60 : distanceM / 1000 / mode.speedKmh;
   const roundTripH = timeH * 2;
   const doseMSv = (RAD_MSV_PER_DAY / 24) * roundTripH * mode.shielding;
   const resourcePct = Math.max(0, 100 - (roundTripH / mode.autonomyH) * 100);
