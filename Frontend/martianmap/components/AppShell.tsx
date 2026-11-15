@@ -76,7 +76,7 @@ export default function AppShell() {
 
   // --ui-bottom: distancia del borde inferior de la pantalla al tope de la barra de
   // métricas. La barra cambia de alto (avisos, hoja abierta en teléfono), así que se
-  // mide en vivo; Legend y BasemapPicker (P3) se colocan justo encima con esta variable.
+  // mide en vivo; la Leyenda (P3) se coloca justo encima con esta variable.
   const mainRef = useRef<HTMLElement>(null);
   const bottomBarRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -186,11 +186,14 @@ export default function AppShell() {
         </CenterMsg>
       )}
 
+
       {hud ? (
         <HudOverlay route={route} mode={MODES[mode]} style={SAFE_PADDING} onExit={() => setHud(false)} />
       ) : (
       <>
-      {/* Interfaz principal: z-20 sobre el mapa (z-10). Tarjeta de nota: z-30. */}
+      {/* Orden de capas (z): mapa y sus controles (Leyenda, aviso de terreno) = 10
+          < interfaz = 20 (buscador, cajones, barra) < tarjeta de nota y "i" = 30.
+          El selector de mapa base vive en el panel CAPAS (LayerToggles). */}
       <div
         className="pointer-events-none absolute inset-0 z-20 grid grid-rows-[auto_1fr_auto] gap-3"
         style={SAFE_PADDING}

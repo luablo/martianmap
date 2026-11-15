@@ -31,11 +31,13 @@ export default function Legend({
 
   return (
     <div
-      className="panel pointer-events-none absolute z-20 p-2.5 w-36 sm:w-44"
-      style={{
-        bottom: "calc(var(--ui-bottom, 5rem) + 0.75rem)",
-        right: "calc(0.75rem + env(safe-area-inset-right))",
-      }}
+      data-hud="hide"
+      className={[
+        "panel pointer-events-none absolute z-10 p-2.5 w-36 sm:w-44",
+        "bottom-[calc(var(--ui-bottom,5rem)_+_0.75rem)]",
+        "right-[calc(0.75rem_+_env(safe-area-inset-right))]",
+        "lg:right-[calc(17.5rem_+_env(safe-area-inset-right))]",
+      ].join(" ")}
     >
       <h3 className="mb-1.5 font-mono text-[10px] font-semibold tracking-widest text-ink-dim">
         LEYENDA
