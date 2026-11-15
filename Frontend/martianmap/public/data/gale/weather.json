@@ -1,1 +1,32 @@
-{"sol":412,"tempMinC":-78,"tempMaxC":-5,"pressurePa":750,"uv":"Moderado","source":"SINTÉTICO"}
+{
+  "sol": 412,
+  "earth_date": "2013-10-29",
+  "source": "MSL REMS (Rover Environmental Monitoring Station)",
+  "label": "MEDIDO",
+  "url": "https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html",
+  "temperature": {
+    "min_c": -70,
+    "max_c": -1,
+    "unit": "C"
+  },
+  "pressure": {
+    "avg_pa": 875,
+    "unit": "Pa"
+  },
+  "uv_index": {
+    "max": 2.9,
+    "risk": "MODERATE",
+    "note": "Sin capa de ozono significativa — proteccion requerida"
+  },
+  "radiation": {
+    "dose_msv_per_day": 0.67,
+    "source": "MSL RAD — Hassler et al. 2014 (doi:10.1126/science.1244797)",
+    "label": "MEDIDO"
+  },
+  "wind": {
+    "avg_ms": 3.5,
+    "max_ms": 12.0,
+    "unit": "m/s",
+    "label": "ESTIMADO"
+  }
+}

@@ -1,1 +1,75 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"id":"base","name":"Base","type":"base"},"geometry":{"type":"Point","coordinates":[137.342043,-4.745017]}},{"type":"Feature","properties":{"id":"b4","name":"Boxwork B-4","type":"target","description":"Cresta de boxwork"},"geometry":{"type":"Point","coordinates":[137.368165,-4.770035]}},{"type":"Feature","properties":{"id":"b2","name":"Boxwork B-2","type":"target"},"geometry":{"type":"Point","coordinates":[137.359209,-4.777608]}},{"type":"Feature","properties":{"id":"pov1","name":"Vista Mastcam","type":"pov","sol":412,"camera":"MASTCAM"},"geometry":{"type":"Point","coordinates":[137.350389,-4.754618]}}]}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "base",
+        "name": "Base (Bradbury Landing)",
+        "type": "base",
+        "description": "Sitio de aterrizaje de Curiosity, Sol 0"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [137.2984, -4.7859]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "b4",
+        "name": "Boxwork B-4",
+        "type": "target",
+        "description": "Cresta de boxwork — evidencia de agua subterranea antigua",
+        "objective": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [137.3201, -4.8012]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "b2",
+        "name": "Boxwork B-2",
+        "type": "target",
+        "description": "Afloramiento mineral en ladera sur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [137.3089, -4.8156]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "pov1",
+        "name": "Vista Mastcam — Sol 412",
+        "type": "pov",
+        "sol": 412,
+        "camera": "MASTCAM",
+        "photo": "https://mars.nasa.gov/msl-raw-images/msss/00412/mcam/0412MR0017510000401723E01_DXXX.jpg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [137.3052, -4.7921]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "pov2",
+        "name": "Vista Navcam — Ladera Mount Sharp",
+        "type": "pov",
+        "sol": 387,
+        "camera": "NAVCAM",
+        "photo": "https://mars.nasa.gov/msl-raw-images/pub/ods/surface/sol/00387/opgs/edr/ncam/NLB_406033631EDR_F0150000NCAM00353M_.JPG"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [137.3134, -4.7988]
+      }
+    }
+  ]
+}
