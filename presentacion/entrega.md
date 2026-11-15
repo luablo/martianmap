@@ -45,7 +45,7 @@ Desde aquí solo correcciones de errores. Nada de funciones nuevas.
 - [ ] Video mejorado (cortes en los 1.5 s de cada modo, zoom a DOSIS y OXÍGENO).
 - [x] ~~Slides con P3~~ — no aplica: sin slides.
 - [x] ~~Slide 7~~ — no aplica: sin slides (Supabase sí quedó conectado).
-- [ ] Página del proyecto: ya tiene fuentes, repo, URL de Vercel y Supabase; faltan `[enlace del video]` y `[4 nombres]`.
+- [ ] Página del proyecto: ya tiene fuentes, repo, URL de Vercel y Supabase; ya tiene los nombres; falta `[enlace del video]` (también en `README.md`).
 
 ## 10:30–11:00 · Ensayo
 - [ ] Ver el video completo ×2 antes de subirlo (audio, subtítulos, duración).

@@ -43,7 +43,7 @@ La zona es el recorte del modelo de elevación HiRISE DTEEC_001488_1750 en el cr
 - **MRO HiRISE**: ortofoto PSP_001488_1750 (imagen de fondo, MEDIDO) y modelo de elevación DTEEC_001488_1750 a 1 m/px, del que sale la pendiente a 4 m por celda (DERIVADO). https://hirise-pds.lpl.arizona.edu/PDS/DTM/PSP/ORB_001400_001499/PSP_001488_1750_PSP_001752_1750/
 - **MSL RAD (Curiosity)**: tasa de radiación en superficie, 0.67 mSv/día (Hassler et al. 2014, *Science*). https://doi.org/10.1126/science.1244797
 - **MSL REMS (Curiosity)**: temperatura y presión de un sol de referencia (sol 412). https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html
-- **Mapas base**: NASA Mars Trek (Viking color, MOLA, MOLA + HRSC). https://trek.nasa.gov/mars/
+- **Mapas base**: MRO CTX (NASA/JPL/MSSS, vía Esri OnMars), Viking MDIM 2.1 y MGS MOLA (USGS Astrogeology). https://planetarymaps.usgs.gov/
 - **Supuestos del equipo, no de NASA**: la base de la EVA, los objetivos y las zonas NO PISAR se marcaron sobre la ortofoto. Bradbury Landing queda fuera de este recorte.
 
 ## Cómo está hecho
@@ -58,4 +58,9 @@ Next.js 16 y MapLibre en el navegador; la ruta es un A* sobre la malla de pendie
 El equipo usó asistentes de IA (Claude) como apoyo para escribir y revisar código, resolver conflictos de git y redactar documentación y el guion del video. Las decisiones de diseño, los supuestos del modelo y la elección de datos son del equipo, y todo el código generado se revisó y probó antes de integrarlo. Las capturas de la presentación salen de la app real; no se generaron imágenes con IA. [Ajustar si alguien del equipo usó otra herramienta.]
 
 ## Equipo
-[4 nombres y roles: P1 datos · P2 ruta y notas · P3 mapa · P4 interfaz e historia]
+| Rol | Persona |
+|---|---|
+| Datos | Julieta Rodriguez Cid |
+| Ruta y notas | Fernanda De Jesus Gonzalez |
+| Mapa | Julio Cesar Trinidad Garcia |
+| Interfaz e historia | Luis Angel Carcamo Huerta |

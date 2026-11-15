@@ -4,21 +4,21 @@
 > Horario y puntos de control: [PLANEACION.md](PLANEACION.md) · Datos, supuestos y diseño: [CONTEXTO.md](CONTEXTO.md).
 > Todo lo de código vive en `Frontend/martianmap/` salvo que se diga otra cosa.
 
-### 📊 Avance del equipo · revisado dom 15 nov, ~10:30, contra `main` (incluye PR #26, #27 y #28)
+### 📊 Avance del equipo · revisado dom 15 nov, ~11:30, contra `main` (incluye PR #26–#30, la rama de Julio y el README de Fer)
 
 | Persona | Avance | Tareas | Lo más urgente |
 |---|---|---|---|
 | P1 · Datos | `█████████░` 87 % | 13 / 15 | — (solo quedan los opcionales: fotos POV y térmico) |
 | P2 · Ruta | `█████████░` 89 % | 8 / 9 | — (solo queda el ajuste fino de costos, opcional) |
-| P3 · Mapa | `██████████` 100 % | 13 / 13 | — |
-| P4 · Interfaz | `█████████░` 93 % | 13 / 14 | Grabar el video, llenar los `[corchetes]` y entregar (sin slides: solo video) |
+| P3 · Mapa | `██████████` 100 % | 13 / 13 | — (+ controles del mapa y mapa base CTX) |
+| P4 · Interfaz | `█████████░` 93 % | 13 / 14 | Grabar el video, poner su enlace y entregar (sin slides: solo video) |
 | **Equipo** | `█████████░` **92 %** | **47 / 51** | Sin contar los 3 opcionales (fotos POV, térmico, ajuste de costos): **47 / 48 · 98 %** |
 
-**Ya hecho (dom 15 nov):** ✅ Vercel publica `main` en https://martianmap-rosy.vercel.app · ✅ Supabase creado, con `schema.sql` corrido y llaves en Vercel · ✅ `rama-luis`, `ramajulio` y `Julieta-3.0` fusionadas en `main` (PR #26, #27, #28) · ✅ Notas en tiempo real probadas entre dos dispositivos · ✅ Probado en teléfono real · ✅ README con la URL y `RESOURCES.md` en inglés (fuentes, herramientas y cómo se hizo) · **Decisión:** no habrá slides, la presentación es solo el video. · ✅ Datos nuevos de Julieta (PR #30) integrados: recorte limpio sin bordes negros (964 × 3045), REMS del sol 412 confirmado y fecha de descarga del DTM (14 nov 2026). · ✅ `npm run check-data` revisa los datos antes de cada build.
+**Ya hecho (dom 15 nov):** ✅ Vercel publica `main` en https://martianmap-rosy.vercel.app · ✅ Supabase creado, con `schema.sql` corrido y llaves en Vercel · ✅ `rama-luis`, `ramajulio` y `Julieta-3.0` fusionadas en `main` (PR #26, #27, #28) · ✅ Notas en tiempo real probadas entre dos dispositivos · ✅ Probado en teléfono real · ✅ README con la URL y `RESOURCES.md` en inglés (fuentes, herramientas y cómo se hizo) · **Decisión:** no habrá slides, la presentación es solo el video. · ✅ Datos nuevos de Julieta (PR #30) integrados: recorte limpio sin bordes negros (964 × 3045), REMS del sol 412 confirmado y fecha de descarga del DTM (14 nov 2026). · ✅ `npm run check-data` revisa los datos antes de cada build. · ✅ Rama de Julio fusionada: controles de colapso de paneles y mapa base CTX (MRO), Viking y MOLA desde USGS. Arreglado: CTX salía en otra parte de Marte (la rejilla de Esri es en grados, no Web Mercator); ahora se unen los 12 mosaicos de la zona. · ✅ README de Fer convertido en el `README.md` principal **en inglés** (con capturas reales, URL y equipo); el español queda en `README.es.md`. · ✅ Nombres del equipo en `pagina-proyecto.md`.
 
 **Lo que falta para entregar (domingo), en orden:**
 1. **P4 · Video** de 30 s con `presentacion/guion.md` §2 y los subtítulos de `video-subtitulos.srt`, grabado sobre https://martianmap-rosy.vercel.app. Borrar antes las notas de prueba en Supabase (*Table Editor → annotations*) si no se quieren en el video.
-2. **Todos:** llenar los `[corchetes]` que quedan en `presentacion/pagina-proyecto.md` (nombres del equipo y enlace del video).
+2. **P4 · Enlace del video:** ponerlo en `README.md` (fila *Video*) y en `presentacion/pagina-proyecto.md` (`[enlace]`). Es lo único entre corchetes que queda.
 3. **P4 · Entrega** (`presentacion/entrega.md`): video, URL de Vercel, repo público y página del proyecto.
 
 El detalle está al final de la sección de cada persona. **Para actualizarlo:** marca `[x]` en tu casilla y corrige tu fila y tu barra (cada `█` = 10 %).

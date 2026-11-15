@@ -19,7 +19,7 @@ Everything the app loads lives in `Frontend/martianmap/public/data/gale/`. The s
 | 2 | Orthoimage, RED band (PSP_001488_1750) | `ortho.webp` | MRO HiRISE, same product | (same link) | MEASURED | NASA/JPL/University of Arizona |
 | 3 | Surface radiation dose rate: 0.67 mSv/day | constant in `lib/metrics.ts` | MSL RAD, Hassler et al. (2014), *Science* 343 | [doi:10.1126/science.1244797](https://doi.org/10.1126/science.1244797) | ESTIMATED (dose per route is a model result) | NASA/JPL, MSL RAD |
 | 4 | Weather for a reference sol (sol 412, 29 Oct 2013): −70 °C / 0 °C, 875 Pa, moderate UV | `weather.json` | MSL REMS, PDS Atmospheres Node | [PDS Atmospheres · REMS](https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html) | MEASURED | NASA/JPL/CAB |
-| 5 | Base maps: Viking color mosaic (VIS MDIM 2.1), MOLA color hillshade, MOLA + HRSC blend | streamed as map tiles | NASA Mars Trek | [trek.nasa.gov/mars](https://trek.nasa.gov/mars/) | context only | NASA/USGS, NASA/ESA |
+| 5 | Base maps around the area: MRO CTX (~6 m/px, shown at ~20 m/px), Viking color mosaic (MDIM 2.1) and MGS MOLA color relief | loaded at runtime (`components/map/layers/basemap.ts`) | CTX: Esri Living Atlas OnMars · Viking and MOLA: USGS Astrogeology WMS | [OnMars CTX](https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer) · [USGS planetary maps](https://planetarymaps.usgs.gov/) | context only | NASA/JPL/MSSS, NASA/USGS |
 | 6 | EVA base, points of interest and NO-GO zones | `pois.geojson`, `nogo.geojson` | Drawn by the team on top of the orthoimage | — | team assumption | MARSWALK team |
 
 **Notes on honesty**
@@ -120,7 +120,8 @@ NASA HiRISE DTM + orthoimage ─┐
 - Example: Boxwork B-4 is 2.4 km on foot (HIGH risk, out of range) and 1.8 km / 14 min by open rover (MEDIUM risk).
 
 ### Step 3 · Map and interface
-- MapLibre draws the HiRISE orthoimage, the slope and radiation layers, the NASA Mars Trek base maps, the route, the points of interest and the notes.
+- MapLibre draws the HiRISE orthoimage, the slope and radiation layers, the base maps, the route, the points of interest and the notes.
+- The CTX service uses a geographic (degree) tile grid, not Web Mercator, so the app downloads the 12 tiles that cover the area, stitches them in a canvas and places the result with its real coordinates. Viking and MOLA come as one image per area from the USGS WMS.
 - Every layer is labeled **MEASURED**, **DERIVED** or **ESTIMATED**, and the "i" button lists every assumption and source.
 - Designed for gloves: touch targets of at least 56 px, plus a HUD mode that keeps only distance, risk and resource in the corners. Tested on desktop, tablet and a real phone.
 
