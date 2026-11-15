@@ -12,6 +12,8 @@ import { addNoGoLayer } from "./layers/nogo";
 import { addOrthoLayer } from "./layers/ortho";
 import { addPoiLayer, povCardEl, snapToPoi } from "./layers/pois";
 import { addSlopeLayer } from "./layers/slope";
+import { applyBasemap, trekTransformRequest, type BasemapId } from "./layers/basemap";
+import BasemapPicker from "./BasemapPicker";
 import Legend from "./Legend";
 import { syncNoteMarkers } from "./layers/notes";
 
@@ -22,8 +24,10 @@ export interface MapViewProps {
   /** Qué capas pidió encender el usuario (P3 decide cómo pintarlas) */
   layers: Record<LayerId, boolean>;
   notes: Note[];
+  basemapId: BasemapId;
   /** Toque dentro de la zona */
   onMapClick: (p: LonLat) => void;
+  onBasemapChange: (id: BasemapId) => void;
 }
 
 function markerEl(kind: "base" | "dest", label: string) {
@@ -83,7 +87,7 @@ function routeBounds(path: LonLat[]): [number, number, number, number] {
 // "radiation" no va aquí: se pinta sobre la ruta (bloque 2, line-gradient).
 const RASTER_LAYERS = ["ortho", "slope"] as const;
 
-export default function MapView({ zone, destination, route, layers, notes, onMapClick }: MapViewProps) {
+export default function MapView({ zone, destination, route, layers, notes, basemapId, onMapClick, onBasemapChange }: MapViewProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const destMarker = useRef<Marker | null>(null);
@@ -106,6 +110,12 @@ export default function MapView({ zone, destination, route, layers, notes, onMap
   useEffect(() => {
     layersRef.current = layers;
   }, [layers]);
+
+  // Ref de basemapId para aplicar el mapa base correcto dentro de "load"
+  const basemapRef = useRef(basemapId);
+  useEffect(() => {
+    basemapRef.current = basemapId;
+  }, [basemapId]);
 
   // Se crea una sola vez por zona
   useEffect(() => {
@@ -136,6 +146,8 @@ export default function MapView({ zone, destination, route, layers, notes, onMap
       attributionControl: false,
       dragRotate: false,
       pitchWithRotate: false,
+      // Convierte URLs trek-eq:// → URLs reales de Trek con coordenadas EQ correctas
+      transformRequest: trekTransformRequest,
     });
     map.touchZoomRotate.disableRotation();
     mapRef.current = map;
@@ -154,6 +166,9 @@ export default function MapView({ zone, destination, route, layers, notes, onMap
     };
 
     map.on("load", () => {
+      // Mapa base de Marte (Trek WMTS): se inserta primero, debajo de todo
+      applyBasemap(map, basemapRef.current);
+
       map.addSource("grid", {
         type: "geojson",
         data: { type: "FeatureCollection", features: gridLines(meta, 500).map(line) },
@@ -294,6 +309,15 @@ export default function MapView({ zone, destination, route, layers, notes, onMap
     else map.once("load", apply);
   }, [destination, route]);
 
+  // Mapa base: se reemplaza reactivamente al cambiar basemapId.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const apply = () => applyBasemap(map, basemapId);
+    if (map.isStyleLoaded()) apply();
+    else map.once("load", apply);
+  }, [basemapId]);
+
   // Capas de imagen/ráster: encender/apagar según `layers`. Si una capa aún no
   // existe (el mapa no cargó o P1 no la entregó), se salta; la visibilidad inicial
   // la fija el "load".
@@ -355,7 +379,7 @@ export default function MapView({ zone, destination, route, layers, notes, onMap
       }
     };
 
-    if (map.getLayer("route")) apply();
+    if (map.isStyleLoaded()) apply();
     else map.once("load", apply);
   }, [layers.radiation, route]);
 
@@ -363,6 +387,7 @@ export default function MapView({ zone, destination, route, layers, notes, onMap
   return (
     <div className="absolute inset-0">
       <div ref={container} className="h-full w-full" aria-label="Mapa de la zona" />
+      <BasemapPicker active={basemapId} onChange={onBasemapChange} />
       <Legend zone={zone} layers={layers} />
     </div>
   );

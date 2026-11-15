@@ -36,11 +36,18 @@ export default function Legend({
 
   return (
     <div
-      className="panel pointer-events-none absolute z-10 w-40 p-2.5
-        left-[calc(0.75rem_+_env(safe-area-inset-left))]
-        bottom-[calc(6.5rem_+_env(safe-area-inset-bottom))]
-        sm:left-auto sm:w-44
-        sm:right-[calc(0.75rem_+_env(safe-area-inset-right))]"
+      className={[
+        "panel pointer-events-none absolute z-20 p-2.5",
+        // Teléfono: izquierda inferior, estrecha
+        "left-[calc(0.75rem_+_env(safe-area-inset-left))]",
+        "bottom-[calc(5rem_+_env(safe-area-inset-bottom))]",
+        "w-36",
+        // Tablet: derecha inferior, más ancha, más margen (MetricsBar expandido ~9rem)
+        "sm:left-auto",
+        "sm:right-[calc(0.75rem_+_env(safe-area-inset-right))]",
+        "sm:bottom-[calc(9rem_+_env(safe-area-inset-bottom))]",
+        "sm:w-44",
+      ].join(" ")}
     >
       <h3 className="mb-1.5 font-mono text-[10px] font-semibold tracking-widest text-ink-dim">
         LEYENDA
