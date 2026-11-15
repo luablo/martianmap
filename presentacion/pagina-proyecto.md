@@ -44,7 +44,7 @@ La zona es el recorte del modelo de elevación HiRISE DTEEC_001488_1750 en el cr
 
 - **MRO HiRISE**: ortofoto PSP_001488_1750 (imagen de fondo, MEDIDO) y modelo de elevación DTEEC_001488_1750 a 1 m/px, del que sale la pendiente a 4 m por celda (DERIVADO). https://hirise-pds.lpl.arizona.edu/PDS/DTM/PSP/ORB_001400_001499/PSP_001488_1750_PSP_001752_1750/
 - **MSL RAD (Curiosity)**: tasa de radiación en superficie, 0.67 mSv/día (Hassler et al. 2014, *Science*). https://doi.org/10.1126/science.1244797
-- **MSL REMS (Curiosity)**: temperatura y presión de un sol de referencia (sol 412). https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity_rems.html
+- **MSL REMS (Curiosity)**: temperatura y presión de un sol de referencia (sol 412). https://pds-atmospheres.nmsu.edu/data_and_services/atmospheres_data/MARS/curiosity/rems.html
 - **Mapas base**: MRO CTX (NASA/JPL/MSSS, vía Esri OnMars), Mars Odyssey THEMIS IR de día y Viking MDIM 2.1 colorizado (USGS Astrogeology). https://planetarymaps.usgs.gov/
 - **Supuestos del equipo, no de NASA**: la base de la EVA, los objetivos y las zonas NO PISAR se marcaron sobre la ortofoto. Bradbury Landing queda fuera de este recorte.
 

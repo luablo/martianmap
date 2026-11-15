@@ -38,7 +38,7 @@ Desde aquí solo correcciones de errores. Nada de funciones nuevas.
 ## 09:00–09:30 · Primera versión fea del video (30 s)
 - [x] Video armado con Remotion (`presentacion/video/`) a partir de capturas reales de la app en inglés (`capturar-en.mjs`) y el guion `video-script-en.md`, con la voz del equipo.
 - [x] Toma E: nota de campo con foto que queda en el mapa.
-- [ ] Música: el video usa `music/drone.wav` de fondo. Confirmar que es propia o libre de derechos antes de enviar.
+- [x] Música: `music/drone.wav` es libre de derechos (confirmado por el equipo).
 - [x] Subtítulos en inglés integrados en el video (componente `Subtitles` de `Video.tsx`).
 
 ## 09:30–10:30 · Pulir
@@ -57,5 +57,7 @@ Desde aquí solo correcciones de errores. Nada de funciones nuevas.
 - [x] URL de Vercel: https://martianmap-rosy.vercel.app
 - [x] Repositorio público en GitHub, sin llaves (`git grep` sin URL ni llave de Supabase; `.env.local` fuera del repo).
 - [x] Página del proyecto con la declaración de uso de IA.
-- [ ] P1 revisa todo antes de enviar.
+- [x] Video revisado por el equipo.
+- [ ] Volver a subir el video corregido (`out/marswalk-demo-voz-equipo-v2.mp4`: decía «Bistronauts») en Drive con *Administrar versiones → Subir nueva versión*, para que el enlace no cambie.
+- [ ] Llenar el formulario con [`space-apps-submission.md`](space-apps-submission.md) (todos los campos en inglés, listos para pegar).
 - [ ] **Enviar con «Submit for Judging»** en el sitio de Space Apps antes del domingo 15 nov, 11:59 p. m. (hora local).

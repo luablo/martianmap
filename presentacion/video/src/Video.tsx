@@ -464,7 +464,7 @@ const S7End: React.FC = () => (
       <div style={{ font: `900 140px ${FONT}`, color: C.text, letterSpacing: 10 }}>MARSWALK</div>
       <div style={{ font: `500 40px ${FONT}`, color: C.teal, marginTop: 6 }}>The safe path across Mars, one tap away</div>
       <div style={{ font: `700 38px ${MONO}`, color: C.text, marginTop: 50 }}>martianmap-rosy.vercel.app</div>
-      <div style={{ font: `500 28px ${FONT}`, color: C.dim, marginTop: 24 }}>Team Bistronauts · NASA Space Apps Challenge 2026</div>
+      <div style={{ font: `500 28px ${FONT}`, color: C.dim, marginTop: 24 }}>Team Bitstronauts · NASA Space Apps Challenge 2026</div>
     </FadeIn>
   </AbsoluteFill>
 );

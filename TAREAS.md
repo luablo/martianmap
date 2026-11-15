@@ -18,10 +18,12 @@
 
 **✅ Video listo:** https://drive.google.com/file/d/1jNl4tkWjWRfV7VHoph0uLnI0YVjWQJjU/view?usp=sharing (29.5 s, voz del equipo, subtítulos en inglés). Está en `README.md`, `README.es.md` y `presentacion/pagina-proyecto.md`; el proyecto de Remotion que lo genera está en `presentacion/video/`.
 
+✅ Música libre de derechos y video revisados. ✅ Formulario de Space Apps listo para pegar en [`presentacion/space-apps-submission.md`](presentacion/space-apps-submission.md) (resumen, detalles, uso de IA, datos de NASA, otros recursos y checklist contra los criterios).
+
 **Lo que falta para entregar, en orden:**
-1. **Música:** confirmar que `drone.wav` (fondo del video) es propia o libre de derechos.
-2. **P1:** revisar la página del proyecto y el video.
-3. **Enviar** con «Submit for Judging» en el sitio de Space Apps antes del domingo 15 nov, 11:59 p. m. (`presentacion/entrega.md`).
+1. **Video:** subir `presentacion/video/out/marswalk-demo-voz-equipo-v2.mp4` (corrige «Bistronauts» → «Bitstronauts») como nueva versión del mismo archivo en Drive, para conservar el enlace.
+2. **Formulario:** pegar los campos de `space-apps-submission.md`, poner el enlace de la música y confirmar que todo el equipo es mayor de 18.
+3. **Enviar** con «Submit for Judging» antes del domingo 15 nov, 11:59 p. m.
 
 El detalle está al final de la sección de cada persona. **Para actualizarlo:** marca `[x]` en tu casilla y corrige tu fila y tu barra (cada `█` = 10 %).
 
